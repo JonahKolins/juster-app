@@ -3,7 +3,6 @@ import styles from "./SubmitForm.module.sass";
 import {Button} from "antd";
 import {useSafeNewRequestDataLayerContext} from "../NewRequestDataLayer";
 import {requestCreateNewClaim} from "../api/methods/requestCreateNewClaim";
-import {useAuth} from "../../app/hooks/useAuth";
 import {CreateNewClaimParams} from "../api/requests/PostCreateNewClaimRequest";
 
 interface SubmitFormProps {
@@ -11,7 +10,6 @@ interface SubmitFormProps {
 }
 
 const SubmitForm = memo<SubmitFormProps>(({error}) => {
-    const { userData } = useAuth();
     const claimData = useSafeNewRequestDataLayerContext();
 
     const submitFullForm = useCallback(async () => {
@@ -34,8 +32,6 @@ const SubmitForm = memo<SubmitFormProps>(({error}) => {
         console.log('requestCreateNewClaim response', response)
     }, [])
 
-    console.log('userData', userData)
-    console.log('claimData', claimData)
     return (
         <div className={styles.sendForm}>
             <div className={styles.subTitle}>Ваше обращение будет рассмотрено нашими специалистами в ближайшее время.</div>

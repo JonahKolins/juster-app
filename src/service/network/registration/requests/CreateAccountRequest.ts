@@ -2,7 +2,8 @@ import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
 
 export interface CreateAccountParams {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
     agreementCheckbox: boolean;
@@ -10,7 +11,7 @@ export interface CreateAccountParams {
 
 export interface CreateAccountResponse {
     email: string;
-    error: any;
+    error?: any;
 }
 
 const REGISTER_URL = '/auth/registration';

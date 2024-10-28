@@ -5,7 +5,11 @@ export interface ILoginParams {
     password: string;
 }
 
-export interface IUserLoginResponse extends IUserData {}
+export interface IUserLoginResponse {
+    clientId: string;
+    accessToken: string;
+    role: string;
+}
 
 const TIMEOUT = 1500;
 
@@ -19,11 +23,11 @@ export const testUserLogin = (params: ILoginParams, timeout?: number): Promise<I
         window.setTimeout(() => {
             const existedUsersString = localStorage.getItem('reg_users');
 
-            let existedUsersArray: IUserLoginResponse[] = [];
+            let existedUsersArray: IUserData[] = [];
 
             try {
                 if (existedUsersString) {
-                    const parsedRegUsers: IUserLoginResponse[] = JSON.parse(existedUsersString) || [];
+                    const parsedRegUsers: IUserData[] = JSON.parse(existedUsersString) || [];
 
                     if (parsedRegUsers?.length) {
                         existedUsersArray.push(...parsedRegUsers);
@@ -34,17 +38,22 @@ export const testUserLogin = (params: ILoginParams, timeout?: number): Promise<I
             }
 
             if (!existedUsersArray.length) {
-                resolve(null);
+                reject();
             } else {
-                const reqUserData: IUserLoginResponse = existedUsersArray.find((data) => data.email === params.email);
+                const reqUserData: IUserData = existedUsersArray.find((data) => data.email === params.email);
 
                 if (!reqUserData) {
                     resolve(null);
                 } else {
                     if (reqUserData.password === params.password) {
-                        resolve(reqUserData);
+                        const response: IUserLoginResponse = {
+                            clientId: reqUserData.id,
+                            accessToken: 'accessToken1',
+                            role: reqUserData.role
+                        }
+                        resolve(response);
                     } else {
-                        resolve(null);
+                        reject();
                     }
                 }
             }

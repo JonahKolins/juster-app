@@ -14,14 +14,10 @@
         margin-top: 16px
 
         .all-req-button
-            font-family: "Roboto", sans-serif
-            cursor: pointer
-            color: var(--base-color__black)
-            background-color: rgba(241, 241, 241, 0.7)
-            border: 1px solid rgba(241, 241, 241, 0.8)
+            font-size: 12px
+            padding: 4px 12px
 
 .row-name
-    font-family: "Roboto", sans-serif
     color: black
     font-size: 14px
     font-weight: 500
@@ -36,10 +32,11 @@
     font-size: 14px
 
 .expand-link
-    color: #1677ff
+    color: var(--button__primary)
     font-size: 12px
-    cursor: pointer
-    margin-top: 8px
+    padding-left: 0 !important
+    &:hover
+        color: var(--button__primary-hover) !important
 
 .expand_link:hover
     color: #4693ff

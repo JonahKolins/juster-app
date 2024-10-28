@@ -1,8 +1,8 @@
-import React, {createContext, FC, memo, useContext, useState} from "react";
+import React, {createContext, memo, useContext, useState} from "react";
 import {ISuggestions} from "./api/requests/GetOrganisationSuggestionsRequest";
-import {useAuth} from "../app/hooks/useAuth";
 import {CreateDraftParams, CreateDraftResponse} from "./api/requests/CreateDraftRequest";
 import {createDraft} from "./api/methods/requestCreateDraft";
+import {useProfile} from "../app/hooks/useProfile";
 
 
 export interface DraftCreatorContextData {
@@ -37,7 +37,7 @@ interface DraftCreatorProps {
 }
 
 const DraftCreator = memo<DraftCreatorProps>(({children}) => {
-    const {userData} = useAuth();
+    const {clientInfo} = useProfile();
     const [draft, setDraft] = useState<CreateDraftResponse>(null);
 
     // создает или изменяет уже созданный черновик
@@ -45,7 +45,7 @@ const DraftCreator = memo<DraftCreatorProps>(({children}) => {
         // если нет draft --> создать новый черновик
         // если есть draft (у него есть id) --> то изменения применятся к уже созданному черновику по id
         const requestParams: CreateDraftParams = {
-            userId: userData?.id,
+            userId: Number(clientInfo?.clientId),
             draftId: draft && draft.id ? draft.id : undefined,
             ...params
         }

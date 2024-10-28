@@ -1,11 +1,5 @@
 import {UserRole} from "../types/types";
-
-export interface CreateAccountParams {
-    name: string;
-    email: string;
-    password: string;
-    agreementCheckbox: boolean;
-}
+import {CreateAccountParams} from "../../../service/network/registration/requests/CreateAccountRequest";
 
 export interface IExtraUserPayload {
     id: string;
@@ -17,7 +11,8 @@ export type TRegistrationPayload = IExtraUserPayload & CreateAccountParams;
 export interface IUserRegistrationResponse {
     id: string;
     role: UserRole,
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
 }
 
@@ -60,7 +55,8 @@ export const testUserRegistration = (payload: CreateAccountParams, timout?: numb
         const newUserData1: TRegistrationPayload & {integrationId: string} = {
             id: String(Math.floor(1000 + Math.random() * 9000)),
             role: UserRole.partner,
-            name: 'Яндекс маркет',
+            firstName: 'Яндекс маркет',
+            lastName: '',
             email: 'yandex@test.com',
             password: 'qwerty90',
             agreementCheckbox: true,
@@ -70,7 +66,8 @@ export const testUserRegistration = (payload: CreateAccountParams, timout?: numb
         const newUserData0: TRegistrationPayload & {integrationId: string} = {
             id: String(Math.floor(1000 + Math.random() * 9000)),
             role: UserRole.partner,
-            name: 'Сбер',
+            firstName: 'Сбер',
+            lastName: '',
             email: 'sber@test.com',
             password: 'qwerty90',
             agreementCheckbox: true,
@@ -80,7 +77,8 @@ export const testUserRegistration = (payload: CreateAccountParams, timout?: numb
         const newUserData2: TRegistrationPayload = {
             id: String(Math.floor(1000 + Math.random() * 9000)),
             role: UserRole.lawyer,
-            name: 'Агент Сеймур Симонс',
+            firstName: 'Агент',
+            lastName: 'Сеймур Симонс',
             email: 'lawyer1@test.com',
             password: 'qwerty90',
             agreementCheckbox: true
@@ -89,7 +87,8 @@ export const testUserRegistration = (payload: CreateAccountParams, timout?: numb
         const newUserData3: TRegistrationPayload = {
             id: String(Math.floor(1000 + Math.random() * 9000)),
             role: UserRole.lawyer,
-            name: 'Бамблби',
+            firstName: 'Бамблби',
+            lastName: 'Автоботович',
             email: 'lawyer2@test.com',
             password: 'qwerty90',
             agreementCheckbox: true
@@ -98,7 +97,8 @@ export const testUserRegistration = (payload: CreateAccountParams, timout?: numb
         const newUserData4: TRegistrationPayload = {
             id: String(Math.floor(1000 + Math.random() * 9000)),
             role: UserRole.admin,
-            name: 'Сэм Уиткики',
+            firstName: 'Сэм',
+            lastName: 'Уиткики',
             email: 'admin1@test.com',
             password: 'qwerty90',
             agreementCheckbox: true
@@ -107,7 +107,8 @@ export const testUserRegistration = (payload: CreateAccountParams, timout?: numb
         const newUserData5: TRegistrationPayload = {
             id: String(Math.floor(1000 + Math.random() * 9000)),
             role: UserRole.admin,
-            name: 'Микаэла Бейнс',
+            firstName: 'Микаэла',
+            lastName: 'Бейнс',
             email: 'admin2@test.com',
             password: 'qwerty90',
             agreementCheckbox: true
@@ -122,7 +123,8 @@ export const testUserRegistration = (payload: CreateAccountParams, timout?: numb
 
         const response: IUserRegistrationResponse = {
             id: newUserData.id,
-            name: newUserData.name,
+            firstName: newUserData.firstName,
+            lastName: newUserData.lastName,
             email: newUserData.email,
             role: newUserData.role
         }

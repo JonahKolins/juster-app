@@ -1,4 +1,4 @@
-import ApplicationError from '../../errors/ApplicationError';
+import ApplicationError from './ApplicationError';
 
 export default class ResponseParseError extends ApplicationError {
   public name = 'ResponseParseError';

@@ -1,7 +1,7 @@
 import RequestSender from '../RequestSender';
 import IResponseHandler from '../handlers/IResponseHandler';
 
-const HOST = 'http://juster-test-ift.ru/api';
+const HOST = 'http://juster-test-ift.ru';
 
 export default abstract class PostRequest<TData> {
   protected abstract url: string;

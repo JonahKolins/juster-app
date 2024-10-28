@@ -9,9 +9,8 @@ import {IOrganisationData} from "../../../newRequest/NewRequestDataLayer";
 import {useNavigate} from "react-router-dom";
 import {ScrollBarVisibility} from "../../../controls/scrollArea";
 import {ScrollablePanel} from "../../../controls/panel/ScrollablePanel";
-import {useAuth} from "../../../app/hooks/useAuth";
-import {isPartner} from "../../../app/auth/types/types";
 import {Tabs, TabsProps} from "antd";
+import {useProfile} from "../../../app/hooks/useProfile";
 
 enum IRequestsPageId {
     inbox = 'inbox',
@@ -21,7 +20,7 @@ enum IRequestsPageId {
 const MyRequestsPage = () => {
     const navigate = useNavigate();
     //
-    const {userData} = useAuth();
+    const {clientInfo} = useProfile();
     const [isReady, setIsReady] = useState<boolean>(false);
     const [requests, setRequests] = useState<IFullRequestInfo[]>([]);
     const [currentPageId, setCurrentPageId] = useState<IRequestsPageId>(IRequestsPageId.inbox);
@@ -74,13 +73,14 @@ const MyRequestsPage = () => {
     const getInboxes = (): IFullRequestInfo[] => {
         if (!requests) return [];
 
-        if (!isPartner(userData)) return requests;
+        // TODO придумать определение партнера
+        if (!clientInfo.integrationId) return requests;
 
         const resultArr: IFullRequestInfo[] = [];
 
         requests.forEach((request) => {
             const organisation = request.org;
-            if (isSuggestion(organisation) && organisation.id === userData.integrationId) {
+            if (isSuggestion(organisation) && organisation.id === clientInfo.integrationId) {
                 resultArr.push(request);
             }
         });
@@ -198,16 +198,19 @@ const MyRequestsPage = () => {
         setCurrentPageId(key);
     }
 
+    const isPageReady = !!clientInfo && isReady;
+
     return (
         <>
-            {!isReady && <LoaderCircle />}
+            {!isPageReady && <LoaderCircle />}
             <ScrollablePanel
                 vScroll={ScrollBarVisibility.autoWhenScrollOverArea}
                 hScroll={ScrollBarVisibility.auto}
             >
                 <div className={styles['my-requests']}>
                     <div className={styles['list']}>
-                        {isPartner(userData)
+                        {/* TODO придумать определение партнера */}
+                        {clientInfo?.integrationId
                             ?  (
                                 <Tabs
                                     defaultActiveKey={IRequestsPageId.inbox}

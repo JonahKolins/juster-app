@@ -13,7 +13,7 @@ const NoAuthorized = memo<NoAuthorizedProps>(({className}) => {
     const navigate = useNavigate();
 
     const onLoginClick = useCallback(() => {
-        navigate('/login')
+        navigate('/auth/login')
     }, [navigate])
 
     return (

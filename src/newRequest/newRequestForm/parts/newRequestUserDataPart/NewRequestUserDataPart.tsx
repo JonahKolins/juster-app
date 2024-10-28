@@ -4,10 +4,13 @@ import Button from "../../../../designSystem/button/Button";
 import {Input, InputSize} from "../../../../designSystem/input";
 import {LoaderCircle} from "../../../../designSystem/loader/Loader.Circle";
 import {Checkbox, Segmented} from "antd";
-import {useAuth} from "../../../../app/hooks/useAuth";
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import NewRequestRegistrationForm from "../../components/newRequestRegistrationForm/NewRequestRegistrationForm";
-import {IUserLoginResponse, testUserLogin} from "../../../../app/auth/methods/testUserLogin";
+import {Session} from "../../../../classes/session/Session";
+import {useSessionInfo} from "../../../../app/hooks/useSessionInfo";
+import {useProfile} from "../../../../app/hooks/useProfile";
+import {stringUtils} from "../../../../core/utils";
+import NBSP = stringUtils.NBSP;
 
 interface NewRequestUserDataPartProps {
     onPrevPageClick: () => void;
@@ -23,7 +26,8 @@ const pages = [
 
 const NewRequestUserDataPart = memo<NewRequestUserDataPartProps>(({onPrevPageClick, onNextPageClick}) => {
     const [currentPageId, setCurrentPageId] = useState<TPageId>('login');
-    const {userData, setUserData, isAuth, setIsAuth} = useAuth();
+    const {isAuth} = useSessionInfo();
+    const {clientInfo} = useProfile();
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -55,30 +59,16 @@ const NewRequestUserDataPart = memo<NewRequestUserDataPartProps>(({onPrevPageCli
             return;
         }
 
-        testUserLogin({email: email, password: password})
-            .then((data: IUserLoginResponse) => {
-                if (!data) {
-                    setError('Не верный email или пароль');
-                    setIsAuth(false);
-                } else {
-                    setUserData({
-                        id: data.id,
-                        role: data.role,
-                        name: data.name,
-                        email: data.email,
-                    });
-                    // обязательно - для восстановления сессии
-                    localStorage.setItem('last_id', userData.id);
-                    //
-                    setIsAuth(true);
-                    setError(null);
-                }
-                setIsLoading(false);
+        Session.instance.login(email, password)
+            .then(() => {
+                setError(null);
             })
             .catch((error) => {
-                setIsLoading(false);
                 setError('Не верный email или пароль');
                 console.log('error', error)
+            })
+            .finally(() => {
+                setIsLoading(false);
             })
     }
 
@@ -123,11 +113,15 @@ const NewRequestUserDataPart = memo<NewRequestUserDataPartProps>(({onPrevPageCli
         )
     }
 
+    const handleSuccessRegister = () => {
+
+    }
+
     const renderContentByCurrentId = () => {
         switch (currentPageId) {
             case "login": return renderLoginForm();
             case "registration": {
-                return <NewRequestRegistrationForm />
+                return <NewRequestRegistrationForm onRegister={handleSuccessRegister} />
             }
         }
     }
@@ -137,12 +131,13 @@ const NewRequestUserDataPart = memo<NewRequestUserDataPartProps>(({onPrevPageCli
             {isLoading && <LoaderCircle />}
             {/*<h2 className={styles['caption']}>{CAPTION}</h2>*/}
             <div className={styles['login-container']}>
-                {isAuth && userData ? (
+                {isAuth && clientInfo ? (
                     <div className={styles['login-user-data']}>
-                        <div className={styles['name']}>{userData.name}</div>
-                        {userData.address && <div className={styles['data-item']}>Адресс: {userData.address}</div>}
-                        <div className={styles['data-item']}>Email: {userData.email}</div>
-                        {userData.phone && <div className={styles['data-item']}>Телефон: {userData.phone}</div>}
+                        {/* TODO добавить address и phone в профиль */}
+                        <div className={styles['name']}>{clientInfo.firstName}{NBSP}{clientInfo.lastName}</div>
+                        {/*{clientInfo.address && <div className={styles['data-item']}>Адресс: {clientInfo.address}</div>}*/}
+                        <div className={styles['data-item']}>Email: {clientInfo.email}</div>
+                        {/*{clientInfo.phone && <div className={styles['data-item']}>Телефон: {clientInfo.phone}</div>}*/}
                     </div>
                 ) : (
                     <div className={styles['login-form']}>

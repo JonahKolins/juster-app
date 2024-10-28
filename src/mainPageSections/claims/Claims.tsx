@@ -1,22 +1,20 @@
 import React, {FC, useCallback, useEffect, useState} from "react";
 import {StatusV2} from "../../pages/mySpacePages/dashboardPage/DashboardPage";
 import styles from "./Claims.module.sass";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import getClaimsRequest from "../api/metods/getClaimsRequest";
 import {ClaimsItemResponse} from "../api/requests/GetClaimsRequest";
-import { Table, Tag } from 'antd';
+import {Button, Table, Tag} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {getDateFromString} from "../../handlers/getDateFromString";
 import {IFullRequestInfo} from "../../newRequest/newRequestForm/parts/newRequestFinalPart/NewRequestFinalPart";
-import Button from "../../designSystem/button/Button";
-import {isPartner} from "../../app/auth/types/types";
-import {useAuth} from "../../app/hooks/useAuth";
 import {IOrganisationData} from "../../newRequest/NewRequestDataLayer";
 import {ISuggestions} from "../../newRequest/api/requests/GetOrganisationSuggestionsRequest";
+import {useProfile} from "../../app/hooks/useProfile";
 
 interface IUserInfo {
-    first_name: string;
-    last_name: string;
+    firstName: string;
+    lastName: string;
 }
 
 interface IComment {
@@ -40,15 +38,17 @@ interface ClaimRowData {
 const Claims: FC = () => {
     const navigate = useNavigate();
     //
-    const {userData} = useAuth();
+    const {clientInfo, isProfileLoading} = useProfile();
     const [claims, setClaims] = useState<ClaimsItemResponse[]>([]);
     const [rows, setRows] = useState<ClaimRowData[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         // requestClaims();
-        getClaims();
-    }, [])
+        if (!isProfileLoading && clientInfo) {
+            getClaims();
+        }
+    }, [isProfileLoading, clientInfo])
 
     const getClaims = () => {
         testRequestClaims()
@@ -96,7 +96,7 @@ const Claims: FC = () => {
                 return;
             }
 
-            if (!isPartner(userData)) {
+            if (!clientInfo.integrationId) {
                 resolve(existedRequestsArray);
                 return;
             }
@@ -105,7 +105,7 @@ const Claims: FC = () => {
 
             existedRequestsArray.forEach((request) => {
                 const organisation = request.org;
-                if (isSuggestion(organisation) && organisation.id === userData.integrationId) {
+                if (isSuggestion(organisation) && organisation.id === clientInfo.integrationId) {
                     resultArr.push(request);
                 }
             });
@@ -216,19 +216,26 @@ const Claims: FC = () => {
         )
     }
 
-    const renderDescription = (claimRowData: ClaimRowData): JSX.Element => {
+    const handleGoToClaim = (id: string) => {
+        navigate(`/mySpace/myRequests/${id}`)
+    }
+
+    const renderDescription = (claimRowData: ClaimRowData): React.JSX.Element => {
         return (
             <div>
                 <div className={styles['expand-data']}>Создано {claimRowData.createdDate}</div>
                 <div className={styles['expand-data']}>Id: {claimRowData.id}</div>
                 <div className={styles['expand-data']}>{claimRowData.comments.length} ответов</div>
                 <div className={styles['text']} dangerouslySetInnerHTML={{__html: claimRowData.text}} />
-                <Link
-                    to={{pathname: `/mySpace/myRequests/${claimRowData.id}`}}
+                <Button
+                    type="link"
+                    color="primary"
+                    size="small"
                     className={styles['expand-link']}
+                    onClick={() => handleGoToClaim(claimRowData.id)}
                 >
                     Перейти к обращению
-                </Link>
+                </Button>
             </div>
         )
     }
@@ -250,6 +257,7 @@ const Claims: FC = () => {
             />
             <div className={styles['button-container']}>
                 <Button
+                    size="small"
                     className={styles['all-req-button']}
                     onClick={onAllAppealsClick}
                 >

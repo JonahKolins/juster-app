@@ -1,23 +1,22 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useParams} from "react-router";
-import MainWrapper from "../components/mainWrapper/MainWrapper";
 import styles from "./RequestItem.module.sass";
 import ClaimActions from "./claimActions/ClaimActions";
 import AdditionalInfo from "./additionalInfo/AdditionalInfo";
-import getClaimsRequest from "../mainPageSections/api/metods/getClaimsRequest";
 import {ClaimsItemResponse, IComment, IUserInfo} from "../mainPageSections/api/requests/GetClaimsRequest";
 import TextEditor from "./textEditor/TextEditor";
-import {sendComment} from "../service/network/requestItem/methods/sendComment";
 import DraftCreator from "../newRequest/DraftCreator";
 import {IFullRequestInfo} from "../newRequest/newRequestForm/parts/newRequestFinalPart/NewRequestFinalPart";
 import {LoaderCircle} from "../designSystem/loader/Loader.Circle";
 import classNames from "classnames";
 import {formats} from "./textEditor/EditorToolbar";
 import ReactQuill from "react-quill";
-import {useAuth} from "../app/hooks/useAuth";
 import {formatDate} from "../core/utils/dateUtils";
 import {ScrollBarVisibility} from "../controls/scrollArea";
 import {ScrollablePanel} from "../controls/panel/ScrollablePanel";
+import {useProfile} from "../app/hooks/useProfile";
+import {stringUtils} from "../core/utils";
+import NBSP = stringUtils.NBSP;
 
 const CAPTION = 'Читос или кузя лакомкин?';
 const ITEM_DESCRIPTION = 'Многие меня спрашивают читос или кузя лакомкин. Скажу по секрету, что между ними стоит еще один титан. Это русская картошка. ' +
@@ -33,11 +32,10 @@ const testAdminMessages: string[] = [
 
 const RequestItem = () => {
     const {id} = useParams();
-    const {userData} = useAuth();
+    const {clientInfo} = useProfile();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [data, setData] = useState<ClaimsItemResponse>(null);
     const [fullInfo, setFullInfo] = useState<IFullRequestInfo>(null);
-    const sessionId = localStorage.getItem('id');
     const [error, setError] = useState<string>('');
 
     useEffect(() => {
@@ -138,7 +136,8 @@ const RequestItem = () => {
             createdAt: formatDate(new Date().getTime(), 'DD/MM/YYYY'),
             id: Math.floor(1000 + Math.random() * 9000),
             user: {
-                first_name: userData.name,
+                firstName: clientInfo.firstName,
+                lastName: clientInfo.lastName
             }
         }
         // добаляем новый коммент к старым
@@ -214,8 +213,8 @@ const RequestItem = () => {
             createdAt: formatDate(new Date().getTime(), 'DD/MM/YYYY'),
             id: Math.floor(1000 + Math.random() * 9000),
             user: {
-                first_name: 'Клава',
-                last_name: '',
+                firstName: 'Клава',
+                lastName: '',
                 title: {
                     id: 'admin',
                     value: 'Менеджер клиентского сервиса МВидео'
@@ -255,7 +254,7 @@ const RequestItem = () => {
 
         window.setTimeout(() => {
             getAllData()
-        }, 2000)
+        }, 300)
     }
 
     // const handleSaveComment = useCallback(async (text: string) => {
@@ -275,7 +274,7 @@ const RequestItem = () => {
     if (error) return <div>{error}</div>
     if (!data) return null;
 
-    return isLoading && !data ? <LoaderCircle /> : (
+    return isLoading || !data || !clientInfo ? <LoaderCircle /> : (
         <ScrollablePanel
             vScroll={ScrollBarVisibility.autoWhenScrollOverArea}
             hScroll={ScrollBarVisibility.auto}
@@ -319,7 +318,7 @@ const RequestItem = () => {
                     </div>
                     <AdditionalInfo
                         id={data.genId}
-                        author={userData.name}
+                        author={`${clientInfo.firstName}${NBSP}${clientInfo.lastName}`}
                         org={fullInfo.org}
                     />
                 </div>
@@ -327,4 +326,5 @@ const RequestItem = () => {
         </ScrollablePanel>
     )
 }
+
 export default RequestItem;

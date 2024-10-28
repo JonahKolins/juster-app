@@ -1,8 +1,7 @@
-import React, {FC, useContext} from "react";
+import React, {FC} from "react";
 import styles from "./DashboardPage.module.sass";
 import Claims from "../../../mainPageSections/claims/Claims";
 import RightSideBar from "../../../mainPageSections/rightSideBar/RightSideBar";
-import AuthContext from "../../../app/Layers/AuthProvider";
 import {ScrollBarVisibility} from "../../../controls/scrollArea";
 import {ScrollablePanel} from "../../../controls/panel/ScrollablePanel";
 
@@ -45,7 +44,6 @@ export interface INotifications {
 }
 
 const DashboardPage: FC = () => {
-    const { isAuth } = useContext(AuthContext);
 
     const notificationsFromServer: Array<INotifications> = [
         {id: 10001, sentTime: '2 мин назад', title: NotificationsTitle.sent, isRead: false},

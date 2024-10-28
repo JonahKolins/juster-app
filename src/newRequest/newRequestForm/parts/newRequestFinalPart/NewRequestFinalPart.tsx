@@ -2,7 +2,6 @@ import React, {memo, useState} from "react";
 import styles from "./NewRequestFinalPart.module.sass";
 import Button from "../../../../designSystem/button/Button";
 import {IOrganisationData, useSafeNewRequestDataLayerContext} from "../../../NewRequestDataLayer";
-import {useAuth} from "../../../../app/hooks/useAuth";
 import {ISuggestions} from "../../../api/requests/GetOrganisationSuggestionsRequest";
 import OrganisationForm from "../../components/organisationForm/OrganisationForm";
 import {Modal} from "antd";
@@ -12,6 +11,9 @@ import {IReason} from "../newRequestReasonPart/NewRequestReasonPart";
 import {formats} from "../../../../requestItem/textEditor/EditorToolbar";
 import ReactQuill from "react-quill";
 import {IComment} from "../../../../mainPageSections/api/requests/GetClaimsRequest";
+import {useProfile} from "../../../../app/hooks/useProfile";
+import {stringUtils} from "../../../../core/utils";
+import NBSP = stringUtils.NBSP;
 
 export interface IFullRequestInfo {
     id: string;
@@ -31,7 +33,7 @@ const CAPTION = 'Ваше обращение';
 
 const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) => {
     const {reason, organisationData, claimText, files} = useSafeNewRequestDataLayerContext();
-    const {userData} = useAuth();
+    const {clientInfo} = useProfile();
     const navigate = useNavigate();
 
     const [createdId, setCreatedId] = useState<string>('');
@@ -94,7 +96,7 @@ const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) =
     const sendClaim = (payload: IFullRequestInfo): Promise<IFullRequestInfo> => {
         setIsLoading(true);
         return new Promise((resolve, reject) => {
-            if (!reason || !organisationData || !claimText || !userData) {
+            if (!reason || !organisationData || !claimText || !clientInfo) {
                 reject();
                 return;
             }
@@ -166,14 +168,17 @@ const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) =
                 </div>
                 <div className={styles['content-block']}>
                     <div className={styles['block-caption']}>Контакты</div>
-                    <div className={styles['block-description']}>
-                        <div className={styles['login-user-data']}>
-                            <div className={styles['name']}>{userData.name}</div>
-                            {userData.address && <div className={styles['data-item']}>Адресс: {userData.address}</div>}
-                            <div className={styles['data-item']}>Email: {userData.email}</div>
-                            {userData.phone && <div className={styles['data-item']}>Телефон: {userData.phone}</div>}
+                    {clientInfo && (
+                        <div className={styles['block-description']}>
+                            <div className={styles['login-user-data']}>
+                                {/* TODO добавить address и phone в профиль */}
+                                <div className={styles['name']}>{clientInfo.firstName}{NBSP}{clientInfo.lastName}</div>
+                                {/*{clientInfo.address && <div className={styles['data-item']}>Адресс: {clientInfo.address}</div>}*/}
+                                <div className={styles['data-item']}>Email: {clientInfo.email}</div>
+                                {/*{clientInfo.phone && <div className={styles['data-item']}>Телефон: {clientInfo.phone}</div>}*/}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
             {error && <div>{error}</div>}

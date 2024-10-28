@@ -1,10 +1,9 @@
-import PostRequest from "../../../../service/api/requests/PostRequest";
-import JSONResponseHandler from "../../../../service/api/handlers/JSONResponseHandler";
+import PostRequest from "../../../api/requests/PostRequest";
+import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
 
 export interface LoginResponse {
-    access_token: string;
-    sessionId: string;
-    refresh_token: string;
+    accessToken: string;
+    clientId: string;
     role: string;
     // error
     errorCode?: number;

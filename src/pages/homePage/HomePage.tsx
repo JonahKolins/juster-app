@@ -1,9 +1,9 @@
 import React, {memo, useCallback} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import styles from "./HomePage.module.sass";
-import {useAuth} from "../../app/hooks/useAuth";
 import {ScrollablePanel} from "../../controls/panel/ScrollablePanel";
 import {ScrollBarVisibility} from "../../controls/scrollArea";
+import {useSessionInfo} from "../../app/hooks/useSessionInfo";
 // icons
 import { BsChevronRight } from "react-icons/bs";
 import { IoLockClosedOutline } from "react-icons/io5";
@@ -13,15 +13,15 @@ import { HiOutlineBuildingLibrary } from "react-icons/hi2";
 interface HomePageProps {}
 
 const HomePage = memo<HomePageProps>(() => {
-    const {isAuth} = useAuth();
+    const {isAuth} = useSessionInfo();
     const navigate = useNavigate();
 
     const onCreateClick = useCallback(() => {
-        isAuth ? navigate('/mySpace/newRequest') : navigate('/login')
+        isAuth ? navigate('/mySpace/newRequest') : navigate('/auth/login')
     }, [isAuth, navigate])
 
     const onSignInClick = useCallback(() => {
-        navigate('/registration')
+        navigate('/auth/register')
     }, [navigate])
 
     return (

@@ -1,10 +1,10 @@
-import React, {FC, useCallback, useContext} from "react";
+import React, {FC, useCallback} from "react";
 import styles from "./RightSideBar.module.sass";
 import {INotifications} from "../../pages/mySpacePages/dashboardPage/DashboardPage";
 import {useNavigate} from "react-router-dom";
 import { BsPlusSquare } from "react-icons/bs";
-import AuthContext from "../../app/Layers/AuthProvider";
 import {Button, notification} from "antd";
+import {useSessionInfo} from "../../app/hooks/useSessionInfo";
 
 interface RightSideBarProps {
     notifications: Array<INotifications>
@@ -12,18 +12,18 @@ interface RightSideBarProps {
 
 const RightSideBar: FC<RightSideBarProps> = ({notifications}) => {
     const navigate = useNavigate();
-    const { isAuth } = useContext(AuthContext);
+    const {isAuth} = useSessionInfo();
     const [api, contextHolder] = notification.useNotification();
 
     const onListClick = () => {
-        navigate('/category')
+        navigate('/mySpace/category')
     }
 
     const openLoginNotification = () => {
         const key = `open${Date.now()}`;
         const onLoginClick = () => {
             api.destroy(key)
-            navigate('/login')
+            navigate('/auth/login')
         }
         const btn = (
             <Button type="default" size="middle" onClick={onLoginClick}>

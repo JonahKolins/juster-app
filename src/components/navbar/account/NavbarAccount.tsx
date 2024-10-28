@@ -5,12 +5,14 @@ import { BsChevronDown } from "react-icons/bs";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import classNames from "classnames";
 import {Dropdown, MenuProps} from "antd";
-import {useAuth} from "../../../app/hooks/useAuth";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoAccessibilityOutline } from "react-icons/io5";
 import { BsBoxes } from "react-icons/bs";
 import Button from "../../../designSystem/button/Button";
-
+import {useProfile} from "../../../app/hooks/useProfile";
+import {stringUtils} from "../../../core/utils";
+import NBSP = stringUtils.NBSP;
+import {Session} from "../../../classes/session/Session";
 
 enum AccountMenuItems {
     account= 'account',
@@ -24,7 +26,7 @@ interface NavbarAccountProps {
 const NavbarAccount = memo<NavbarAccountProps>(({onClick: propsOnClick}) => {
     const location = useLocation();
     const navigate = useNavigate();
-    const {userData, setIsAuth, setUserData} = useAuth();
+    const {clientInfo, isProfileLoading} = useProfile();
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
     const items: MenuProps['items'] = [
@@ -52,9 +54,7 @@ const NavbarAccount = memo<NavbarAccountProps>(({onClick: propsOnClick}) => {
         switch (key) {
             case AccountMenuItems.logout: {
                 // --> logout
-                localStorage.removeItem('last_id');
-                setIsAuth(false);
-                setUserData(null);
+                Session.instance.logout();
                 navigate('/');
                 propsOnClick();
                 return;
@@ -72,52 +72,57 @@ const NavbarAccount = memo<NavbarAccountProps>(({onClick: propsOnClick}) => {
     }, [])
 
     const handleSignIn = useCallback(() => {
-        navigate('/login');
+        navigate('/auth/login');
         propsOnClick();
     }, [navigate, propsOnClick])
 
     const handleRegister = useCallback(() => {
-        navigate('/registration');
+        navigate('/auth/register');
         propsOnClick();
     }, [navigate, propsOnClick])
 
     return (
         <div className={styles['navbar-account']}>
-            {!userData ? (
-                <>
-                    <Button
-                        className={styles['sign-in-button']}
-                        onClick={handleSignIn}
-                    >
-                        Войти
-                    </Button>
-                    <Button
-                        className={styles['reg-button']}
-                        onClick={handleRegister}
-                    >
-                        Регистрация
-                    </Button>
-                </>
-            ) : (
-                <>
-                    <Dropdown onOpenChange={handleOpenChange} menu={{ items, onClick: handleClick }} trigger={['click']}>
-                        <div className={classNames(styles['account-name'], isDropdownOpen && styles['_active'])}>
-                            <div>{userData.name}</div>
-                            <BsChevronDown size={10} />
-                        </div>
-                    </Dropdown>
-                    <Link
-                        to={'/account/settings'}
-                        className={classNames(
-                            styles['account-settings'],
-                            location.pathname === '/account/settings' && styles['_active']
-                        )}
-                        onClick={propsOnClick}
-                    >
-                        <IoSettingsOutline size={16} />
-                    </Link>
-                </>
-            )}
+            {isProfileLoading
+                ? <div>skeleton ... </div>
+                : clientInfo
+                    ? (
+                        <>
+                            <Dropdown onOpenChange={handleOpenChange} menu={{ items, onClick: handleClick }} trigger={['click']}>
+                                <div className={classNames(styles['account-name'], isDropdownOpen && styles['_active'])}>
+                                    <div>{clientInfo.firstName}{NBSP}{clientInfo.lastName ? clientInfo.lastName : ''}</div>
+                                    <BsChevronDown size={10} />
+                                </div>
+                            </Dropdown>
+                            <Link
+                                to={'/account/settings'}
+                                className={classNames(
+                                    styles['account-settings'],
+                                    location.pathname === '/account/settings' && styles['_active']
+                                )}
+                                onClick={propsOnClick}
+                            >
+                                <IoSettingsOutline size={16} />
+                            </Link>
+                        </>
+                    )
+                    : (
+                        <>
+                            <Button
+                                className={styles['sign-in-button']}
+                                onClick={handleSignIn}
+                            >
+                                Войти
+                            </Button>
+                            <Button
+                                className={styles['reg-button']}
+                                onClick={handleRegister}
+                            >
+                                Регистрация
+                            </Button>
+                        </>
+                    )
+            }
         </div>
     )
 })

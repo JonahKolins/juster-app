@@ -1,9 +1,10 @@
-import PostRequest from "../../../../service/api/requests/PostRequest";
-import JSONResponseHandler from "../../../../service/api/handlers/JSONResponseHandler";
+import PostRequest from "../../../api/requests/PostRequest";
+import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
 
 export interface InfoResponse {
-    sessionId: string;
-    user: IUserData;
+    clientId: string;
+    accessToken: string;
+    role: string;
 }
 
 export interface IUserData {
@@ -18,12 +19,10 @@ export interface IUserData {
     status: string;
 }
 
-const INFO_URL = '/info';
+const INFO_URL = '/session/info';
 
 class PostInfoRequest extends PostRequest<InfoResponse> {
-    private token: string = localStorage.getItem("token");
-
-    public constructor(private sessionId: string, private email: string) {
+    public constructor(private clientId: string, private token: string) {
         super();
     }
 
@@ -33,8 +32,7 @@ class PostInfoRequest extends PostRequest<InfoResponse> {
         "Authorization": `Bearer ${this.token}`
     }
     protected body = {
-        sessionId: this.sessionId,
-        email: this.email,
+        clientId: this.clientId,
     }
 }
 

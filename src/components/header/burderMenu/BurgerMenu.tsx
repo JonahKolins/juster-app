@@ -13,7 +13,7 @@ import {IoClose} from "react-icons/io5";
 import { IoHelpCircleOutline } from "react-icons/io5";
 import { RiTeamLine } from "react-icons/ri";
 import { GoHome } from "react-icons/go";
-import {useAuth} from "../../../app/hooks/useAuth";
+import {useProfile} from "../../../app/hooks/useProfile";
 
 enum Pathname {
     Home = '/',
@@ -34,7 +34,7 @@ interface BurgerMenuProps {
 
 const BurgerMenu = memo<BurgerMenuProps>(({open, onClose}) => {
     const location = useLocation();
-    const {userData} = useAuth();
+    const {clientInfo} = useProfile();
     const [currentPage, setCurrentPage] = useState<Pathname>(Pathname.Home);
 
     useEffect(() => {
@@ -66,7 +66,7 @@ const BurgerMenu = memo<BurgerMenuProps>(({open, onClose}) => {
                         isActive={currentPage === Pathname.Home}
                         onClick={handleTabClick}
                     />
-                    {userData && <div className={styles['divider']} />}
+                    {clientInfo && <div className={styles['divider']} />}
                     <Tab
                         path='/mySpace/dashboard'
                         name='Мое пространство'
@@ -74,7 +74,7 @@ const BurgerMenu = memo<BurgerMenuProps>(({open, onClose}) => {
                         isActive={currentPage === Pathname.Dashboard}
                         onClick={handleTabClick}
                     />
-                    {userData && (
+                    {clientInfo && (
                        <>
                            <Tab
                                path='/mySpace/category'
@@ -82,7 +82,7 @@ const BurgerMenu = memo<BurgerMenuProps>(({open, onClose}) => {
                                icon={<BsBoxes size={16} />}
                                isActive={currentPage === Pathname.Category}
                                onClick={handleTabClick}
-                               disabled={!userData}
+                               disabled={!clientInfo}
                            />
                            <Tab
                                path='/mySpace/myRequests'
@@ -90,7 +90,7 @@ const BurgerMenu = memo<BurgerMenuProps>(({open, onClose}) => {
                                icon={<IoDocumentOutline size={16} />}
                                isActive={currentPage === Pathname.MyRequests}
                                onClick={handleTabClick}
-                               disabled={!userData}
+                               disabled={!clientInfo}
                            />
                            <Tab
                                path='/mySpace/newRequest'
@@ -98,7 +98,7 @@ const BurgerMenu = memo<BurgerMenuProps>(({open, onClose}) => {
                                icon={<HiOutlineDocumentPlus size={16} />}
                                isActive={currentPage === Pathname.NewRequest}
                                onClick={handleTabClick}
-                               disabled={!userData}
+                               disabled={!clientInfo}
                            />
                            <Tab
                                path={'/mySpace/notifications'}
@@ -106,7 +106,7 @@ const BurgerMenu = memo<BurgerMenuProps>(({open, onClose}) => {
                                icon={<IoIosNotificationsOutline size={19} />}
                                isActive={currentPage === Pathname.Notifications}
                                onClick={handleTabClick}
-                               disabled={!userData}
+                               disabled={!clientInfo}
                            />
                            <div className={styles['divider']} />
                        </>

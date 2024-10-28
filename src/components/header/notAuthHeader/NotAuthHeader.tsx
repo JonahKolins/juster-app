@@ -3,21 +3,21 @@ import styles from "./NotAuthHeader.module.sass";
 import Button from "../../../designSystem/button/Button";
 import {Link, useNavigate} from "react-router-dom";
 import { BsBoxes } from "react-icons/bs";
-import {useAuth} from "../../../app/hooks/useAuth";
 import { IoAccessibilityOutline } from "react-icons/io5";
+import {useSessionInfo} from "../../../app/hooks/useSessionInfo";
 
 interface NotAuthHeaderProps {}
 
 const NotAuthHeader = memo<NotAuthHeaderProps>(() => {
-    const {isAuth} = useAuth();
+    const {isAuth} = useSessionInfo();
     const navigate = useNavigate();
 
     const handleSignIn = useCallback(() => {
-        navigate('/login')
+        navigate('/auth/login')
     }, [])
 
     const handleRegister = useCallback(() => {
-        navigate('/registration')
+        navigate('/auth/register')
     }, [])
 
     return (

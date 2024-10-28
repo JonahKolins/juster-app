@@ -2,38 +2,28 @@ import React, {memo, useMemo, useState} from "react";
 import styles from "./NewRequestRegistrationForm.module.sass";
 import {Input, InputSize} from "../../../../designSystem/input";
 import Button from "../../../../designSystem/button/Button";
-import {useAuth} from "../../../../app/hooks/useAuth";
 import {LoaderCircle} from "../../../../designSystem/loader/Loader.Circle";
-import {
-    CreateAccountParams,
-    IUserRegistrationResponse,
-    testUserRegistration
-} from "../../../../app/auth/methods/testUserRegistration";
+import {IUserRegistrationResponse} from "../../../../app/auth/methods/testUserRegistration";
+import {requestCreateAccount} from "../../../../service/network/registration/methods/createAccount";
+import {CreateAccountParams} from "../../../../service/network/registration/requests/CreateAccountRequest";
 
-type TRegPageId = 'credentials' | 'addUserData';
+interface NewRequestRegistrationFormProps {
+    onRegister: () => void;
+}
 
-interface NewRequestRegistrationFormProps {}
-
-const NewRequestRegistrationForm = memo<NewRequestRegistrationFormProps>(({}) => {
-    const {setIsAuth, setUserData} = useAuth();
-    // pages
-    const [pageId, setPageId] = useState<TRegPageId>('credentials');
+const NewRequestRegistrationForm = memo<NewRequestRegistrationFormProps>(({onRegister}) => {
     // credentials - page
-    const [name, setName] = useState<string>('');
+    const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    // addUserData - page
-    const [inn, setInn] = useState<string>('');
-    const [address, setAddress] = useState<string>('');
-    const [passNumber, setPassNumber] = useState<string>('');
-
+    //
     const [error, setError] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
 
-    const handleNameChange = (value: string, event?: React.ChangeEvent<HTMLInputElement>) => {
-        setName(value);
+    const handleFirstNameChange = (value: string, event?: React.ChangeEvent<HTMLInputElement>) => {
+        setFirstName(value);
     }
     const handleLastNameChange = (value: string, event?: React.ChangeEvent<HTMLInputElement>) => {
         setLastName(value);
@@ -47,20 +37,8 @@ const NewRequestRegistrationForm = memo<NewRequestRegistrationFormProps>(({}) =>
         setPassword(value);
     }
 
-    const handleInnChange = (value: string) => {
-        setInn(value);
-    }
-
-    const handleAddressChange = (value: string) => {
-        setAddress(value);
-    }
-
-    const handlePassNumberChange = (value: string) => {
-        setPassNumber(value);
-    }
-
-    const handleNameClear = () => {
-        setName('');
+    const handleFirstNameClear = () => {
+        setFirstName('');
         setError('');
     }
 
@@ -79,39 +57,12 @@ const NewRequestRegistrationForm = memo<NewRequestRegistrationFormProps>(({}) =>
         setError('');
     }
 
-    const handleInnClear = () => {
-        setInn('');
-        setError('');
-    }
-
-    const handleAddressClear = () => {
-        setAddress('');
-        setError('');
-    }
-
-    const handlePassNumberClear = () => {
-        setPassNumber('');
-        setError('');
-    }
-
-    const isValidToShowNextPage = useMemo<boolean>(() => {
-        return !!name.length && !!lastName.length && email.length > 4 && password.length > 4
-    }, [email, name, lastName, password])
-
-    const handleNextPageClick = () => {
-        if (!isValidToShowNextPage) return;
-        setPageId('addUserData');
-    }
-
     const isValidToRegister = useMemo<boolean>(() => {
-        return !!name.length
+        return !!firstName.length
             && !!lastName.length
             && email.length > 4
             && password.length > 4
-            && inn.length > 4
-            && address.length > 4
-            && passNumber.length > 4
-    }, [email, name, lastName, password, inn, address, passNumber])
+    }, [firstName, lastName, email, password])
 
     const handleRegisterClick = () => {
         if (!isValidToRegister) {
@@ -119,19 +70,19 @@ const NewRequestRegistrationForm = memo<NewRequestRegistrationFormProps>(({}) =>
             return;
         }
 
-        const payload: CreateAccountParams = {name, email, password, agreementCheckbox: true};
+        const payload: CreateAccountParams = {
+            firstName,
+            lastName,
+            email,
+            password,
+            agreementCheckbox: true
+        };
 
-        testUserRegistration(payload)
+        requestCreateAccount(payload)
             .then((data: IUserRegistrationResponse) => {
                 setIsLoading(false);
-                setUserData({
-                    id: data.id,
-                    role: data.role,
-                    name: data.name,
-                    email: data.email
-                });
-                setIsAuth(true);
                 setError('');
+                onRegister();
             })
             .catch((error) => {
                 setError('Ошибка регистрации');
@@ -142,17 +93,16 @@ const NewRequestRegistrationForm = memo<NewRequestRegistrationFormProps>(({}) =>
     const renderCredentialsPage = () => {
         return (
             <>
-                <div className={styles['step-caption']}>Шаг 1</div>
                 <Input
-                    value={name}
+                    value={firstName}
                     placeholder='Имя'
                     className={styles['item']}
                     tabIndex={0}
-                    onChange={handleNameChange}
+                    onChange={handleFirstNameChange}
                     error={null}
                     size={InputSize.Medium}
                     name='client_name'
-                    onClear={handleNameClear}
+                    onClear={handleFirstNameClear}
                 />
                 <Input
                     value={lastName}
@@ -190,62 +140,15 @@ const NewRequestRegistrationForm = memo<NewRequestRegistrationFormProps>(({}) =>
                     onClear={handlePasswordClear}
                 />
                 <div className={styles['error']}>{error ? error : ''}</div>
-                <Button disabled={!isValidToShowNextPage} onClick={handleNextPageClick}>Далее</Button>
-            </>
-        )
-    }
-
-    const renderAddUserDataPage = () => {
-        return (
-            <>
-                <div className={styles['step-caption']}>Шаг 2</div>
-                <Input
-                    value={inn}
-                    placeholder='ИНН'
-                    className={styles['item']}
-                    tabIndex={0}
-                    onChange={handleInnChange}
-                    size={InputSize.Medium}
-                    name='client_inn'
-                    onClear={handleInnClear}
-                />
-                <Input
-                    value={address}
-                    placeholder='Адрес'
-                    className={styles['item']}
-                    tabIndex={0}
-                    onChange={handleAddressChange}
-                    size={InputSize.Medium}
-                    name='client_address'
-                    onClear={handleAddressClear}
-                />
-                <Input
-                    value={passNumber}
-                    placeholder='Номер паспорта'
-                    className={styles['item']}
-                    tabIndex={0}
-                    onChange={handlePassNumberChange}
-                    size={InputSize.Medium}
-                    name='client_pass_number'
-                    onClear={handlePassNumberClear}
-                />
-                <div className={styles['error']}>{error ? error : ''}</div>
                 <Button disabled={!isValidToRegister} onClick={handleRegisterClick}>Зарегистрироваться</Button>
             </>
         )
     }
 
-    const renderContentByPageId = () => {
-        switch (pageId) {
-            case "credentials": return renderCredentialsPage();
-            case "addUserData": return renderAddUserDataPage();
-        }
-    }
-
     return (
         <div className={styles['registration-form']}>
             {isLoading && <LoaderCircle />}
-            {renderContentByPageId()}
+            {renderCredentialsPage()}
         </div>
     )
 })

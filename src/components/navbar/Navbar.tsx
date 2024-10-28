@@ -8,7 +8,6 @@ import { BsBoxes } from "react-icons/bs";
 import { IoDocumentOutline } from "react-icons/io5";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { IoIosNotificationsOutline } from "react-icons/io"
-import {useAuth} from "../../app/hooks/useAuth";
 
 enum Pathname {
     Home = "/mySpace/dashboard",

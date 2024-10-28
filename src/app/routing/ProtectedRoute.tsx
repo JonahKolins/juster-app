@@ -1,26 +1,37 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import { Navigate, useLocation } from 'react-router';
 import Navbar from "../../components/navbar/Navbar";
 import ContentBody from "../../components/contentBody/ContentBody";
+import {LoaderCircle} from "../../designSystem/loader/Loader.Circle";
+import {useSessionInfo} from "../hooks/useSessionInfo";
 
 export type ProtectedRouteProps = {
-    isAuthenticated: boolean;
     authenticationPath: string;
     redirectPath: string;
     setRedirectPath: (path: string) => void;
-    outlet: JSX.Element;
+    outlet: React.JSX.Element;
 };
 
-export default function ProtectedRoute({isAuthenticated, authenticationPath, redirectPath, setRedirectPath, outlet}: ProtectedRouteProps) {
+export default function ProtectedRoute({authenticationPath, redirectPath, setRedirectPath, outlet}: ProtectedRouteProps) {
     const currentLocation = useLocation();
+    const {isAuth, authInProgress} = useSessionInfo();
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (!isAuth) {
             setRedirectPath(currentLocation.pathname);
         }
-    }, [isAuthenticated, setRedirectPath, currentLocation]);
+    }, [isAuth, setRedirectPath, currentLocation]);
 
-    if (isAuthenticated && redirectPath === currentLocation.pathname) {
+    if (authInProgress && !isAuth) {
+        console.log('ProtectedRoute -> AUTH IN PROGRESS')
+        return (
+            <ContentBody>
+                <LoaderCircle />
+            </ContentBody>
+        )
+    }
+
+    if (isAuth && redirectPath === currentLocation.pathname) {
         return (
             <ContentBody>
                 <Navbar/>
@@ -28,6 +39,6 @@ export default function ProtectedRoute({isAuthenticated, authenticationPath, red
             </ContentBody>
         );
     } else {
-        return <Navigate to={{ pathname: isAuthenticated ? redirectPath : authenticationPath }} />;
+        return <Navigate to={{ pathname: isAuth ? redirectPath : authenticationPath }} />;
     }
 };

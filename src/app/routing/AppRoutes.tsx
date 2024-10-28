@@ -1,7 +1,6 @@
 import React, {FC, useEffect, useState} from "react";
 import {Route, Routes} from "react-router-dom";
 import {useLocation} from "react-router";
-import {useAuth} from "../hooks/useAuth";
 import DashboardPage from "../../pages/mySpacePages/dashboardPage/DashboardPage";
 import MyRequests from "../../pages/mySpacePages/myRequestsPage/MyRequestsPage";
 import NewRequests from "../../newRequest/NewRequest";
@@ -21,17 +20,15 @@ import Registration from "../../pages/registrationPage/Registration";
 import Login from "../../pages/loginPages/Login";
 import Missing from "./Missing";
 import ProtectedRoute, {ProtectedRouteProps} from "./ProtectedRoute";
-import {LoaderCircle} from "../../designSystem/loader/Loader.Circle";
+import ResetPasswordPage from "../../pages/resetPasswordPage/ResetPasswordPage";
 
 const AppRoutes: FC = () => {
-    const {isAuth, isAuthInProgress} = useAuth();
     const currentLocation = useLocation();
     // TODO save in context https://github.com/openscript/react-router-private-protected-routes/blob/react-router-6/src/contexts/SessionContext.tsx
     const [lastPathToRedirect, setLastPathToRedirect] = useState('');
-    // const [sessionContext, updateSessionContext] = useSessionContext();
 
     useEffect(() => {
-        if (!lastPathToRedirect) setLastPathToRedirect('/dashboard')
+        if (!lastPathToRedirect) setLastPathToRedirect('/mySpace/dashboard')
     }, [lastPathToRedirect])
 
     const setRedirectPath = (path: string) => {
@@ -40,13 +37,12 @@ const AppRoutes: FC = () => {
     }
 
     const defaultProtectedRouteProps: Omit<ProtectedRouteProps, 'outlet'> = {
-        isAuthenticated: isAuth,
-        authenticationPath: '/login',
+        authenticationPath: '/auth/login',
         redirectPath: currentLocation.pathname,
         setRedirectPath: setRedirectPath
     };
 
-    return isAuthInProgress ? <LoaderCircle /> : (
+    return (
         <Routes>
             <Route path='/' element={<HomePage/>}/>
             <Route path='/use-cases' element={<UseCasesPage />} />
@@ -64,8 +60,9 @@ const AppRoutes: FC = () => {
             <Route path='/account' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<AccountPage/>} />} />
             <Route path='/account/settings' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<SettingsAccountPage/>} />} />
             {/* логин и рега */}
-            <Route path="/login" element={<Login/>} />
-            <Route path="/registration" element={<Registration />}/>
+            <Route path="/auth/login" element={<Login/>} />
+            <Route path="/auth/reset" element={<ResetPasswordPage/>} />
+            <Route path="/auth/register" element={<Registration />}/>
             <Route path="*" element={<Missing/>}/>
         </Routes>
     )

@@ -1,19 +1,17 @@
 import React, {FC, useCallback, useState} from "react";
 import styles from './Header.module.sass';
 import classNames from "classnames";
-import {Input} from 'antd';
 import NotificationsModal from "./notificationsModal/NotificationsModal";
 import {IoIosNotificationsOutline} from "react-icons/io";
-import {IoAccessibilityOutline, IoSearchOutline} from "react-icons/io5";
-import {useAuth} from "../../app/hooks/useAuth";
 import {Link, useNavigate} from "react-router-dom";
 import { IoMenuOutline } from "react-icons/io5";
 import BurgerMenu from "./burderMenu/BurgerMenu";
 import {BsBoxes} from "react-icons/bs";
 import Button from "../../designSystem/button/Button";
+import {useSessionInfo} from "../../app/hooks/useSessionInfo";
 
 const Header: FC = () => {
-    const {isAuth} = useAuth();
+    const {isAuth} = useSessionInfo();
     const navigate = useNavigate();
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openBurger, setOpenBurger] = useState<boolean>(false);
@@ -85,13 +83,13 @@ const Header: FC = () => {
                         <>
                             <Button
                                 className={styles['sign-in-button']}
-                                onClick={() => navigate('/login')}
+                                onClick={() => navigate('/auth/login')}
                             >
                                 Войти
                             </Button>
                             <Button
                                 className={styles['reg-button']}
-                                onClick={() => navigate('/registration')}
+                                onClick={() => navigate('/auth/register')}
                             >
                                 Регистрация
                             </Button>
