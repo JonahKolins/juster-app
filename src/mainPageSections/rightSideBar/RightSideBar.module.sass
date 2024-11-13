@@ -15,23 +15,24 @@
         overflow: hidden
         border-radius: 6px
         margin-bottom: 20px
-        box-shadow: 0 2px 5px 0 rgba(197, 201, 206, 0.6)
+        border: 1px solid #e8e8e8
 
         .button-container
             display: flex
             align-items: center
             justify-content: center
             padding: 16px
-            background: var(--button__secondary)
+            background: rgb(242, 240, 255, 0.5)
             cursor: pointer
+            transition: background 0.3s linear
             &:hover
-                background: rgb(237, 255, 165)
+                background: rgb(242, 240, 255, 0.3)
                 color: var(--base-color__black)
+                .plus-icon
+                    color: rgb(123, 97, 255, 0.7)
 
             .plus-icon
-                color: rgb(61, 61, 61)
-                &:hover
-                    color: var(--base-color__black)
+                color: rgb(123, 97, 255, 0.9)
 
         .create-text
             padding: 12px

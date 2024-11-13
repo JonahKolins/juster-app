@@ -254,6 +254,8 @@ const Claims: FC = () => {
                     rowExpandable: (record) => record.isRowExpandable,
                     // expandIcon: ({ expanded, onExpand, record }) => renderExpandIcon()
                 }}
+                bordered={true}
+                rowHoverable={false}
             />
             <div className={styles['button-container']}>
                 <Button

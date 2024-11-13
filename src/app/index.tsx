@@ -1,5 +1,4 @@
 import React, {FC, useEffect} from "react";
-import {AuthProvider} from "./Layers/AuthProvider";
 import {ConfigProvider} from "antd";
 import {HashRouter} from "react-router-dom";
 import Header from "../components/header/Header";
@@ -32,6 +31,12 @@ const App: FC = () => {
                 token: {
                     colorPrimary: 'rgb(100, 78, 215)',
                 },
+                components: {
+                    Table: {
+                        headerBg: 'rgb(242, 240, 255, 0.3)',
+                        borderColor: "#e8e8e8"
+                    }
+                }
             }}
         >
             <HashRouter>

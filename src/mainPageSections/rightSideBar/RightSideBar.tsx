@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import { BsPlusSquare } from "react-icons/bs";
 import {Button, notification} from "antd";
 import {useSessionInfo} from "../../app/hooks/useSessionInfo";
+import { IoAdd } from "react-icons/io5";
 
 interface RightSideBarProps {
     notifications: Array<INotifications>
@@ -56,7 +57,7 @@ const RightSideBar: FC<RightSideBarProps> = ({notifications}) => {
             <div className={styles['create-new']}>
                 {contextHolder}
                 <div className={styles['button-container']} onClick={onCreateClick}>
-                    <BsPlusSquare className={styles['plus-icon']} size="25" />
+                    <IoAdd className={styles['plus-icon']} size="25" />
                 </div>
                 <div className={styles['create-text']}>
                     <div className={styles['create-caption']}>Новое обращение</div>
