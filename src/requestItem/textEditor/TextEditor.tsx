@@ -19,9 +19,10 @@ interface TextEditorProps {
     showButtons?: boolean;
     clean?: boolean;
     withDraft?: boolean;
+    withFiles?: boolean
 }
 
-const TextEditor = memo<TextEditorProps>(({value, files, onChange, saveComment, placeHolder, toolBarClassName, editTextClassName, showButtons, clean, withDraft}) => {
+const TextEditor = memo<TextEditorProps>(({value, files, onChange, saveComment, placeHolder, toolBarClassName, editTextClassName, showButtons, clean, withDraft, withFiles}) => {
     const [editorValue, setEditorValue] = useState<string>(value ? value : '');
     const [editorActive, setEditorActive] = useState<boolean>(false);
     const [addedFiles, setAddedFiles] = useState<UploadFile[]>(files ? files : []);
@@ -87,7 +88,6 @@ const TextEditor = memo<TextEditorProps>(({value, files, onChange, saveComment, 
                     styles.textEdit,
                     editTextClassName
                 )}
-                theme="snow"
                 value={editorValue}
                 onChange={handleChangeValue}
                 placeholder={placeHolder ? placeHolder : 'Добавить комментарий...'}
@@ -95,7 +95,7 @@ const TextEditor = memo<TextEditorProps>(({value, files, onChange, saveComment, 
                 modules={modules}
                 onBlur={saveInDraft}
             />
-            <UploadFiles files={files} clean={clean} onFilesChanged={handleFilesChanged} />
+            {withFiles && <UploadFiles files={files} clean={clean} onFilesChanged={handleFilesChanged}/>}
             {needToShowButtons && editorActive && (
                 <div className={styles.controls}>
                     <Button

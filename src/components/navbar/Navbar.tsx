@@ -13,6 +13,7 @@ enum Pathname {
     Home = "/mySpace/dashboard",
     Category = '/mySpace/category',
     MyRequests = '/mySpace/myRequests',
+    MyRequestItem = '/mySpace/myRequests/',
     NewRequest = '/mySpace/newRequest',
     Notifications = '/mySpace/notifications'
 }
@@ -45,7 +46,7 @@ const Navbar: FC = () => {
                     path='/mySpace/myRequests'
                     name='Мои&nbsp;обращения'
                     icon={<IoDocumentOutline size={16} />}
-                    isActive={currentPage === Pathname.MyRequests}
+                    isActive={currentPage === Pathname.MyRequests || currentPage.includes(Pathname.MyRequestItem)}
                 />
                 <Tab
                     path='/mySpace/newRequest'

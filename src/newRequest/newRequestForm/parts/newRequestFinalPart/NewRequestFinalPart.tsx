@@ -7,23 +7,13 @@ import OrganisationForm from "../../components/organisationForm/OrganisationForm
 import {Modal} from "antd";
 import {LoaderCircle} from "../../../../designSystem/loader/Loader.Circle";
 import {useNavigate} from "react-router-dom";
-import {IReason} from "../newRequestReasonPart/NewRequestReasonPart";
 import {formats} from "../../../../requestItem/textEditor/EditorToolbar";
 import ReactQuill from "react-quill";
-import {IComment} from "../../../../mainPageSections/api/requests/GetClaimsRequest";
 import {useProfile} from "../../../../app/hooks/useProfile";
 import {stringUtils} from "../../../../core/utils";
+import {IClaimActionType, IClaimsItemResponse, IClaimStatus} from "../../../../classes/claim/Claim.Types";
 import NBSP = stringUtils.NBSP;
-
-export interface IFullRequestInfo {
-    id: string;
-    reason: IReason;
-    org: IOrganisationData;
-    requestText: string;
-    files: any[];
-    status: string;
-    comments: IComment[];
-}
+import {datetimeUtils} from "../../../../core/utils/datetimeUtils";
 
 interface NewRequestFinalPartProps {
     onPrevPageClick: () => void;
@@ -63,18 +53,42 @@ const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) =
     }
 
     const handleSendClaimRequest = () => {
-        const newRequestId = String(Math.floor(1000 + Math.random() * 9000));
+        const newClaimId = String(Math.floor(1000 + Math.random() * 9000));
+        const initialActionId = String(Math.floor(1000 + Math.random() * 9000));
 
-        const payload: IFullRequestInfo = {
-            id: newRequestId,
-            requestText: claimText,
-            files: files,
+        const createdAt = new Date().getTime();
+
+        const formatDate = datetimeUtils.formatTime(createdAt, 'DD MMM YYYY в hh:mm')
+
+        const payload: IClaimsItemResponse = {
+            id: newClaimId,
+            name: reason.text,
+            status: IClaimStatus.created,
+            text: claimText,
             reason: reason,
-            org: organisationData,
-            status: 'created',
-            comments: []
+            files: files,
+            createdDate: createdAt,
+            organisation: organisationData,
+            actions: [
+                {
+                    type: 'action',
+                    actionType: IClaimActionType.claimCreated,
+                    id: initialActionId,
+                    createdAt: createdAt,
+                    text: `Обращение создано`,
+                    user: {
+                        firstName: clientInfo.firstName,
+                        lastName: clientInfo.lastName,
+                        title: {
+                            id: 'iam',
+                            value: 'Вы'
+                        }
+                    }
+                }
+            ]
         }
 
+        setIsLoading(true);
         sendClaim(payload)
             .then((data) => {
                 if (data) {
@@ -93,8 +107,7 @@ const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) =
             })
     }
 
-    const sendClaim = (payload: IFullRequestInfo): Promise<IFullRequestInfo> => {
-        setIsLoading(true);
+    const sendClaim = (payload: IClaimsItemResponse): Promise<IClaimsItemResponse> => {
         return new Promise((resolve, reject) => {
             if (!reason || !organisationData || !claimText || !clientInfo) {
                 reject();
@@ -103,11 +116,11 @@ const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) =
 
             const existedRequestsString = localStorage.getItem('user_requests');
 
-            let existedRequestsArray: IFullRequestInfo[] = [];
+            let existedRequestsArray: IClaimsItemResponse[] = [];
 
             try {
                 if (existedRequestsString) {
-                    const parsedRegUsers: IFullRequestInfo[] = JSON.parse(existedRequestsString) || [];
+                    const parsedRegUsers: IClaimsItemResponse[] = JSON.parse(existedRequestsString) || [];
 
                     if (parsedRegUsers?.length) {
                         existedRequestsArray.push(...parsedRegUsers);
@@ -125,7 +138,7 @@ const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) =
 
             window.setTimeout(() => {
                 resolve(payload);
-            }, 1000)
+            }, 600)
         })
     }
 

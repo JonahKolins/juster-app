@@ -1,44 +1,159 @@
-.actions_container
-  margin-top: 24px
+.actions-container
+  margin: 24px 0 36px 0
 
-  .action_item
+  .action-item
     display: flex
-    margin-top: 16px
+    align-items: center
+    margin-top: 20px
+    margin-bottom: 20px
 
-    &:last-of-type
-      margin-bottom: 12px
-
-    .item_from_icon_container
+    .item-from-icon-container
       display: flex
       align-items: flex-start
 
       .icon
+        flex: 0 0 24px
         display: flex
         align-items: center
         justify-content: center
-        padding: 3px
         border-radius: 50%
-        background-color: rgba(252, 72, 126, 0.94)
-        margin-right: 8px
+        width: 24px
+        height: 24px
+        background: rgb(236, 232, 253)
+        color: rgba(123, 97, 255, 0.9)
 
-      .icon_admin
-        background-color: rgba(144, 72, 252, 0.94)
+    .item-main-container
+      margin-left: 8px
 
-    .item_main_container
-      .item_header
+      .item-text
         display: flex
         align-items: center
         gap: 8px
-
-        .item_from
-          font-size: 14px
-          font-weight: 500
-          color: #42526E
-
-        .item_date
-          font-size: 14px
-          color: #42526E
-
-      .item_text
         font-size: 14px
-        margin-top: 8px
+        margin-left: 8px
+
+  .message-container
+    display: flex
+    align-items: flex-start
+    margin-top: 12px
+
+    .message-container-icon
+      display: flex
+      align-items: center
+      justify-content: center
+
+      .message-container-icon-background
+        display: flex
+        align-items: center
+        justify-content: center
+        flex: 0 0 24px
+        width: 24px
+        height: 24px
+        border-radius: 50%
+        background: rgb(209, 227, 255)
+        color: #1a73e8
+
+    .message-item
+      display: flex
+      align-items: flex-start
+      background: var(--base-color__white)
+      border: 1px solid #e8e8e8
+      border-radius: 12px
+      padding: 12px
+      margin-left: 12px
+      width: 100%
+
+      .message-icon-container
+        display: flex
+        align-items: center
+        justify-content: center
+
+        .message-default-user-icon
+          display: flex
+          align-items: center
+          justify-content: center
+          flex: 0 0 24px
+          width: 24px
+          height: 24px
+          border-radius: 50%
+          background: rgb(255, 247, 209)
+
+          .first-letter
+            font-size: 14px
+            font-weight: 600
+            color: #e8bf1a
+
+      .message-main-container
+        display: flex
+        flex-direction: column
+        justify-content: flex-start
+        margin-left: 12px
+
+        .message-user-data
+          display: inline-flex
+          align-items: center
+          margin-top: 2px
+
+          .name
+            font-size: 14px
+            color: #0e0e0e
+
+          .string-dot
+            display: inline-flex
+            align-items: center
+            justify-content: center
+            flex: 0 0 4px
+            background: #6B778C
+            height: 4px
+            width: 4px
+            border-radius: 50%
+            margin-left: 10px
+            margin-right: 10px
+
+          .time
+            font-size: 13px
+            color: #6B778C
+
+        .message-text
+          color: #505050
+          margin-top: 12px
+          font-size: 14px
+
+.action-message
+  display: inline-flex
+  align-items: center
+  white-space: nowrap
+
+  .action-time
+    font-size: 13px
+    color: #6B778C
+
+  .string-dot
+    display: inline-flex
+    align-items: center
+    justify-content: center
+    flex: 0 0 4px
+    background: #6B778C
+    height: 4px
+    width: 4px
+    border-radius: 50%
+    margin-left: 10px
+    margin-right: 10px
+
+  .status-inline
+    display: inline-flex
+    align-items: center
+    justify-content: center
+    font-size: 13px
+    background: #f0f5ff
+    padding: 3px 6px
+    border-radius: 6px
+    border: 1px solid #adc6ff
+    box-sizing: border-box
+    color: #1d39c4
+    white-space: nowrap
+
+  .action-user-info
+    color: #6B778C
+    white-space: nowrap
+

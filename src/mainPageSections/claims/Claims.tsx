@@ -1,45 +1,31 @@
 import React, {FC, useCallback, useEffect, useState} from "react";
-import {StatusV2} from "../../pages/mySpacePages/dashboardPage/DashboardPage";
 import styles from "./Claims.module.sass";
 import {useNavigate} from "react-router-dom";
 import getClaimsRequest from "../api/metods/getClaimsRequest";
-import {ClaimsItemResponse} from "../api/requests/GetClaimsRequest";
 import {Button, Table, Tag} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import {getDateFromString} from "../../handlers/getDateFromString";
-import {IFullRequestInfo} from "../../newRequest/newRequestForm/parts/newRequestFinalPart/NewRequestFinalPart";
 import {IOrganisationData} from "../../newRequest/NewRequestDataLayer";
 import {ISuggestions} from "../../newRequest/api/requests/GetOrganisationSuggestionsRequest";
 import {useProfile} from "../../app/hooks/useProfile";
-
-interface IUserInfo {
-    firstName: string;
-    lastName: string;
-}
-
-interface IComment {
-    createdAt: string;
-    id: number;
-    text: string;
-    user: IUserInfo
-}
+import {IClaimsItemResponse, IClaimStatus, TClaimAction} from "../../classes/claim/Claim.Types";
+import {datetimeUtils} from "../../core/utils/datetimeUtils";
 
 interface ClaimRowData {
     key: React.Key;
     id: string; //120
     name: string; //"Жалоба на врача"
     createdDate: string; // "2023-06-12 16:52:48.343"
-    status: string; //"RESOLVED"
+    status: IClaimStatus; //"RESOLVED"
     text: string; //"Колоноскопия прошла не успешно - я обосрался"
     isRowExpandable: boolean;
-    comments: IComment[];
+    actions: TClaimAction[];
 }
 
 const Claims: FC = () => {
     const navigate = useNavigate();
     //
     const {clientInfo, isProfileLoading} = useProfile();
-    const [claims, setClaims] = useState<ClaimsItemResponse[]>([]);
+    const [claims, setClaims] = useState<IClaimsItemResponse[]>([]);
     const [rows, setRows] = useState<ClaimRowData[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -52,18 +38,7 @@ const Claims: FC = () => {
 
     const getClaims = () => {
         testRequestClaims()
-            .then((data: IFullRequestInfo[]) => {
-                const claimItems: ClaimsItemResponse[] = data.map((item) => {
-                    return {
-                        contentType: '',
-                        createdDate: '2023-06-12 16:52', // "2023-06-12 16:52:48.343"
-                        genId: item.id, //"1e3ec6b0-0d2e-4671-89a1-a637ae4b7986"
-                        name: item.reason.text, //"Жалоба на врача"
-                        status: StatusV2.new, //"RESOLVED"
-                        text: item.requestText, //"Колоноскопия прошла не успешно - я обосрался"
-                        comments: item.comments || []
-                    }
-                })
+            .then((claimItems: IClaimsItemResponse[]) => {
                 setClaims(claimItems);
                 createTableRows(claimItems);
                 setLoading(false);
@@ -74,37 +49,39 @@ const Claims: FC = () => {
             })
     }
 
-    const testRequestClaims = (): Promise<IFullRequestInfo[]> => {
+    const testRequestClaims = (): Promise<IClaimsItemResponse[]> => {
         setLoading(true);
         return new Promise((resolve, reject) => {
-            const existedRequestsString = localStorage.getItem('user_requests');
-            let existedRequestsArray: IFullRequestInfo[] = [];
+            const existedClaimsString = localStorage.getItem('user_requests');
+
+            let existedClaimsArray: IClaimsItemResponse[] = [];
+
             try {
-                if (existedRequestsString) {
-                    const parsedRegUsers: IFullRequestInfo[] = JSON.parse(existedRequestsString) || [];
+                if (existedClaimsString) {
+                    const parsedRegUsers: IClaimsItemResponse[] = JSON.parse(existedClaimsString) || [];
 
                     if (parsedRegUsers?.length) {
-                        existedRequestsArray.push(...parsedRegUsers);
+                        existedClaimsArray.push(...parsedRegUsers);
                     }
                 }
             } catch (e) {
-                console.error('Cannot parse user_requests in HomePage Claims -> existedRequestsString', existedRequestsString);
+                console.error('Cannot parse user_requests in HomePage Claims -> existedClaimsString', existedClaimsString);
             }
 
-            if (!existedRequestsArray.length) {
+            if (!existedClaimsArray.length) {
                 reject();
                 return;
             }
 
             if (!clientInfo.integrationId) {
-                resolve(existedRequestsArray);
+                resolve(existedClaimsArray);
                 return;
             }
 
-            const resultArr: IFullRequestInfo[] = [];
+            const resultArr: IClaimsItemResponse[] = [];
 
-            existedRequestsArray.forEach((request) => {
-                const organisation = request.org;
+            existedClaimsArray.forEach((request) => {
+                const organisation = request.organisation;
                 if (isSuggestion(organisation) && organisation.id === clientInfo.integrationId) {
                     resultArr.push(request);
                 }
@@ -122,19 +99,19 @@ const Claims: FC = () => {
         navigate('/mySpace/myRequests')
     }
 
-    const createTableRows = useCallback((claimItems: ClaimsItemResponse[]) => {
+    const createTableRows = useCallback((claimItems: IClaimsItemResponse[]) => {
         if (!claimItems.length) return null;
 
         const rowsArray: ClaimRowData[] = claimItems.map((item) => {
             return {
-                key: item.genId,
-                id: item.genId,
+                key: item.id,
+                id: item.id,
                 name: item.name,
-                createdDate: getDateFromString(item.createdDate),
+                createdDate: datetimeUtils.formatTime(item.createdDate, 'DD.MM.YYYY'),
                 status: item.status,
                 text: item.text,
                 isRowExpandable: !!item.text,
-                comments: item.comments
+                actions: item.actions
             }
         })
 
@@ -159,10 +136,6 @@ const Claims: FC = () => {
         }
     }, [createTableRows])
 
-    // useEffect( () => {
-    //     requestClaims();
-    // }, [JSON.stringify(claims)])
-
     const columns: ColumnsType<ClaimRowData> = [
         {
             title: 'Название',
@@ -178,35 +151,44 @@ const Claims: FC = () => {
         Table.EXPAND_COLUMN,
     ]
 
-    const renderStatusTag = (status: string): JSX.Element => {
+    const renderStatusTag = (status: IClaimStatus): React.JSX.Element => {
         switch (status) {
-            case StatusV2.resolved: {
+            case IClaimStatus.resolved: {
                 return (
                     <Tag color='green'>Готово</Tag>
                 )
             }
-            case StatusV2.decline: {
+            case IClaimStatus.declined: {
                 return (
                     <Tag color='volcano'>Отклонено</Tag>
                 )
             }
-            case StatusV2.new: {
+            case IClaimStatus.created: {
                 return (
                     <Tag color='geekblue'>Создано</Tag>
                 )
             }
-            case StatusV2.inProcess: {
+            case IClaimStatus.inProcess: {
                 return (
                     <Tag color='blue'>В процессе</Tag>
                 )
             }
-            case 'NEED_INFO':
-            case StatusV2.waitingForAction: {
+            case IClaimStatus.underConsideration: {
+                return (
+                    <Tag color='blue'>На рассмотрении</Tag>
+                )
+            }
+            case IClaimStatus.waitingForAction: {
                 return (
                     <Tag color='orange'>Требуется действие</Tag>
                 )
             }
-            default: return <Tag color='geekblue'>{status}</Tag>
+            default: {
+                if (status === 'created') {
+                    return <Tag color='geekblue'>Создано</Tag>
+                }
+                return <Tag color='geekblue'>{status}</Tag>
+            }
         }
     }
 
@@ -225,7 +207,7 @@ const Claims: FC = () => {
             <div>
                 <div className={styles['expand-data']}>Создано {claimRowData.createdDate}</div>
                 <div className={styles['expand-data']}>Id: {claimRowData.id}</div>
-                <div className={styles['expand-data']}>{claimRowData.comments.length} ответов</div>
+                <div className={styles['expand-data']}>{claimRowData.actions.length} ответов</div>
                 <div className={styles['text']} dangerouslySetInnerHTML={{__html: claimRowData.text}} />
                 <Button
                     type="link"

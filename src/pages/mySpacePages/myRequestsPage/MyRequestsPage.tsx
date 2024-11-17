@@ -2,15 +2,15 @@ import React, {useEffect, useState} from "react";
 import styles from "./MyRequestsPage.module.sass";
 import {LoaderCircle} from "../../../designSystem/loader/Loader.Circle";
 import {ISuggestions} from "../../../newRequest/api/requests/GetOrganisationSuggestionsRequest";
-import {IFullRequestInfo} from "../../../newRequest/newRequestForm/parts/newRequestFinalPart/NewRequestFinalPart";
 import {formats} from "../../../requestItem/textEditor/EditorToolbar";
 import ReactQuill from "react-quill";
 import {IOrganisationData} from "../../../newRequest/NewRequestDataLayer";
 import {useNavigate} from "react-router-dom";
 import {ScrollBarVisibility} from "../../../controls/scrollArea";
 import {ScrollablePanel} from "../../../controls/panel/ScrollablePanel";
-import {Tabs, TabsProps} from "antd";
+import {Tabs, TabsProps, Tag} from "antd";
 import {useProfile} from "../../../app/hooks/useProfile";
+import {IClaimsItemResponse, IClaimStatus} from "../../../classes/claim/Claim.Types";
 
 enum IRequestsPageId {
     inbox = 'inbox',
@@ -22,13 +22,13 @@ const MyRequestsPage = () => {
     //
     const {clientInfo} = useProfile();
     const [isReady, setIsReady] = useState<boolean>(false);
-    const [requests, setRequests] = useState<IFullRequestInfo[]>([]);
+    const [requests, setRequests] = useState<IClaimsItemResponse[]>([]);
     const [currentPageId, setCurrentPageId] = useState<IRequestsPageId>(IRequestsPageId.inbox);
 
     useEffect(() => {
         setIsReady(false);
         getAllClaims()
-            .then((data: IFullRequestInfo[]) => {
+            .then((data: IClaimsItemResponse[]) => {
                 if (!data?.length) {
                     setIsReady(true);
                     setRequests([]);
@@ -43,13 +43,13 @@ const MyRequestsPage = () => {
             })
     }, [currentPageId])
 
-    const getAllClaims = (): Promise<IFullRequestInfo[]> => {
+    const getAllClaims = (): Promise<IClaimsItemResponse[]> => {
         return new Promise((resolve, reject) => {
             const existedRequestsString = localStorage.getItem('user_requests');
-            let existedRequestsArray: IFullRequestInfo[] = [];
+            let existedRequestsArray: IClaimsItemResponse[] = [];
             try {
                 if (existedRequestsString) {
-                    const parsedRegUsers: IFullRequestInfo[] = JSON.parse(existedRequestsString) || [];
+                    const parsedRegUsers: IClaimsItemResponse[] = JSON.parse(existedRequestsString) || [];
 
                     if (parsedRegUsers?.length) {
                         existedRequestsArray.push(...parsedRegUsers);
@@ -70,16 +70,16 @@ const MyRequestsPage = () => {
         })
     }
 
-    const getInboxes = (): IFullRequestInfo[] => {
+    const getInboxes = (): IClaimsItemResponse[] => {
         if (!requests) return [];
 
         // TODO придумать определение партнера
         if (!clientInfo.integrationId) return requests;
 
-        const resultArr: IFullRequestInfo[] = [];
+        const resultArr: IClaimsItemResponse[] = [];
 
         requests.forEach((request) => {
-            const organisation = request.org;
+            const organisation = request.organisation;
             if (isSuggestion(organisation) && organisation.id === clientInfo.integrationId) {
                 resultArr.push(request);
             }
@@ -88,7 +88,7 @@ const MyRequestsPage = () => {
         return resultArr;
     }
 
-    const getSentRequests = (): IFullRequestInfo[] => {
+    const getSentRequests = (): IClaimsItemResponse[] => {
         //TODO сделать исходящие обращения для компании
         return []
     }
@@ -120,19 +120,74 @@ const MyRequestsPage = () => {
         return info && Boolean((info as ISuggestions).data) && Boolean((info as ISuggestions).value)
     }
 
-    const renderRequests = (items: IFullRequestInfo[]): React.JSX.Element => {
+    const getStatusName = (status: IClaimStatus): string => {
+        switch (status) {
+            case IClaimStatus.created: return 'Создано';
+            case IClaimStatus.underConsideration: return 'На рассмотрении';
+            case IClaimStatus.inProcess: return 'В процессе';
+            case IClaimStatus.waitingForAction: return 'Требуется действие';
+            case IClaimStatus.resolved: return 'Решено';
+            case IClaimStatus.declined: return 'Отклонено';
+            default: return '';
+        }
+    }
+
+    const renderStatusTag = (status: IClaimStatus): React.JSX.Element => {
+        switch (status) {
+            case IClaimStatus.resolved: {
+                return (
+                    <Tag color='green'>Готово</Tag>
+                )
+            }
+            case IClaimStatus.declined: {
+                return (
+                    <Tag color='volcano'>Отклонено</Tag>
+                )
+            }
+            case IClaimStatus.created: {
+                return (
+                    <Tag color='geekblue'>Создано</Tag>
+                )
+            }
+            case IClaimStatus.inProcess: {
+                return (
+                    <Tag color='blue'>В процессе</Tag>
+                )
+            }
+            case IClaimStatus.underConsideration: {
+                return (
+                    <Tag color='blue'>На рассмотрении</Tag>
+                )
+            }
+            case IClaimStatus.waitingForAction: {
+                return (
+                    <Tag color='orange'>Требуется действие</Tag>
+                )
+            }
+            default: {
+                if (status === 'created') {
+                    return <Tag color='geekblue'>Создано</Tag>
+                }
+                return <Tag color='geekblue'>{status}</Tag>
+            }
+        }
+    }
+
+    const renderRequests = (items: IClaimsItemResponse[]): React.JSX.Element => {
         return (
             <>
-                {items.map((requestItem: IFullRequestInfo, index) => {
-                    const statusMessage = requestItem.status === 'created' ? 'Создано' : 'Другой';
-
-                    const firstIndex = requestItem.requestText.indexOf('<p>');
-                    const lastIndex = requestItem.requestText.indexOf('</p>');
-                    const shortDescription = requestItem.requestText.slice(firstIndex, lastIndex + 4);
+                {items.map((requestItem: IClaimsItemResponse, index) => {
+                    const firstIndex = requestItem.text.indexOf('<p>');
+                    const lastIndex = requestItem.text.indexOf('</p>');
+                    const shortDescription = requestItem.text.slice(firstIndex, lastIndex + 4);
 
                     return (
                         <div key={`${requestItem.id}_${index}`} className={styles['request']}>
-                            {requestItem.status && <div className={styles['status']}>{statusMessage}</div>}
+                            {requestItem.status && (
+                             <div className={styles['status']}>
+                                 {renderStatusTag(requestItem.status)}
+                             </div>
+                            )}
                             <div
                                 className={styles['caption']}
                                 onClick={() => handleRequestClick(requestItem.id)}
@@ -140,9 +195,9 @@ const MyRequestsPage = () => {
                                 {requestItem.reason.text}
                             </div>
                             <div className={styles['name']}>Куда</div>
-                            {isSuggestion(requestItem.org)
-                                ? renderOrg(requestItem.org.value, requestItem.org.data.address.value, requestItem.org.data.inn)
-                                : renderOrg(requestItem.org.name, requestItem.org.address, requestItem.org.inn)
+                            {requestItem.organisation && isSuggestion(requestItem.organisation)
+                                ? renderOrg(requestItem.organisation.value, requestItem.organisation.data.address.value, requestItem.organisation.data.inn)
+                                : null
                             }
                             <div className={styles['name']}>Описание</div>
                             <ReactQuill
@@ -153,7 +208,7 @@ const MyRequestsPage = () => {
                                 modules={{toolbar: null}}
                                 readOnly={true}
                             />
-                            <div className={styles['comments']}>Комментарии: {requestItem.comments?.length ? requestItem.comments.length : 0}</div>
+                            <div className={styles['comments']}>Комментарии: {requestItem.actions?.length ? requestItem.actions.length : 0}</div>
                         </div>
                     )
                 })}

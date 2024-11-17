@@ -20,7 +20,7 @@
 }
 
 .tab:hover {
-    background: rgba(100, 100, 100, 0.1);
+    background: rgba(172, 172, 175, 0.1);
     color: var(--base-color__black);
 }
 
@@ -51,7 +51,7 @@
 }
 
 .active {
-    background: rgba(100, 100, 100, 0.1);
+    background: rgba(172, 172, 175, 0.1);
     color: var(--base-color__black);
     box-shadow: rgb(172, 156, 255) 0px 0px 0px 1px;
 }

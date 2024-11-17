@@ -5,35 +5,10 @@ import RightSideBar from "../../../mainPageSections/rightSideBar/RightSideBar";
 import {ScrollBarVisibility} from "../../../controls/scrollArea";
 import {ScrollablePanel} from "../../../controls/panel/ScrollablePanel";
 
-export enum Status {
-    success = "Решено",
-    inProcess = "В процессе",
-    sent = "Отправлено",
-    verification = "Верификация",
-    waitingForAction = 'Требудется действие'
-}
-
-export enum StatusV2 {
-    resolved = "RESOLVED",
-    new = "NEW",
-    decline = "DECLINE",
-    inProcess = "IN_PROCESS",
-    waitingForAction = 'WAIT_FOR_ACTION'
-}
-
 export enum NotificationsTitle {
     success = "Обращение решено",
     newStatus = "Новый статус обращения",
     sent = "Обращение отправлено"
-}
-
-export interface IAppeals {
-    id: number
-    date: string
-    title: string
-    description: string
-    shortDescription: string
-    status: Status
 }
 
 export interface INotifications {

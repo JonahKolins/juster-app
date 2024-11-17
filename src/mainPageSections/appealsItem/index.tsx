@@ -1,12 +1,11 @@
 import React, {FC} from 'react';
 import styles from "./AppealsItem.module.css";
-import {StatusV2} from "../../pages/mySpacePages/dashboardPage/DashboardPage";
 import {HiOutlineBuildingLibrary} from "react-icons/hi2";
-import {ClaimsItemResponse} from "../api/requests/GetClaimsRequest";
-import {getDateFromString} from "../../handlers/getDateFromString";
+import {IClaimsItemResponse, IClaimStatus} from "../../classes/claim/Claim.Types";
+import {datetimeUtils} from "../../core/utils/datetimeUtils";
 
 interface IAppealsItemProps {
-    item: ClaimsItemResponse
+    item: IClaimsItemResponse
 }
 
 const AppealsItem: FC<IAppealsItemProps> = ({ item }) => {
@@ -14,8 +13,8 @@ const AppealsItem: FC<IAppealsItemProps> = ({ item }) => {
         <div className={styles.appealsItem}>
             <div className={styles.appealsContainer}>
                 <div className={styles.itemData}>
-                    <div className={styles.itemId}>{`№ ${item.genId}`}</div>
-                    <div className={styles.itemDate}>{getDateFromString(item.createdDate)}</div>
+                    <div className={styles.itemId}>{`№ ${item.id}`}</div>
+                    <div className={styles.itemDate}>{datetimeUtils.formatTime(item.createdDate, 'DD.MM.YYYY')}</div>
                 </div>
                 <div className={styles.itemIcon}>
                     <div className={styles.iconContainer}>
@@ -27,11 +26,11 @@ const AppealsItem: FC<IAppealsItemProps> = ({ item }) => {
                     <div className={styles.itemShortDescription}>{item.text}</div>
                 </div>
                 <div className={styles.itemStatus}>
-                    {item.status === StatusV2.resolved && <div className={styles.itemSuccessStatus}>{item.status}</div>}
-                    {item.status === StatusV2.inProcess && <div className={styles.itemInProcessStatus}>{item.status}</div>}
-                    {item.status === StatusV2.new && <div className={styles.itemSentStatus}>{item.status}</div>}
-                    {item.status === StatusV2.decline && <div className={styles.itemVerificationStatus}>{item.status}</div>}
-                    {item.status === StatusV2.waitingForAction && <div className={styles.itemWaitingForAction}>{item.status}</div>}
+                    {item.status === IClaimStatus.resolved && <div className={styles.itemSuccessStatus}>{item.status}</div>}
+                    {item.status === IClaimStatus.inProcess && <div className={styles.itemInProcessStatus}>{item.status}</div>}
+                    {item.status === IClaimStatus.created && <div className={styles.itemSentStatus}>{item.status}</div>}
+                    {item.status === IClaimStatus.declined && <div className={styles.itemVerificationStatus}>{item.status}</div>}
+                    {item.status === IClaimStatus.waitingForAction && <div className={styles.itemWaitingForAction}>{item.status}</div>}
                 </div>
             </div>
         </div>
