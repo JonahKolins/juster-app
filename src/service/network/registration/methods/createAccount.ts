@@ -3,11 +3,11 @@ import {IUserRegistrationResponse, testUserRegistration} from "../../../../app/a
 
 //TODO registration убрать testUserRegistration
 
-export const requestCreateAccount = async (params: CreateAccountParams): Promise<IUserRegistrationResponse> => {
+export const requestCreateAccount = async (params: CreateAccountParams): Promise<CreateAccountResponse> => {
     const createAccountRequest = new CreateAccountRequest(params);
 
-    // const data: CreateAccountResponse = await createAccountRequest.send();
-    const data = await testUserRegistration(params, 300);
+    const data: CreateAccountResponse = await createAccountRequest.send();
+    // const data = await testUserRegistration(params, 300);
 
     return data;
 }

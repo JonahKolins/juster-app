@@ -5,16 +5,13 @@ import {testProfile} from "../../../../app/auth/methods/testProfile";
 
 export const requestProfile = async (): Promise<IProfileResponse> => {
     const token = Session.instance.sessionToken;
-    if (!token) {
-        Promise.reject(null);
-        return;
-    }
+    const sessionId = Session.instance.sessionId;
 
-    const postProfileRequest = new PostProfileRequest(token);
+    const postProfileRequest = new PostProfileRequest(token, sessionId);
 
-    // const data: IProfileResponse = await postProfileRequest.send();
+    const data: IProfileResponse = await postProfileRequest.send();
 
-    const data: IProfileResponse = await testProfile();
+    // const data: IProfileResponse = await testProfile();
 
     return data
 }

@@ -103,9 +103,11 @@ const Registration = () => {
             const response = await requestCreateAccount({
                 firstName: firstName,
                 lastName: lastName,
+                userName: firstName,
                 email: email,
                 password: password,
-                agreementCheckbox: checkboxValue
+                confirmPassword: confirmPassword,
+                hasCheckbox: checkboxValue
             })
 
             if (response) {

@@ -5,6 +5,7 @@ import {ApiError, NetworkError, RuntimeError} from "../../core/errors";
 import {requestInfo} from "../../service/network/session/methods/requestInfo";
 import {requestRefresh} from "../../service/network/session/methods/requestRefresh";
 import {RefreshResponse} from "../../service/network/session/requests/PostRefreshRequest";
+import UnauthorizedError from "../../service/api/errors/UnauthorizedError";
 
 // описание типов для события loginStateChanged
 export type LoginStateChangedMessage = void;
@@ -53,7 +54,7 @@ export class Session {
 
 
     constructor() {
-        this._clientId = localStorage.getItem("clientId") || '';
+        this._clientId = localStorage.getItem("sessionId") || '';
         this._loginState = LoginState.loggedOut;
         this._sessionToken = localStorage.getItem("token") || '';
         this._error = null;
@@ -70,6 +71,10 @@ export class Session {
     // синглтон
     public static get instance() {
         return Instance.getOrCreate<Session>(Session, 'Session');
+    }
+
+    public get sessionId(): string {
+        return this._clientId
     }
 
     public get loginState(): LoginState {
@@ -147,8 +152,8 @@ export class Session {
                     console.log('session login response', response)
                     if (!response) return;
 
-                    this._clientId = response.clientId;
-                    localStorage.setItem('clientId', response.clientId);
+                    this._clientId = response.sessionId;
+                    localStorage.setItem('sessionId', response.sessionId);
                     this.setSessionToken(response.accessToken);
                     this.setLoginState(LoginState.loggedIn);
                     this.sessionDataChangedEvent.emit();
@@ -179,8 +184,8 @@ export class Session {
                     console.log('session restore response', response)
                     if (!response) return;
 
-                    this._clientId = response.clientId;
-                    localStorage.setItem('clientId', response.clientId);
+                    this._clientId = response.sessionId;
+                    localStorage.setItem('sessionId', response.sessionId);
                     this.setSessionToken(response.accessToken);
                     this.setLoginState(LoginState.loggedIn);
                     this.sessionDataChangedEvent.emit();
@@ -188,10 +193,16 @@ export class Session {
                     resolve();
                 })
                 .catch((error) => {
-                    console.log('session restore catch', error)
-                    this.refresh()
-                        .then(() => resolve())
-                        .catch(() => reject())
+                    if (error instanceof UnauthorizedError) {
+                        console.log('== UnauthorizedError ==', {error});
+                        this.refresh()
+                            .then(() => resolve())
+                            .catch(() => reject())
+                    } else {
+                        this.setLoginError(error);
+                        this.setLoginState(LoginState.loggedOut);
+                        reject();
+                    }
                 })
         })
     }

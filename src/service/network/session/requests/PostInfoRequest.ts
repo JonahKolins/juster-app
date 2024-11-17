@@ -2,7 +2,7 @@ import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
 
 export interface InfoResponse {
-    clientId: string;
+    sessionId: string;
     accessToken: string;
     role: string;
 }
@@ -32,7 +32,7 @@ class PostInfoRequest extends PostRequest<InfoResponse> {
         "Authorization": `Bearer ${this.token}`
     }
     protected body = {
-        clientId: this.clientId,
+        sessionId: this.clientId,
     }
 }
 

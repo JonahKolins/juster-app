@@ -3,7 +3,7 @@ import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
 
 export interface LoginResponse {
     accessToken: string;
-    clientId: string;
+    sessionId: string;
     role: string;
     // error
     errorCode?: number;
@@ -21,7 +21,7 @@ class PostLoginRequest extends PostRequest<LoginResponse> {
     protected url = LOGIN_URL;
     protected body = {
         email: this.email,
-        pwd: this.pwd
+        password: this.pwd
     }
 }
 

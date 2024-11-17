@@ -74,13 +74,13 @@ const MyRequestsPage = () => {
         if (!requests) return [];
 
         // TODO придумать определение партнера
-        if (!clientInfo.integrationId) return requests;
+        if (!clientInfo?.integrationId) return requests;
 
         const resultArr: IClaimsItemResponse[] = [];
 
         requests.forEach((request) => {
             const organisation = request.organisation;
-            if (isSuggestion(organisation) && organisation.id === clientInfo.integrationId) {
+            if (isSuggestion(organisation) && organisation.id === clientInfo?.integrationId) {
                 resultArr.push(request);
             }
         });

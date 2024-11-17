@@ -5,7 +5,7 @@ export interface RefreshResponse {
     accessToken: string;
 }
 
-const INFO_URL = '/refresh';
+const INFO_URL = '/auth/refresh';
 
 class PostRefreshRequest extends PostRequest<RefreshResponse> {
     public constructor() {

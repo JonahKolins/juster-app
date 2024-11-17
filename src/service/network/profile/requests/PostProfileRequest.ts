@@ -6,6 +6,7 @@ export interface IProfileClientInfo {
     role: string;
     firstName: string;
     lastName: string;
+    userName?: string;
     email: string;
     integrationId?: string;
 }
@@ -22,7 +23,7 @@ export interface IProfileResponse {
 const INFO_URL = '/profile';
 
 class PostProfileRequest extends PostRequest<IProfileResponse> {
-    public constructor(private token: string) {
+    public constructor(private token: string, private sessionId: string) {
         super();
     }
 
@@ -31,7 +32,9 @@ class PostProfileRequest extends PostRequest<IProfileResponse> {
     protected additionalHeaders = {
         "Authorization": `Bearer ${this.token}`
     }
-    protected body = {}
+    protected body = {
+        sessionId: this.sessionId
+    }
 }
 
 export default PostProfileRequest;

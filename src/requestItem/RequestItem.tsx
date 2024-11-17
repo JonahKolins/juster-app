@@ -56,8 +56,8 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
             text: text,
             type: "message",
             user: {
-                firstName: clientInfo.firstName,
-                lastName: clientInfo.lastName
+                firstName: clientInfo?.firstName,
+                lastName: clientInfo?.lastName
             }
         }
         manager.addAction(newMessageAction);
@@ -65,7 +65,7 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
 
     if (error) return <div>{error.text}</div>
 
-    return isLoading || !data || !clientInfo ? <LoaderCircle /> : (
+    return isLoading || !data ? <LoaderCircle /> : (
         <ScrollablePanel
             vScroll={ScrollBarVisibility.autoWhenScrollOverArea}
             hScroll={ScrollBarVisibility.auto}
@@ -112,7 +112,7 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
                         id={data.id}
                         manager={manager}
                         status={data.status}
-                        author={`${clientInfo.firstName}${NBSP}${clientInfo.lastName}`}
+                        author={`${clientInfo?.firstName}${NBSP}${clientInfo?.lastName}`}
                         org={data.organisation}
                     />
                 </div>

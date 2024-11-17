@@ -2,11 +2,13 @@ import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
 
 export interface CreateAccountParams {
+    userName?: string;
     firstName: string;
     lastName: string;
     email: string;
     password: string;
-    agreementCheckbox: boolean;
+    confirmPassword: string,
+    hasCheckbox: boolean
 }
 
 export interface CreateAccountResponse {
