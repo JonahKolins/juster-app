@@ -1,4 +1,4 @@
-import {RefreshResponse} from "../../../service/network/session/requests/PostRefreshRequest";
+import {RefreshResponse} from "../../../cmd/network/session/requests/PostRefreshRequest";
 
 
 interface ITestRefreshResponse extends RefreshResponse {}

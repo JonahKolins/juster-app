@@ -4,8 +4,8 @@ import {Input, InputSize} from "../../../../designSystem/input";
 import Button from "../../../../designSystem/button/Button";
 import {LoaderCircle} from "../../../../designSystem/loader/Loader.Circle";
 import {IUserRegistrationResponse} from "../../../../app/auth/methods/testUserRegistration";
-import {requestCreateAccount} from "../../../../service/network/registration/methods/createAccount";
-import {CreateAccountParams} from "../../../../service/network/registration/requests/CreateAccountRequest";
+import {requestCreateAccount} from "../../../../cmd/network/registration/methods/createAccount";
+import {CreateAccountParams} from "../../../../cmd/network/registration/requests/CreateAccountRequest";
 
 interface NewRequestRegistrationFormProps {
     onRegister: () => void;

@@ -69,6 +69,11 @@ export interface IClaimsItemResponse {
     actions: TClaimAction[];
 }
 
+// TODO переименовать IClaimsItemResponse на IClaimsItem
+export interface IClaimsItem extends IClaimsItemResponse {}
+
+export interface INewClaimsItem extends Omit<IClaimsItem, 'id' | 'createdDate'> {}
+
 export const isClaimAction = (obj: TClaimAction): obj is IClaimAction => {
     return (obj as IClaimAction).type == 'action' && !!(obj as IClaimAction).actionType;
 }

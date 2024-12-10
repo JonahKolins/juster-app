@@ -1,11 +1,11 @@
 import {Instance} from "../../core/entity";
 import {Session} from "../session/Session";
-import {requestProfile} from "../../service/network/profile/methods/requestProfile";
+import {requestProfile} from "../../cmd/network/profile/methods/requestProfile";
 import {
     IProfileClientInfo,
     IProfileResponse,
     IProfileSettings
-} from "../../service/network/profile/requests/PostProfileRequest";
+} from "../../cmd/network/profile/requests/PostProfileRequest";
 import {EventEmitter} from "../../core/event";
 import {ApiError, NetworkError} from "../../core/errors";
 
@@ -62,9 +62,11 @@ export class Profile {
     }
 
     public readProfile = () => {
-        this._isLoading = true;
+        const sessionId = Session.instance.sessionId;
+        if (!sessionId) return;
 
-        requestProfile()
+        this._isLoading = true;
+        requestProfile(sessionId)
             .then((response) => {
                 this.applyReadProfileResponse(response);
             })
@@ -77,10 +79,11 @@ export class Profile {
     }
 
     private applyReadProfileResponse = (response: IProfileResponse) => {
-        this._clientInfo = response.clientInfo;
+        this._clientInfo = response.clientInfo.user;
         this._profileSettings = response.profileSettings;
         this._isProfileReady = true;
         this._isLoading = false;
+        this._error = null;
 
         this.profileChanged.emit();
     }

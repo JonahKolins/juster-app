@@ -1,5 +1,5 @@
-import PostRequest from "../../../service/api/requests/PostRequest";
-import JSONResponseHandler from "../../../service/api/handlers/JSONResponseHandler";
+import PostRequest from "../../../cmd/api/requests/PostRequest";
+import JSONResponseHandler from "../../../cmd/api/handlers/JSONResponseHandler";
 import {ISuggestions} from "./GetOrganisationSuggestionsRequest";
 
 export interface CreateDraftParams {

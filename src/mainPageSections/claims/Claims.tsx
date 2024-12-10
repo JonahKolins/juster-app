@@ -1,14 +1,12 @@
-import React, {FC, useCallback, useEffect, useState} from "react";
+import React, {FC, useMemo} from "react";
 import styles from "./Claims.module.sass";
 import {useNavigate} from "react-router-dom";
-import getClaimsRequest from "../api/metods/getClaimsRequest";
 import {Button, Table, Tag} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import {IOrganisationData} from "../../newRequest/NewRequestDataLayer";
-import {ISuggestions} from "../../newRequest/api/requests/GetOrganisationSuggestionsRequest";
 import {useProfile} from "../../app/hooks/useProfile";
-import {IClaimsItemResponse, IClaimStatus, TClaimAction} from "../../classes/claim/Claim.Types";
+import {IClaimStatus, TClaimAction} from "../../classes/claim/Claim.Types";
 import {datetimeUtils} from "../../core/utils/datetimeUtils";
+import {useClaims} from "../../app/hooks/useClaims";
 
 interface ClaimRowData {
     key: React.Key;
@@ -23,86 +21,17 @@ interface ClaimRowData {
 
 const Claims: FC = () => {
     const navigate = useNavigate();
-    //
-    const {clientInfo, isProfileLoading} = useProfile();
-    const [claims, setClaims] = useState<IClaimsItemResponse[]>([]);
-    const [rows, setRows] = useState<ClaimRowData[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-
-    useEffect(() => {
-        // requestClaims();
-        if (!isProfileLoading && clientInfo) {
-            getClaims();
-        }
-    }, [isProfileLoading, clientInfo])
-
-    const getClaims = () => {
-        testRequestClaims()
-            .then((claimItems: IClaimsItemResponse[]) => {
-                setClaims(claimItems);
-                createTableRows(claimItems);
-                setLoading(false);
-            })
-            .catch((e) => {
-                console.log('нет обращений', e);
-                setLoading(false);
-            })
-    }
-
-    const testRequestClaims = (): Promise<IClaimsItemResponse[]> => {
-        setLoading(true);
-        return new Promise((resolve, reject) => {
-            const existedClaimsString = localStorage.getItem('user_requests');
-
-            let existedClaimsArray: IClaimsItemResponse[] = [];
-
-            try {
-                if (existedClaimsString) {
-                    const parsedRegUsers: IClaimsItemResponse[] = JSON.parse(existedClaimsString) || [];
-
-                    if (parsedRegUsers?.length) {
-                        existedClaimsArray.push(...parsedRegUsers);
-                    }
-                }
-            } catch (e) {
-                console.error('Cannot parse user_requests in HomePage Claims -> existedClaimsString', existedClaimsString);
-            }
-
-            if (!existedClaimsArray.length) {
-                reject();
-                return;
-            }
-
-            if (!clientInfo.integrationId) {
-                resolve(existedClaimsArray);
-                return;
-            }
-
-            const resultArr: IClaimsItemResponse[] = [];
-
-            existedClaimsArray.forEach((request) => {
-                const organisation = request.organisation;
-                if (isSuggestion(organisation) && organisation.id === clientInfo.integrationId) {
-                    resultArr.push(request);
-                }
-            });
-
-            resolve(resultArr);
-        })
-    }
-
-    const isSuggestion = (info: IOrganisationData): info is ISuggestions => {
-        return info && Boolean((info as ISuggestions).data) && Boolean((info as ISuggestions).value)
-    }
+    const { clientInfo, isProfileLoading } = useProfile();
+    const { claims, isClaimsLoading, isClaimsReady } = useClaims();
 
     const onAllAppealsClick = () => {
         navigate('/mySpace/myRequests')
     }
 
-    const createTableRows = useCallback((claimItems: IClaimsItemResponse[]) => {
-        if (!claimItems.length) return null;
+    const tableRows = useMemo<ClaimRowData[]>(() => {
+        if (!claims.length || isClaimsLoading) return [];
 
-        const rowsArray: ClaimRowData[] = claimItems.map((item) => {
+        const rowsArray: ClaimRowData[] = claims.map((item) => {
             return {
                 key: item.id,
                 id: item.id,
@@ -115,26 +44,8 @@ const Claims: FC = () => {
             }
         })
 
-        setRows(rowsArray);
-    }, [])
-
-    const requestClaims = useCallback(async () => {
-        const sessionId = localStorage.getItem('id');
-        if (!sessionId) return;
-        setLoading(true);
-        try {
-            const response = await getClaimsRequest(sessionId);
-            if (response) {
-                console.log('res', response)
-                setClaims(response.claims);
-                // createTableRows();
-                setLoading(false);
-            }
-        } catch (err) {
-            console.log('err')
-            setLoading(false);
-        }
-    }, [createTableRows])
+        return rowsArray;
+    }, [claims, isClaimsLoading])
 
     const columns: ColumnsType<ClaimRowData> = [
         {
@@ -226,8 +137,8 @@ const Claims: FC = () => {
         <div className={styles['claims']}>
             <Table
                 columns={columns}
-                dataSource={rows}
-                loading={loading}
+                dataSource={tableRows}
+                loading={isClaimsLoading}
                 rowKey={(record) => record.id}
                 pagination={false}
                 scroll={{ y: '100%' }}

@@ -81,6 +81,8 @@ const NavbarAccount = memo<NavbarAccountProps>(({onClick: propsOnClick}) => {
         propsOnClick();
     }, [navigate, propsOnClick])
 
+    console.log('Navbar', clientInfo)
+
     return (
         <div className={styles['navbar-account']}>
             {isProfileLoading
@@ -90,7 +92,10 @@ const NavbarAccount = memo<NavbarAccountProps>(({onClick: propsOnClick}) => {
                         <>
                             <Dropdown onOpenChange={handleOpenChange} menu={{ items, onClick: handleClick }} trigger={['click']}>
                                 <div className={classNames(styles['account-name'], isDropdownOpen && styles['_active'])}>
-                                    <div>{clientInfo.firstName}{NBSP}{clientInfo.lastName ? clientInfo.lastName : ''}</div>
+                                    {clientInfo.firstName || clientInfo.lastName
+                                        ? <div>{clientInfo.firstName}{NBSP}{clientInfo.lastName ? clientInfo.lastName : ''}</div>
+                                        : <div>{clientInfo.email}</div>
+                                    }
                                     <BsChevronDown size={10} />
                                 </div>
                             </Dropdown>

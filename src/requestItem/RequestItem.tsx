@@ -112,7 +112,11 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
                         id={data.id}
                         manager={manager}
                         status={data.status}
-                        author={`${clientInfo?.firstName}${NBSP}${clientInfo?.lastName}`}
+                        author={
+                            clientInfo?.firstName || clientInfo?.lastName
+                                ? `${clientInfo?.firstName}${NBSP}${clientInfo?.lastName}`
+                                : `${clientInfo?.email}`
+                        }
                         org={data.organisation}
                     />
                 </div>

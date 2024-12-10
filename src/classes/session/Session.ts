@@ -1,11 +1,11 @@
 import {Instance} from "../../core/entity";
-import {requestLogin} from "../../service/network/login/methods/requestLogin";
+import {requestLogin} from "../../cmd/network/login/methods/requestLogin";
 import {EventEmitter, EventHandle} from "../../core/event";
 import {ApiError, NetworkError, RuntimeError} from "../../core/errors";
-import {requestInfo} from "../../service/network/session/methods/requestInfo";
-import {requestRefresh} from "../../service/network/session/methods/requestRefresh";
-import {RefreshResponse} from "../../service/network/session/requests/PostRefreshRequest";
-import UnauthorizedError from "../../service/api/errors/UnauthorizedError";
+import {requestSessionInfo} from "../../cmd/network/session/methods/requestInfo";
+import {requestRefresh} from "../../cmd/network/session/methods/requestRefresh";
+import {RefreshResponse} from "../../cmd/network/session/requests/PostRefreshRequest";
+import UnauthorizedError from "../../cmd/api/errors/UnauthorizedError";
 
 // описание типов для события loginStateChanged
 export type LoginStateChangedMessage = void;
@@ -41,10 +41,8 @@ export enum LoginState {
 }
 
 export class Session {
-
-    private _clientId: string;
+    private _sessionId: string;
     private _loginState: LoginState;
-    private _sessionToken: string;
     private _error: ApiError | NetworkError;
 
     public readonly loginStateChanged: LoginStateChangedEmitter;
@@ -52,11 +50,9 @@ export class Session {
     public readonly logoutEvent: LogoutEmitter;
     public readonly sessionDataChangedEvent: SessionDataChangedEmitter;
 
-
     constructor() {
-        this._clientId = localStorage.getItem("sessionId") || '';
+        this._sessionId = localStorage.getItem("sessionId") || '';
         this._loginState = LoginState.loggedOut;
-        this._sessionToken = localStorage.getItem("token") || '';
         this._error = null;
 
         // Создаем EventEmitter для отслеживания состояний процесса логина
@@ -74,7 +70,7 @@ export class Session {
     }
 
     public get sessionId(): string {
-        return this._clientId
+        return this._sessionId
     }
 
     public get loginState(): LoginState {
@@ -82,6 +78,7 @@ export class Session {
     }
 
     public get loggedIn(): boolean {
+        //TODO убрать !==
         return this._loginState == LoginState.loggedIn;
     }
 
@@ -95,19 +92,6 @@ export class Session {
 
     public get error(): ApiError | NetworkError {
         return this._error;
-    }
-
-    public get sessionToken(): string {
-        return this._sessionToken;
-    }
-
-    private setSessionToken = (token: string) => {
-        this._sessionToken = token;
-        try {
-            localStorage.setItem('token', token);
-        } catch (e) {
-            console.warn('cannot save token in localStorage', e)
-        }
     }
 
     private setLoginState = (loginState: LoginState) => {
@@ -152,9 +136,8 @@ export class Session {
                     console.log('session login response', response)
                     if (!response) return;
 
-                    this._clientId = response.sessionId;
+                    this._sessionId = response.sessionId;
                     localStorage.setItem('sessionId', response.sessionId);
-                    this.setSessionToken(response.accessToken);
                     this.setLoginState(LoginState.loggedIn);
                     this.sessionDataChangedEvent.emit();
 
@@ -171,22 +154,21 @@ export class Session {
 
     // восстановление сессии
     public restore = (): Promise<void> => {
-        if (!this._clientId || !this._sessionToken) {
+        if (!this._sessionId) {
             this.setLoginState(LoginState.loggedOut);
-            return Promise.reject('no clientId or sessionToken');
+            return Promise.reject('no clientId to restore');
         }
 
         this.setLoginState(LoginState.restoreSessionInProgress);
 
         return new Promise((resolve, reject) => {
-            requestInfo(this._clientId, this._sessionToken)
+            requestSessionInfo(this._sessionId)
                 .then((response) => {
                     console.log('session restore response', response)
                     if (!response) return;
 
-                    this._clientId = response.sessionId;
+                    this._sessionId = response.sessionId;
                     localStorage.setItem('sessionId', response.sessionId);
-                    this.setSessionToken(response.accessToken);
                     this.setLoginState(LoginState.loggedIn);
                     this.sessionDataChangedEvent.emit();
 
@@ -194,15 +176,11 @@ export class Session {
                 })
                 .catch((error) => {
                     if (error instanceof UnauthorizedError) {
-                        console.log('== UnauthorizedError ==', {error});
-                        this.refresh()
-                            .then(() => resolve())
-                            .catch(() => reject())
-                    } else {
-                        this.setLoginError(error);
-                        this.setLoginState(LoginState.loggedOut);
-                        reject();
+                        console.log('== UnauthorizedError in restore ==', {error});
                     }
+                    this.setLoginError(error);
+                    this.setLoginState(LoginState.loggedOut);
+                    reject();
                 })
         })
     }
@@ -212,7 +190,6 @@ export class Session {
             const refreshResponse: RefreshResponse = await requestRefresh();
             console.log('session refresh refreshResponse', refreshResponse)
             if (refreshResponse) {
-                this.setSessionToken(refreshResponse.accessToken);
                 this.setLoginState(LoginState.loggedIn);
                 this.sessionDataChangedEvent.emit();
             }
@@ -224,8 +201,7 @@ export class Session {
     }
 
     public logout = () => {
-        this._sessionToken = null;
-        this._clientId = null;
+        this._sessionId = null;
         this._error = null;
         this.setLoginState(LoginState.loggedOut);
         localStorage.removeItem('token');

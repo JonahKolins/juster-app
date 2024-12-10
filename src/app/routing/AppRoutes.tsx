@@ -2,7 +2,7 @@ import React, {FC, useEffect, useState} from "react";
 import {Route, Routes} from "react-router-dom";
 import {useLocation} from "react-router";
 import DashboardPage from "../../pages/mySpacePages/dashboardPage/DashboardPage";
-import MyRequests from "../../pages/mySpacePages/myRequestsPage/MyRequestsPage";
+import MyRequests from "../../pages/mySpacePages/myClaimsPage/MyClaimsPage";
 import NewRequests from "../../newRequest/NewRequest";
 import Notifications from "../../pages/notificationsPage/Notifications";
 import Categories from "../../pages/mySpacePages/categoriesPage/Categories";

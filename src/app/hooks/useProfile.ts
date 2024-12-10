@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {IProfileClientInfo} from "../../service/network/profile/requests/PostProfileRequest";
+import {IProfileClientInfo} from "../../cmd/network/profile/requests/PostProfileRequest";
 import {Profile} from "../../classes/profile/Profile";
 
 interface IProfileInfo {

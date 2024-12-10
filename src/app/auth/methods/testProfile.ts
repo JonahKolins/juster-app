@@ -1,5 +1,5 @@
 import {IUserData} from "../../../pages/loginPages/api/AuthServise";
-import {IProfileResponse} from "../../../service/network/profile/requests/PostProfileRequest";
+import {IProfileResponse} from "../../../cmd/network/profile/requests/PostProfileRequest";
 
 
 interface ITestProfileResponse extends IProfileResponse {}

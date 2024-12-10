@@ -3,7 +3,7 @@ import styles from "./Registration.module.sass";
 import {Button, Checkbox, Form, Input, message} from "antd";
 import {Link, useNavigate} from "react-router-dom";
 import {ValidateStatus} from "antd/es/form/FormItem";
-import {requestCreateAccount} from "../../service/network/registration/methods/createAccount";
+import {requestCreateAccount} from "../../cmd/network/registration/methods/createAccount";
 import {useSessionInfo} from "../../app/hooks/useSessionInfo";
 
 export enum InputType {

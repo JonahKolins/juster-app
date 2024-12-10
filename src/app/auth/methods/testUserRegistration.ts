@@ -1,5 +1,5 @@
 import {UserRole} from "../types/types";
-import {CreateAccountParams} from "../../../service/network/registration/requests/CreateAccountRequest";
+import {CreateAccountParams} from "../../../cmd/network/registration/requests/CreateAccountRequest";
 
 export interface IExtraUserPayload {
     id: string;

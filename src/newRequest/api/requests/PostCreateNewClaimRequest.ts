@@ -1,5 +1,5 @@
-import JSONResponseHandler from "../../../service/api/handlers/JSONResponseHandler";
-import PostFormDataRequest from "../../../service/api/requests/PostFormDataRequest";
+import JSONResponseHandler from "../../../cmd/api/handlers/JSONResponseHandler";
+import PostFormDataRequest from "../../../cmd/api/requests/PostFormDataRequest";
 
 export interface CreateNewClaimResponse {
     errorCode: number;

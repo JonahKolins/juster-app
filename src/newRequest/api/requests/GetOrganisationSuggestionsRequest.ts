@@ -1,5 +1,5 @@
-import PostRequest from "../../../service/api/requests/PostRequest";
-import JSONResponseHandler from "../../../service/api/handlers/JSONResponseHandler";
+import PostRequest from "../../../cmd/api/requests/PostRequest";
+import JSONResponseHandler from "../../../cmd/api/handlers/JSONResponseHandler";
 
 const url = "/suggestions/api/4_1/rs/suggest/party";
 const token = "e609610cda4cf031e8f51bedefa7adaf4d805aaa";
