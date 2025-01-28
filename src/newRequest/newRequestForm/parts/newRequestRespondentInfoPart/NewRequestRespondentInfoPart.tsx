@@ -1,62 +1,53 @@
 import React, {ChangeEvent, memo, useCallback, useEffect, useMemo, useState} from "react";
-import styles from "./NewRequestOrganisationInfoPart.module.sass";
+import styles from "./NewRequestRespondentInfoPart.module.sass";
 import Button from "../../../../designSystem/button/Button";
 import classNames from "classnames";
 import {Dropdown, Input, MenuProps} from "antd";
 import {IoIosSearch} from "react-icons/io";
-import ManualForm, {SavedOrgData} from "../../../createForm/manualForm/ManualForm";
+import ManualForm from "../../../createForm/manualForm/ManualForm";
 import {ISuggestions} from "../../../api/requests/GetOrganisationSuggestionsRequest";
 import {HiOutlineInbox} from "react-icons/hi2";
-import getOrganisationSuggestionsRequest from "../../../api/methods/getOrganisationSuggestionsRequest";
 import OrganisationForm from "../../components/organisationForm/OrganisationForm";
-import {IOrganisationData, useSafeNewRequestDataLayerContext} from "../../../NewRequestDataLayer";
+import { ClaimCreator } from "classes/claim/ClaimCreator";
+import { IMinRespondentData } from "classes/claim/Claim.Types";
 
-interface NewRequestOrganisationInfoPartProps {
+interface NewRequestRespondentInfoPartProps {
     onPrevPageClick: () => void;
     onNextPageClick: () => void;
 }
 
 const CAPTION = 'Информация об организации';
+const NO_RESPONDENT_CAPTION = 'Нет организаций соответствующих вашему запросу';
 
-const NewRequestOrganisationInfoPart = memo<NewRequestOrganisationInfoPartProps>(({onPrevPageClick, onNextPageClick}) => {
-    const {organisationData, setOrganisationData, partnerId, setPartnerId} = useSafeNewRequestDataLayerContext();
-    const [isAddedInfoNoticeVisible, setIsAddedInfoNoticeVisible] = useState<boolean>(false);
-
-    console.log('partnerId', partnerId)
-    console.log('organisationData', organisationData)
-
-    useEffect(() => {
-        if (organisationData && partnerId) {
-            setIsAddedInfoNoticeVisible(true);
-        } else {
-            setIsAddedInfoNoticeVisible(false);
-        }
-    }, [organisationData, partnerId])
-
-    const isSuggestion = (info: IOrganisationData): info is ISuggestions => {
-        return info && Boolean((info as ISuggestions).data) && Boolean((info as ISuggestions).value)
-    }
-
-    const savedOrgData = useMemo<SavedOrgData>(() => {
-        if (!organisationData || isSuggestion(organisationData)) return null;
-        return organisationData
-    }, [organisationData])
-
-    const savedSuggestion = useMemo<ISuggestions>(() => {
-        return organisationData && isSuggestion(organisationData) ? organisationData : null
-    }, [organisationData])
-
-    const [orgData, setOrgData] = useState<SavedOrgData>(savedOrgData);
+const NewRequestRespondentInfoPart = memo<NewRequestRespondentInfoPartProps>(({onPrevPageClick, onNextPageClick}) => {
+    // данные "Ответчика"
+    const [respondentData, setRespondentData] = useState<IMinRespondentData>(ClaimCreator.instance.minRespondentData);
     const [inputSearchValue, setInputSearchValue] = useState<string>('');
     const [dropdownItems, setDropdownItems] = useState<MenuProps['items']>([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-    const [selectedItem, setSelectedItem] = useState<ISuggestions>(savedSuggestion);
+    const [selectedItem, setSelectedItem] = useState<IMinRespondentData>(ClaimCreator.instance.minRespondentData);
+    // id партнера
+    const [partnerId, setPartnerId] = useState<string>(ClaimCreator.instance.partnerId);
+    // есть ли уведомление о добавлении партнера
+    const [isAddedInfoNoticeVisible, setIsAddedInfoNoticeVisible] = useState<boolean>(!!partnerId);
+    // есть изменения, которые нужно сохранить
+    const [hasChangesToSave, setHasChangesToSave] = useState<boolean>(false);
+
+    useEffect(() => {
+        ClaimCreator.instance.claimCreatorDataChanged.subscribe(handleClaimCreatorDataChanged);
+        handleClaimCreatorDataChanged();
+    }, [])
+
+    const handleClaimCreatorDataChanged = () => {
+        setRespondentData(ClaimCreator.instance.minRespondentData);
+        setPartnerId(ClaimCreator.instance.partnerId);
+    }
 
     const renderNothingFoundItem = () => {
         return (
             <div className={styles['nothing-found-menu-item']}>
                 <HiOutlineInbox />
-                <span className={styles['nothing-found-text']}>Нет организаций соответствующих вашему запросу</span>
+                <span className={styles['nothing-found-text']}>{NO_RESPONDENT_CAPTION}</span>
             </div>
         )
     }
@@ -88,6 +79,7 @@ const NewRequestOrganisationInfoPart = memo<NewRequestOrganisationInfoPartProps>
         return React.cloneElement(menu as React.ReactElement, { style: menuStyle() })
     }
 
+    // обработка ввода в поле поиска
     const handleInputSearch = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target.value) setIsDropdownOpen(false);
         setInputSearchValue(e.target.value);
@@ -102,16 +94,30 @@ const NewRequestOrganisationInfoPart = memo<NewRequestOrganisationInfoPartProps>
         )
     }
 
+    // обработка выбора найденной организации
     const handleDropdownItemClick = useCallback((item: ISuggestions) => {
-        setSelectedItem(item);
+        // для показа сохраняем только минимальные данные
+        const respondentData: IMinRespondentData = {
+            inn: item.data.inn,
+            name: item.value,
+            address: item.data.address.value
+        }
+        // для показа формы найденной организации
+        setSelectedItem(respondentData);
+        // полные данные сохраняем в ClaimCreator
+        ClaimCreator.instance.setRespondent(respondentData);
+        // закрываем меню
         setIsDropdownOpen(false);
-        // setInputSearchValue('');
+        // если был добавлен партнер, то скрываем уведомление
         if (isAddedInfoNoticeVisible) {
             setIsAddedInfoNoticeVisible(false);
-            setPartnerId('');
+            ClaimCreator.instance.setPartnerId('');
         }
+        // есть изменения, которые нужно сохранить
+        setHasChangesToSave(true);
     }, [])
 
+    // создает меню выбора "ответчика"
     const createMenuItems = useCallback((suggestions: ISuggestions[]) => {
         const newArray: MenuProps['items'] = suggestions.map((item, index) => {
             return {
@@ -124,61 +130,91 @@ const NewRequestOrganisationInfoPart = memo<NewRequestOrganisationInfoPartProps>
         setIsDropdownOpen(true);
     }, [])
 
+    // выполняет поиск по введенному значению и создает меню выбора "ответчика"
     const handleSearch = useCallback(() => {
         if (!inputSearchValue) return;
         //
-        getOrganisationSuggestionsRequest(inputSearchValue)
-            .then((res) => {
-                console.log('res', res.suggestions)
-                createMenuItems(res.suggestions);
+        ClaimCreator.instance.searchSuggestion(inputSearchValue)
+            .then((suggestions) => {
+                console.log('res', suggestions)
+                createMenuItems(suggestions);
             })
             .catch((err) => {
                 console.log('error', err)
             })
     }, [inputSearchValue])
 
-    const handleSaveOrganisationData = useCallback((data: SavedOrgData) => {
-        setOrgData(data);
-        // setError(null);
+    // обработка сохранения данных вручную
+    const handleSaveManualForm = useCallback((data: IMinRespondentData) => {
+        // сохраняем данные
+        setRespondentData(data);
+        // сохраняем данные в ClaimCreator
+        ClaimCreator.instance.setRespondent(data);
+        // есть изменения, которые нужно сохранить
+        setHasChangesToSave(true);
     }, [])
 
-    const renderOrganisationData = (): JSX.Element => {
-        return <ManualForm data={orgData} saveOrganisationData={handleSaveOrganisationData} />
+    // форма для ввода данных вручную
+    const renderManualForm = (): JSX.Element => {
+        return <ManualForm data={respondentData} saveRespondentData={handleSaveManualForm} />
     }
 
-    const handleCloseOrganisationForm = () => {
+    // закрытие формы найденной организации
+    const handleCloseRespondentForm = () => {
         setSelectedItem(null);
+        // если был добавлен партнер, то скрываем уведомление
         if (isAddedInfoNoticeVisible) {
             setIsAddedInfoNoticeVisible(false);
-            setPartnerId('');
+            ClaimCreator.instance.setPartnerId('');
         }
     }
 
+    // форма найденной организации
     const renderSelectedItem = (): JSX.Element => {
         if (!selectedItem) return null;
         return (
-            <OrganisationForm data={selectedItem} onClose={handleCloseOrganisationForm} />
+            <OrganisationForm data={selectedItem} onClose={handleCloseRespondentForm} />
         )
     }
 
     const isNextButtonDisabled = useMemo<boolean>(() => {
         if (selectedItem) return !selectedItem;
 
-        if (!orgData) return true;
+        if (!respondentData) return true;
 
-        return !Object.values(orgData).every((val) => !!val)
-    }, [orgData, selectedItem])
+        return !Object.values(respondentData).every((val) => !!val)
+    }, [respondentData, selectedItem])
 
     const handlePrevPageClick = () => {
-        setOrganisationData(selectedItem ? selectedItem : orgData);
+        // если есть изменения и есть данные, то обновляем черновик
+        if (hasChangesToSave && !!(selectedItem || respondentData)) {
+            // обновляем черновик только если есть изменения
+            ClaimCreator.instance.updateDraft()
+                .then(() => {
+                    // можно показать загрузку
+                })
+                .catch(() => {
+                    // можно показать ошибку
+                })
+        }
+        setHasChangesToSave(false);
         onPrevPageClick();
     }
 
     const handleNextPageClick = () => {
-        if (!selectedItem && !orgData) return;
-        setOrganisationData(selectedItem ? selectedItem : orgData);
+        // если есть изменения и есть данные, то обновляем черновик
+        if (hasChangesToSave && !!(selectedItem || respondentData)) {
+            ClaimCreator.instance.updateDraft()
+                .then(() => {
+                    // можно показать загрузку
+                })
+                .catch(() => {
+                    // можно показать ошибку
+                })
+        }
+        setHasChangesToSave(false);
         onNextPageClick();
-    }
+    }    
 
     return (
         <div className={styles['info-container']}>
@@ -230,7 +266,7 @@ const NewRequestOrganisationInfoPart = memo<NewRequestOrganisationInfoPartProps>
                 </div>
             )}
             <div className={styles['content']}>
-                {selectedItem ? renderSelectedItem() : renderOrganisationData()}
+                {selectedItem ? renderSelectedItem() : renderManualForm()}
             </div>
             <div className={styles['buttons']}>
                 <Button onClick={handlePrevPageClick} className={styles['back-btn']}>Назад</Button>
@@ -240,4 +276,4 @@ const NewRequestOrganisationInfoPart = memo<NewRequestOrganisationInfoPartProps>
     )
 })
 
-export default NewRequestOrganisationInfoPart;
+export default NewRequestRespondentInfoPart;

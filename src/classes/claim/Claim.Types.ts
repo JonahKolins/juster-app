@@ -1,6 +1,6 @@
 import {IOrganisationData} from "../../newRequest/NewRequestDataLayer";
 
-type IClaimReasonId = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type IClaimReasonId = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export interface IClaimReason {
     id: IClaimReasonId;
@@ -8,11 +8,18 @@ export interface IClaimReason {
 }
 
 export enum IClaimStatus {
-    created = "CREATED",
-    underConsideration = 'underConsideration',
-    inProcess = "IN_PROCESS",
+    draft = 'DRAFT',
+    new = 'NEW',
+    //
+    open = 'OPEN',
+    inProgress = 'IN_PROGRESS',
+    needInfo = 'NEED_INFO',
     waitingForAction = 'WAIT_FOR_ACTION',
-    resolved = "RESOLVED",
+    //
+    resolved = 'RESOLVED',
+    //
+    close = 'CLOSE',
+    deleted = 'DELETED',
     declined = "DECLINED"
 }
 
@@ -67,12 +74,33 @@ export interface IClaimsItemResponse {
     createdDate: number;
     files: any[];
     actions: TClaimAction[];
+    partnerId?: string;
 }
 
 // TODO переименовать IClaimsItemResponse на IClaimsItem
-export interface IClaimsItem extends IClaimsItemResponse {}
+export interface IClaimsItem {
+    genId: string;
+    claimInfo: {
+        createdAt: number;
+        lastUpd: number;
+        claimName: string;
+        recipientInn: string;
+        recipientName: string;
+        recipientAddress: string;
+        recipientEmail: string;
+        contentType: string;
+        contentSum: string;
+        textClaim: string;
+        status: string;
+        comments: any[];
+    };
+}
 
-export interface INewClaimsItem extends Omit<IClaimsItem, 'id' | 'createdDate'> {}
+export interface IMinRespondentData {
+    inn: string;
+    name: string;
+    address: string;
+}
 
 export const isClaimAction = (obj: TClaimAction): obj is IClaimAction => {
     return (obj as IClaimAction).type == 'action' && !!(obj as IClaimAction).actionType;

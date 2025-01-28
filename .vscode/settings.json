@@ -1,0 +1,23 @@
+{
+    "workbench.colorTheme": "React Theme",
+    "workbench.preferredHighContrastColorTheme": "Visual Studio Dark",
+    "workbench.preferredHighContrastLightColorTheme": "Visual Studio Dark",
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "src/**/*.ts",
+                "src/**/*.tsx"
+            ],
+            "schema": {
+                "properties": {
+                    "editor.tokenColorCustomizations": {
+                        "comments": {
+                            "foreground": "#00FF00",
+                            "fontStyle": "bold"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,16 +1,17 @@
 import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
-import {IClaimsItem, INewClaimsItem} from "../../../../classes/claim/Claim.Types";
+import { IClaimsItem } from "../../../../classes/claim/Claim.Types";
+import { ICreateNewClaimRequest } from "../methods/requestCreateNewClaim";
 
 export interface ICreateNewClaimResponse {
     claim: IClaimsItem;
     error?: any;
 }
 
-const CREATE_NEW_CLAIM_URL = '/createNewClaim';
+const CREATE_NEW_CLAIM_URL = '/claim/create';
 
 class PostCreateNewClaimRequest extends PostRequest<ICreateNewClaimResponse> {
-    public constructor(private sessionId: string, private claimInfo: INewClaimsItem) {
+    public constructor(private params: ICreateNewClaimRequest) {
         super();
     }
 
@@ -23,8 +24,7 @@ class PostCreateNewClaimRequest extends PostRequest<ICreateNewClaimResponse> {
     }
 
     protected body = {
-        sessionId: this.sessionId,
-        claimInfo: this.claimInfo
+        ...this.params
     }
 }
 

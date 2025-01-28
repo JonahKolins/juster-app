@@ -1,9 +1,9 @@
 import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
-import {IClaimsItemResponse} from "../../../../classes/claim/Claim.Types";
+import {IClaimsItem} from "../../../../classes/claim/Claim.Types";
 
 export interface IPostClaimsResponse {
-    claims: IClaimsItemResponse[];
+    claims: IClaimsItem[];
 }
 
 const CLAIMS_URL = '/claims';

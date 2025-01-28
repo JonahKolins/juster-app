@@ -1,11 +1,11 @@
 import React, {memo} from "react";
 import styles from "./OrganisationForm.module.sass";
-import {ISuggestions} from "../../../api/requests/GetOrganisationSuggestionsRequest";
 import {IoClose} from "react-icons/io5";
 import { BsBuildings } from "react-icons/bs";
+import { IMinRespondentData } from "classes/claim/Claim.Types";
 
 interface OrganisationFormProps {
-    data: ISuggestions;
+    data: IMinRespondentData;
     onClose?: () => void;
 }
 
@@ -26,11 +26,11 @@ const OrganisationForm = memo<OrganisationFormProps>(({data, onClose}) => {
                 <BsBuildings size={56} />
             </div>
             <div className={styles['organisation-data']}>
-                <div className={styles['name']}>{data.value}</div>
-                <div>Адресс: {data.data.address.value}</div>
-                <div>Инн: {data.data.inn}</div>
-                <div>КПП: {data.data.kpp}</div>
-                {data.data.ogrn && <div>Огрн: {data.data.ogrn}</div>}
+                <div className={styles['name']}>{data.name}</div>
+                <div>Адресс: {data.address}</div>
+                <div>Инн: {data.inn}</div>
+                {/* <div>КПП: {data.data.kpp}</div> */}
+                {/* {data.data.ogrn && <div>Огрн: {data.data.ogrn}</div>} */}
             </div>
         </div>
     )

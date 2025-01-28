@@ -4,8 +4,9 @@ import Button from "../../../../designSystem/button/Button";
 import TextEditor from "../../../../requestItem/textEditor/TextEditor";
 import classNames from "classnames";
 import {UploadFile} from "antd";
-import {useSafeNewRequestDataLayerContext} from "../../../NewRequestDataLayer";
 import {Input, InputSize} from "../../../../designSystem/input";
+import { ClaimCreator } from "classes/claim/ClaimCreator";
+import { IClaimReasonId } from "classes/claim/Claim.Types";
 
 interface NewRequestRequestInfoPartProps {
     onPrevPageClick: () => void;
@@ -15,36 +16,96 @@ interface NewRequestRequestInfoPartProps {
 const CAPTION = 'Обращение';
 
 const NewRequestRequestInfoPart = memo<NewRequestRequestInfoPartProps>(({onPrevPageClick, onNextPageClick}) => {
-    const {
-        reason,
-        claimText,
-        setClaimText,
-        files: filesGlobal,
-        setFiles: setFilesGlobal
-    } = useSafeNewRequestDataLayerContext();
-
-    const [descriptionText, setDescriptionText] = useState<string>(claimText ? claimText : '');
-    const [files, setFiles] = useState<UploadFile[]>(filesGlobal ? filesGlobal : []);
-    const [error, setError] = useState<string>('');
+    // id причины
+    const [reasonId, setReasonId] = useState<IClaimReasonId>(ClaimCreator.instance.claimInfo?.reason?.id);
+    // текст обращения
+    const [descriptionText, setDescriptionText] = useState<string>(ClaimCreator.instance.claimInfo?.text || '');
+    // файлы
+    const [savedFiles, setSavedFiles] = useState<UploadFile[]>(ClaimCreator.instance.files);
+    // флаг наличия изменений
+    const [hasChangesToSave, setHasChangesToSave] = useState<boolean>(false);
+    // ссылка на товар или услугу
     const [linkValue, setLinkValue] = useState<string>('');
+    // ошибка
+    const [error, setError] = useState<string>('');
 
     useEffect(() => {
-        setClaimText(descriptionText);
-        setFilesGlobal(files);
-    }, [descriptionText, files, setClaimText, setFilesGlobal])
+        ClaimCreator.instance.claimCreatorDataChanged.subscribe(handleClaimCreatorDataChanged);
+        handleClaimCreatorDataChanged();
+    }, [])
+
+    const handleClaimCreatorDataChanged = () => {
+        const newId = ClaimCreator.instance.claimInfo?.reason?.id;
+        if (!newId) {
+            setReasonId(null);
+            return;
+        }
+
+        if (newId !== reasonId) {
+            setReasonId(newId);
+        }
+    }
 
     const handleChangeTextEditor = useCallback((text: string, files: UploadFile[]) => {
-        setDescriptionText(text);
-        setFiles(files);
+        // сохраняем текст
+        setDescriptionText(text || '');
+        ClaimCreator.instance.setText(text || '');
+        // очищаем ошибку
         setError('');
+        // сохраняем файлы
+        const newFiles = files.length ? [...savedFiles, ...files] : [];
+        // если есть изменения, то устанавливаем флаг
+        if (text || newFiles.length) {
+            setHasChangesToSave(true);
+        }
+        if (newFiles.length) {
+            setSavedFiles(newFiles);
+            // сохраняем файлы в класс
+            ClaimCreator.instance.saveFiles(files)
+                .then(() => {
+                    // можно показать загрузку
+                })
+                .catch((error) => {
+                    // можно показать ошибку
+                    console.log('NewRequestRequestInfoPart: Ошибка при сохранении файлов:', error);
+                })
+        }
     }, [])
 
     const onLinkInputChange = (value: string) => {
         setLinkValue(value)
     }
 
+    const handlePrevPageClick = () => {
+        if (hasChangesToSave) {
+            // отправляем запрос на создание черновика
+            ClaimCreator.instance.updateDraft()
+                .then(() => {
+                    // можно показать загрузку
+                })
+                .catch(() => {
+                    // можно показать ошибку
+                })
+        }
+        onPrevPageClick();
+    }
+
+    const handleNextPageClick = () => {
+        if (hasChangesToSave) {
+            // отправляем запрос на создание черновика
+            ClaimCreator.instance.updateDraft()
+                .then(() => {
+                    // можно показать загрузку
+                })
+                .catch(() => {
+                    // можно показать ошибку
+                })
+        }
+        onNextPageClick();
+    }
+
     const renderContentByReasonId = () => {
-        switch (reason.id) {
+        switch (reasonId) {
             case 3: {
                 return (
                     <>
@@ -72,7 +133,7 @@ const NewRequestRequestInfoPart = memo<NewRequestRequestInfoPartProps>(({onPrevP
                 <div className={styles['description-caption']}>Текст обращения</div>
                 <TextEditor
                     value={descriptionText}
-                    files={files}
+                    files={savedFiles}
                     onChange={handleChangeTextEditor}
                     placeHolder='Используйте меню выше чтобы форматировать описание'
                     showButtons={false}
@@ -85,8 +146,8 @@ const NewRequestRequestInfoPart = memo<NewRequestRequestInfoPartProps>(({onPrevP
                 />
             </div>
             <div className={styles['buttons']}>
-                <Button onClick={onPrevPageClick} className={styles['back-btn']}>Назад</Button>
-                <Button disabled={!descriptionText} onClick={onNextPageClick} className={styles['next-btn']}>Далее</Button>
+                <Button onClick={handlePrevPageClick} className={styles['back-btn']}>Назад</Button>
+                <Button disabled={!descriptionText} onClick={handleNextPageClick} className={styles['next-btn']}>Далее</Button>
             </div>
         </div>
     )

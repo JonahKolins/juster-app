@@ -1,8 +1,20 @@
 import PostCreateNewClaimRequest, {ICreateNewClaimResponse} from "../requests/PostCreateNewClaimRequest";
-import {INewClaimsItem} from "../../../../classes/claim/Claim.Types";
 
-export const requestCreateNewClaim = async (sessionId: string, claimInfo: INewClaimsItem): Promise<ICreateNewClaimResponse> => {
-    const postCreateNewClaimRequest = new PostCreateNewClaimRequest(sessionId, claimInfo);
+export interface ICreateNewClaimRequest {
+    sessionId: string;
+    claimName: string;
+    recipientInn: string;
+    recipientName: string;
+    recipientAddress: string;
+    recipientEmail: string;
+    contentType: string;
+    contentSum: string;
+    claimText: string;
+    draftId: string;
+}
+
+export const requestCreateNewClaim = async (params: ICreateNewClaimRequest): Promise<ICreateNewClaimResponse> => {
+    const postCreateNewClaimRequest = new PostCreateNewClaimRequest(params);
 
     const data: ICreateNewClaimResponse = await postCreateNewClaimRequest.send();
 

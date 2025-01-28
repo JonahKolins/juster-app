@@ -1,24 +1,23 @@
 import React, {createContext, memo, useContext, useState} from "react";
-import {IReason} from "./newRequestForm/parts/newRequestReasonPart/NewRequestReasonPart";
-import {ISuggestions} from "./api/requests/GetOrganisationSuggestionsRequest";
-import {SavedOrgData} from "./createForm/manualForm/ManualForm";
+import { ISuggestions } from "./api/requests/GetOrganisationSuggestionsRequest";
+import { IClaimReason, IMinRespondentData } from "classes/claim/Claim.Types";
 
 interface NewRequestDataLayerData {
     partnerId: string;
-    reason: IReason;
+    reason: IClaimReason;
     claimTitle: string;
     claimText: string;
     organisationData: IOrganisationData;
     files: any[],
     setPartnerId: (id: string) => void;
-    setReason: (item: IReason) => void;
+    setReason: (item: IClaimReason) => void;
     setClaimTitle: (title: string) => void;
     setClaimText: (text: string) => void;
     setOrganisationData: (data: IOrganisationData) => void;
     setFiles: (files: any) => void;
 }
 
-export type IOrganisationData = SavedOrgData | ISuggestions;
+export type IOrganisationData = IMinRespondentData | ISuggestions;
 
 export const NewRequestDataLayerContext = createContext<NewRequestDataLayerData | undefined>(undefined);
 
@@ -37,7 +36,7 @@ interface NewRequestDataLayerProviderProps {
 }
 
 const NewRequestDataLayerProvider = memo<NewRequestDataLayerProviderProps>(({ children}) => {
-    const [reason, setReason] = useState<IReason>(null);
+    const [reason, setReason] = useState<IClaimReason>(null);
     const [partnerId, setPartnerId] = useState<string>('');
     const [organisationData, setOrganisationData] = useState<IOrganisationData>(null);
 

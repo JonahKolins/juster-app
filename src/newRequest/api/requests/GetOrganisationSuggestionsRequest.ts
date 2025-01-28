@@ -30,15 +30,15 @@ export interface ISuggestions {
     unrestricted_value?: string;
 }
 
-type Data = {
+export interface IRespondentSuggestionsResponse {
     suggestions: ISuggestions[]
 }
 
-class GetOrganisationSuggestionsRequest extends PostRequest<Data> {
+class GetOrganisationSuggestionsRequest extends PostRequest<IRespondentSuggestionsResponse> {
     public constructor(private query: string) {
         super();
     }
-    protected responseHandler = new JSONResponseHandler<Data>();
+    protected responseHandler = new JSONResponseHandler<IRespondentSuggestionsResponse>();
     protected url = url;
     protected host = 'https://suggestions.dadata.ru';
     protected additionalHeaders = {

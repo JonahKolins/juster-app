@@ -19,16 +19,16 @@ export interface CreateDraftResponse {
     draft: CreateDraftParams;
 }
 
+const URL = '/claim/draft';
+
 class CreateDraftRequest extends PostRequest<CreateDraftResponse> {
     public constructor(private params: CreateDraftParams) {
         super();
     }
 
     protected responseHandler = new JSONResponseHandler<CreateDraftResponse>();
-    protected url = '/createDraft';
-    // protected additionalHeaders = {
-    //     "Authorization": `Bearer ${localStorage.getItem("token")}`
-    // }
+
+    protected url = URL;
 
     protected body = {
         ...this.params

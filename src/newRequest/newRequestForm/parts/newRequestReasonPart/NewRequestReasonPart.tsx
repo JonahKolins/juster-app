@@ -1,8 +1,9 @@
-import React, {memo, useState} from "react";
+import React, {memo, useEffect, useState} from "react";
 import styles from "./NewRequestReasonPart.module.sass";
 import classNames from "classnames";
 import Button from "../../../../designSystem/button/Button";
-import {useSafeNewRequestDataLayerContext} from "../../../NewRequestDataLayer";
+import { ClaimCreator } from "../../../../classes/claim/ClaimCreator";
+import { IClaimReason, IClaimReasonId } from "../../../../classes/claim/Claim.Types";
 
 interface NewRequestReasonPartProps {
     onNextPageClick: () => void;
@@ -10,14 +11,7 @@ interface NewRequestReasonPartProps {
 
 const CAPTION = 'Причина обращения';
 
-type ReasonId = 1 | 2 | 3 | 4 | 5 | 6 | 7;
-
-export interface IReason {
-    id: ReasonId;
-    text: string;
-}
-
-const reasons: IReason[] = [
+const reasons: IClaimReason[] = [
     {id: 1, text: 'Неисполнение условий договора'},
     {id: 2, text: 'Обман и мошенничество'},
     {id: 3, text: 'Некачественный товар и услуга'},
@@ -28,18 +22,52 @@ const reasons: IReason[] = [
 ]
 
 const NewRequestReasonPart = memo<NewRequestReasonPartProps>(({onNextPageClick}) => {
-    const {reason, setReason} = useSafeNewRequestDataLayerContext();
-    const [selectedReasonId, setSelectedReasonId] = useState<ReasonId>(reason?.id || null);
+    const [selectedReasonId, setSelectedReasonId] = useState<IClaimReasonId>(null);
+    const [hasChangesToSave, setHasChangesToSave] = useState(false);
 
-    const handleSelectReason = (item: IReason) => {
+    useEffect(() => {
+        ClaimCreator.instance.claimCreatorDataChanged.subscribe(handleClaimCreatorDataChanged);
+        handleClaimCreatorDataChanged();
+    }, [])
+
+    const handleClaimCreatorDataChanged = () => {
+        const newId = ClaimCreator.instance.claimInfo?.reason?.id;
+        if (!newId) {
+            setSelectedReasonId(null);
+            return;
+        }
+
+        if (newId !== selectedReasonId) {
+            setSelectedReasonId(newId);
+        }
+    }
+
+    const handleSelectReason = (item: IClaimReason) => {
         if (item.id === selectedReasonId) {
             setSelectedReasonId(null);
-            setReason(null);
+            ClaimCreator.instance.setReason(null);
             return;
         }
 
         setSelectedReasonId(item.id);
-        setReason(item);
+        ClaimCreator.instance.setReason(item);
+        setHasChangesToSave(true);
+    }
+
+    const handleNextPageClick = () => {
+        // есть ли изменения, которые нужно сохранить
+        if (hasChangesToSave) {
+            // отправляем запрос на создание или обновление черновика
+            ClaimCreator.instance.createOrUpdateDraft()
+                .then(() => {
+                    // можно показать загрузку
+                })
+                .catch(() => {
+                    // можно показать ошибку
+                })
+        }
+        setHasChangesToSave(false);
+        onNextPageClick();
     }
 
     return (
@@ -59,7 +87,7 @@ const NewRequestReasonPart = memo<NewRequestReasonPartProps>(({onNextPageClick})
                 </div>
             ))}
             <div className={styles['buttons']}>
-                <Button disabled={!selectedReasonId} onClick={onNextPageClick}>Далее</Button>
+                <Button disabled={!selectedReasonId} onClick={handleNextPageClick}>Далее</Button>
             </div>
         </div>
     )

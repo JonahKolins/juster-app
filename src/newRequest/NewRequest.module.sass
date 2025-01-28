@@ -1,0 +1,124 @@
+.request_container
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    width: 100%
+    height: 100%
+    padding-top: var(--sizes-navHeight)
+
+.new_request
+    height: 100%
+    width: 100%
+    max-width: 3840px
+    overflow: auto
+    margin: 0px auto 0px
+    flex-direction: column
+    gap: 32px
+
+.main_caption
+    font-size: 24px
+    font-weight: 500
+    margin: 28px 0
+
+.main_section
+    display: flex
+    flex-direction: column
+    flex: 2
+    max-width: 900px
+    min-width: 500px
+
+.search_block
+    margin: 20px 0
+
+.caption
+    font-size: 20px
+    font-weight: 500
+    margin-bottom: 12px
+    margin-top: 20px
+
+.right_sideBar
+    display: flex
+    flex-direction: column
+    flex: 1
+    padding: 0 20px 0 5px
+    max-width: 500px
+    max-height: calc(100vh - 100px)
+    overflow: scroll
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.right_sideBar::-webkit-scrollbar
+    display: none
+
+/* Скрыть полосу прокрутки для IE, Edge и Firefox */
+.right_sideBar
+    -ms-overflow-style: none  /* IE и Edge */
+    scrollbar-width: none  /* Firefox */
+
+.scroll_area
+    overflow-y: scroll
+    overscroll-behavior-y: none
+    scrollbar-width: none
+    -ms-overflow-style: none
+    height: 100%
+    padding-right: 20px
+    padding-left: 20px
+    width: 100%
+
+.scroll_area::-webkit-scrollbar
+    display: none
+
+.create_form
+    background: var(--base-color__white)
+    padding: 20px 0
+    /*border-radius: 16px*/
+    margin-bottom: 20px
+    /*box-shadow: 0 7px 14px rgba(197, 201, 206, 0.6)*/
+
+.create_form > p
+    margin-top: 25px
+    font-size: 32px
+
+.popular_questions
+    background: var(--base-color__white)
+    padding: 20px
+    border-radius: 16px
+    margin-bottom: 20px
+    box-shadow: 0 7px 14px rgba(197, 201, 206, 0.6)
+
+.last_link
+    margin-bottom: 0
+
+.error
+    margin-right: 12px
+    font-size: 14px
+    line-height: 18px
+    color: rgba(189, 189, 189)
+
+.sendForm
+    margin-top: 20px
+
+.buttonContainer
+    display: flex
+    align-items: center
+    justify-content: flex-end
+    margin-top: 12px
+
+.submitButton
+    display: flex
+    justify-content: center
+    width: 120px
+    padding: 5px 12px
+    border: 1px solid var(--base-color__button)
+    border-radius: 4px
+    font-size: 14px
+    line-height: 18px
+    background: var(--base-color__button)
+    cursor: pointer
+    color: #ffffff
+
+.subTitle
+    color: rgba(189, 189, 189)
+    font-size: 14px
+    line-height: 18px
+    font-weight: 400

@@ -1,0 +1,37 @@
+{
+  "claims": [
+    {
+      "id": "string",
+      "isDraft": "boolean",
+      "name": "string",
+      "reason": "string",
+      "status": "string",
+      "text": "string",
+      "createdDate": "number",
+      "lastUpdate": "number",
+      "company": {
+        "id": "string",
+        "data": {
+          "name": "string",
+          "address": {
+            "value": "string",
+            "postalCode": "string"
+          },
+          "inn": "string",
+          "kpp": "string",
+          "ogrn": "string",
+          "secondName": "string"
+        },
+        "value": "string"
+      },
+      "filesCount": "number",
+      "actionsCount": "number"
+    },
+    {
+      "id": "string",
+      "isDraft": "boolean",
+      "name": "string",
+      "...": "..."
+    }
+  ]
+}

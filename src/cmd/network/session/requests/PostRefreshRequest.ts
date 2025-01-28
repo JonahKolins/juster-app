@@ -2,10 +2,11 @@ import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
 
 export interface RefreshResponse {
-    accessToken: string;
+    role: string,
+    sessionId: string
 }
 
-const INFO_URL = '/auth/refreshToken';
+const INFO_URL = '/auth/refreshtoken';
 
 class PostRefreshRequest extends PostRequest<RefreshResponse> {
     public constructor() {

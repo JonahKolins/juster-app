@@ -15,7 +15,7 @@ interface InfoRow {
 
 const MOCK_ADD_CLAIM_INFO = {
     id: '120',
-    status: IClaimStatus.inProcess,
+    status: IClaimStatus.inProgress,
     author: 'Пувел Диареевич',
     institution: 'Роспотребнадзор',
     createdDate: '01.07.2023 10:20',
@@ -94,7 +94,7 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
 
     const renderStatusTag = (status: IClaimStatus, className?: string, children?: React.JSX.Element): React.JSX.Element => {
         switch (status) {
-            case IClaimStatus.created: {
+            case IClaimStatus.new: {
                 return (
                     <Tag color='geekblue' className={className}>
                         Создано
@@ -102,7 +102,7 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
                     </Tag>
                 )
             }
-            case IClaimStatus.underConsideration: {
+            case IClaimStatus.open: {
                 return (
                     <Tag color='blue' className={className}>
                         На рассмотрении
@@ -110,7 +110,7 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
                     </Tag>
                 )
             }
-            case IClaimStatus.inProcess: {
+            case IClaimStatus.inProgress: {
                 return (
                     <Tag color='processing' className={className}>
                         В процессе
@@ -118,7 +118,7 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
                     </Tag>
                 )
             }
-            case IClaimStatus.waitingForAction: {
+            case IClaimStatus.needInfo: {
                 return (
                     <Tag color='orange' className={className}>
                         Требуется действие
@@ -143,6 +143,7 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
                 )
             }
             default: {
+                // @ts-ignore
                 if (status === 'created') {
                     return <Tag color='geekblue' className={className}>Создано{children}</Tag>
                 }
@@ -168,10 +169,11 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
 
     const getStatusName = (status: IClaimStatus): string => {
         switch (status) {
-            case IClaimStatus.created: return 'Создано';
-            case IClaimStatus.underConsideration: return 'На рассмотрении';
-            case IClaimStatus.inProcess: return 'В процессе';
-            case IClaimStatus.waitingForAction: return 'Требуется действие';
+            case IClaimStatus.draft: return 'Черновик';
+            case IClaimStatus.new: return 'Создано';
+            case IClaimStatus.open: return 'На рассмотрении';
+            case IClaimStatus.inProgress: return 'В процессе';
+            case IClaimStatus.needInfo: return 'Требуется действие';
             case IClaimStatus.resolved: return 'Решено';
             case IClaimStatus.declined: return 'Отклонено';
             default: return '';
@@ -206,19 +208,19 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
     const items: MenuProps['items'] = [
         {
             label: 'Создано',
-            key: IClaimStatus.created
+            key: IClaimStatus.new
         },
         {
             label: 'На рассмотрении',
-            key: IClaimStatus.underConsideration,
+            key: IClaimStatus.open,
         },
         {
             label: 'В процессе',
-            key: IClaimStatus.inProcess,
+            key: IClaimStatus.inProgress,
         },
         {
             label: 'Требуется действие',
-            key: IClaimStatus.waitingForAction,
+            key: IClaimStatus.needInfo,
         },
         {
             label: 'Решено',

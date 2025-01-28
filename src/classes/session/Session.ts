@@ -177,20 +177,31 @@ export class Session {
                 .catch((error) => {
                     if (error instanceof UnauthorizedError) {
                         console.log('== UnauthorizedError in restore ==', {error});
+                        // попытаемся обновить сессию
+                        this.refresh();
+                    } else {
+                        this.setLoginError(error);
+                        this.setLoginState(LoginState.loggedOut);
+                        reject(error);
                     }
-                    this.setLoginError(error);
-                    this.setLoginState(LoginState.loggedOut);
-                    reject();
                 })
         })
     }
 
+    // обновление токенов и sessionId
     public refresh = async (): Promise<void> => {
         try {
             const refreshResponse: RefreshResponse = await requestRefresh();
             console.log('session refresh refreshResponse', refreshResponse)
             if (refreshResponse) {
+                // обновим sessionId
+                this._sessionId = refreshResponse.sessionId;
+                localStorage.setItem('sessionId', refreshResponse.sessionId);
+                // установим состояние авторизованного пользователя
                 this.setLoginState(LoginState.loggedIn);
+                // может быть сохраненная ошибка -> удалим ее
+                if (this._error) this._error = null;    
+                // пошлем событие изменения
                 this.sessionDataChangedEvent.emit();
             }
         } catch (error) {

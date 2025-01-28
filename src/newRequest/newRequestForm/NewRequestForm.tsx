@@ -2,13 +2,14 @@ import React, {memo, useEffect, useMemo, useState} from "react";
 import {useLocation} from "react-router-dom";
 import styles from "./NewRequestForm.module.sass";
 import NewRequestReasonPart from "./parts/newRequestReasonPart/NewRequestReasonPart";
-import NewRequestOrganisationInfoPart from "./parts/newRequestOrganisationInfoPart/NewRequestOrganisationInfoPart";
+import NewRequestRespondentInfoPart from "./parts/newRequestRespondentInfoPart/NewRequestRespondentInfoPart";
 import NewRequestRequestInfoPart from "./parts/newRequestRequestInfoPart/NewRequestRequestInfoPart";
 import NewRequestUserDataPart from "./parts/newRequestUserDataPart/NewRequestUserDataPart";
 import NewRequestFinalPart from "./parts/newRequestFinalPart/NewRequestFinalPart";
 import {useSafeNewRequestDataLayerContext} from "../NewRequestDataLayer";
 import {Steps} from "antd";
 import {partners} from "./utils/partners";
+import { ClaimCreator } from "classes/claim/ClaimCreator";
 
 interface NewRequestFormProps {}
 
@@ -48,6 +49,17 @@ const NewRequestForm = memo<NewRequestFormProps>(({}) => {
         }
     }, [])
 
+    useEffect(() => {
+        return () => {
+            console.log('NewRequestForm leave')
+            // был ли переход далее первого шага (есть ли что-то в _claimInfo)
+            if (ClaimCreator.instance.isCreatedDraft) {
+                // отчищаем данные в ClaimCreator
+                ClaimCreator.instance.dispose();
+            }
+        }
+    }, [])
+
     const handleNextPage = () => {
         if (currentPartId === steps.length - 1) return;
         setCurrentPartId(currentPartId + 1);
@@ -69,7 +81,7 @@ const NewRequestForm = memo<NewRequestFormProps>(({}) => {
                 title: 'Организация',
                 alias: 'organisationInfo',
                 content: (
-                    <NewRequestOrganisationInfoPart
+                    <NewRequestRespondentInfoPart
                         onNextPageClick={handleNextPage}
                         onPrevPageClick={handlePrevPage}
                     />

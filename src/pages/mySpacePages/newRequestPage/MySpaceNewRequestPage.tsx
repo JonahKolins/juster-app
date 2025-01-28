@@ -1,8 +1,10 @@
-import React, {memo} from "react";
+import React, { memo } from "react";
 import NewRequestDataLayerProvider from "../../../newRequest/NewRequestDataLayer";
 import DraftCreator from "../../../newRequest/DraftCreator";
 import NewRequestForm from "../../../newRequest/newRequestForm/NewRequestForm";
 import styles from "./MySpaceNewRequest.module.sass";
+import { ScrollablePanel } from "controls/panel/ScrollablePanel";
+import { ScrollBarVisibility } from "controls/scrollArea";
 
 interface NewRequestProps {}
 
@@ -11,12 +13,17 @@ const MySpaceNewRequestPage = memo<NewRequestProps>(() => {
         <div className={styles['new-request']}>
             <NewRequestDataLayerProvider>
                 <DraftCreator>
-                    <div className={styles['scroll-area']}>
-                        <div className={styles['main-section']}>
-                            <div className={styles['main-caption']}>Новое обращение</div>
-                            <NewRequestForm />
+                    <ScrollablePanel
+                        vScroll={ScrollBarVisibility.autoWhenScrollOverArea}
+                        hScroll={ScrollBarVisibility.none}
+                    >
+                        <div className={styles['main-container']}>
+                            <div className={styles['content']}>
+                                <div className={styles['main-caption']}>Новое обращение</div>
+                                <NewRequestForm />
+                            </div>
                         </div>
-                    </div>
+                    </ScrollablePanel>
                 </DraftCreator>
             </NewRequestDataLayerProvider>
         </div>

@@ -241,6 +241,8 @@ export namespace datetimeUtils {
 	 * ss - секунды 2 знака
 	 * */
 	export function formatTime(date: number, format: string): string {
+		if (!date) return '';
+		
 		const d = new Date(date);
 
 		return buildDateStringByFormat(format,
@@ -267,6 +269,8 @@ export namespace datetimeUtils {
 	 * ss - секунды 2 знака
 	 * */
 	export function formatUTCTime(date: number, format: string): string {
+		if (!date) return '';
+
 		const d = new Date(date);
 
 		return buildDateStringByFormat(format,

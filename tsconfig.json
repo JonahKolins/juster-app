@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "outDir": "dist",
     "isolatedModules": true,
     // Путь до базовой папки для поиска не относительных путей до файлов.
     "allowSyntheticDefaultImports": true,

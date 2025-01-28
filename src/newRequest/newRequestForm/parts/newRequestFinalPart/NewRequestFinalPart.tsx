@@ -1,19 +1,17 @@
-import React, {memo, useState} from "react";
+import React, {memo, useEffect, useState} from "react";
 import styles from "./NewRequestFinalPart.module.sass";
 import Button from "../../../../designSystem/button/Button";
-import {IOrganisationData, useSafeNewRequestDataLayerContext} from "../../../NewRequestDataLayer";
-import {ISuggestions} from "../../../api/requests/GetOrganisationSuggestionsRequest";
-import OrganisationForm from "../../components/organisationForm/OrganisationForm";
-import {Modal} from "antd";
+import {Modal, UploadFile} from "antd";
 import {LoaderCircle} from "../../../../designSystem/loader/Loader.Circle";
 import {useNavigate} from "react-router-dom";
 import {formats} from "../../../../requestItem/textEditor/EditorToolbar";
 import ReactQuill from "react-quill";
 import {useProfile} from "../../../../app/hooks/useProfile";
 import {stringUtils} from "../../../../core/utils";
-import {IClaimActionType, IClaimsItemResponse, IClaimStatus} from "../../../../classes/claim/Claim.Types";
+import {IClaimReason, IMinRespondentData} from "../../../../classes/claim/Claim.Types";
 import NBSP = stringUtils.NBSP;
-import {datetimeUtils} from "../../../../core/utils/datetimeUtils";
+import { ClaimCreator } from "classes/claim/ClaimCreator";
+import { ICreateNewClaimResponse } from "cmd/network/claims/requests/PostCreateNewClaimRequest";
 
 interface NewRequestFinalPartProps {
     onPrevPageClick: () => void;
@@ -22,77 +20,49 @@ interface NewRequestFinalPartProps {
 const CAPTION = 'Ваше обращение';
 
 const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) => {
-    const {reason, organisationData, claimText, files} = useSafeNewRequestDataLayerContext();
     const {clientInfo} = useProfile();
     const navigate = useNavigate();
+
+    const [respondentData, setRespondentData] = useState<IMinRespondentData>(ClaimCreator.instance.minRespondentData);
+    const [reason, setReason] = useState<IClaimReason>(ClaimCreator.instance.claimInfo.reason);
+    const [claimText, setClaimText] = useState<string>(ClaimCreator.instance.claimInfo.text);
+    const [files, setFiles] = useState<UploadFile[]>(ClaimCreator.instance.files);
 
     const [createdId, setCreatedId] = useState<string>('');
     const [successDialogOpened, setSuccessDialogOpened] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
 
-    const isSuggestion = (info: IOrganisationData): info is ISuggestions => {
-        return info && Boolean((info as ISuggestions).data) && Boolean((info as ISuggestions).value)
+    useEffect(() => {
+        ClaimCreator.instance.claimCreatorDataChanged.subscribe(handleClaimCreatorDataChanged);
+        handleClaimCreatorDataChanged();
+    }, [])
+
+    const handleClaimCreatorDataChanged = () => {
+        setRespondentData(ClaimCreator.instance.minRespondentData);
+        setReason(ClaimCreator.instance.claimInfo.reason);
+        setClaimText(ClaimCreator.instance.claimInfo.text);
+        setFiles(ClaimCreator.instance.files);
     }
 
     const renderOrganisation = () => {
-
-        if (isSuggestion(organisationData)) {
-            return (
-                <OrganisationForm data={organisationData} />
-            )
-        }
-
+        if (!respondentData) return null;
         return (
             <div>
-                <div>{organisationData.name}</div>
-                <div>{organisationData.inn}</div>
-                <div>{organisationData.address}</div>
+                <div>{respondentData.name}</div>
+                <div>{respondentData.inn}</div>
+                <div>{respondentData.address}</div>
             </div>
         )
     }
 
     const handleSendClaimRequest = () => {
-        const newClaimId = String(Math.floor(1000 + Math.random() * 9000));
-        const initialActionId = String(Math.floor(1000 + Math.random() * 9000));
-
-        const createdAt = new Date().getTime();
-
-        const formatDate = datetimeUtils.formatTime(createdAt, 'DD MMM YYYY в hh:mm')
-
-        const payload: IClaimsItemResponse = {
-            id: newClaimId,
-            name: reason.text,
-            status: IClaimStatus.created,
-            text: claimText,
-            reason: reason,
-            files: files,
-            createdDate: createdAt,
-            organisation: organisationData,
-            actions: [
-                {
-                    type: 'action',
-                    actionType: IClaimActionType.claimCreated,
-                    id: initialActionId,
-                    createdAt: createdAt,
-                    text: `Обращение создано`,
-                    user: {
-                        firstName: clientInfo.firstName,
-                        lastName: clientInfo.lastName,
-                        title: {
-                            id: 'iam',
-                            value: 'Вы'
-                        }
-                    }
-                }
-            ]
-        }
-
         setIsLoading(true);
-        sendClaim(payload)
-            .then((data) => {
+        //
+        ClaimCreator.instance.createClaim()
+            .then((data: ICreateNewClaimResponse) => {
                 if (data) {
-                    setCreatedId(data.id);
+                    setCreatedId(data.claim.genId);
                     setSuccessDialogOpened(true);
                     setError('');
                 } else {
@@ -105,41 +75,6 @@ const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) =
                 setError('Введены не все данные :(')
                 console.log('handleSendClaimRequest -> error', error)
             })
-    }
-
-    const sendClaim = (payload: IClaimsItemResponse): Promise<IClaimsItemResponse> => {
-        return new Promise((resolve, reject) => {
-            if (!reason || !organisationData || !claimText || !clientInfo) {
-                reject();
-                return;
-            }
-
-            const existedRequestsString = localStorage.getItem('user_requests');
-
-            let existedRequestsArray: IClaimsItemResponse[] = [];
-
-            try {
-                if (existedRequestsString) {
-                    const parsedRegUsers: IClaimsItemResponse[] = JSON.parse(existedRequestsString) || [];
-
-                    if (parsedRegUsers?.length) {
-                        existedRequestsArray.push(...parsedRegUsers);
-                    }
-                }
-            } catch (e) {
-                console.error('Cannot parse user_requests in FinalPArt -> existedRequestsString', existedRequestsString);
-            }
-
-            existedRequestsArray.push(payload);
-
-            const requestsToSend = JSON.stringify(existedRequestsArray);
-
-            localStorage.setItem('user_requests', requestsToSend);
-
-            window.setTimeout(() => {
-                resolve(payload);
-            }, 600)
-        })
     }
 
     const handleModalOk = () => {

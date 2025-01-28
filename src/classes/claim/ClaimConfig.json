@@ -1,0 +1,68 @@
+{
+  "claims": [
+    {
+      "id": "string",
+      "isDraft": "boolean",
+      "name": "string",
+      "reason": "string",
+      "status": "string",
+      "text": "string",
+      "createdDate": "number",
+      "lastUpdate": "number",
+      "company": {
+        "id": "string",
+        "data": {
+          "name": "string",
+          "address": {
+            "value": "string",
+            "invalidity": "any",
+            "unrestricted_value": "string",
+            "data": {
+              "postal_code": "string"
+            }
+          },
+          "inn": "string",
+          "kpp": "string",
+          "ogrn": "string",
+          "secondName": "string"
+        },
+        "value": "string"
+      },
+      "files": "any[]",
+      "actions": [
+        {
+          "type": "action",
+          "id": "string",
+          "createdAt": "number",
+          "text": "string",
+          "actionType": "string",
+          "status": "string",
+          "user": {
+            "firstName": "string",
+            "lastName": "string",
+            "title": "string"
+          }
+        },
+        {
+          "type": "message",
+          "id": "string",
+          "createdAt": "number",
+          "text": "string",
+          "actionType": "string",
+          "status": "string",
+          "user": {
+            "firstName": "string",
+            "lastName": "string",
+            "title": "string"
+          }
+        }
+      ]
+    },
+    {
+      "id": "string",
+      "isDraft": "boolean",
+      "name": "string",
+      "...": "..."
+    }
+  ]
+}

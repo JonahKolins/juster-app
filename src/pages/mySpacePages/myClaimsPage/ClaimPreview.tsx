@@ -1,13 +1,14 @@
 import React from "react";
 import {memo} from "react";
 import styles from "./ClaimPreview.module.sass";
-import {IClaimsItem, IClaimStatus} from "../../../classes/claim/Claim.Types";
+import {IClaimStatus, IClaimsItem} from "../../../classes/claim/Claim.Types";
 import {datetimeUtils} from "../../../core/utils/datetimeUtils";
-import {IOrganisationData} from "../../../newRequest/NewRequestDataLayer";
-import {ISuggestions} from "../../../newRequest/api/requests/GetOrganisationSuggestionsRequest";
 import Button from "../../../designSystem/button/Button";
 import {useNavigate} from "react-router-dom";
 import {RiMessage3Line} from "react-icons/ri";
+import classNames from "classnames";
+import {formats} from "../../../requestItem/textEditor/EditorToolbar";
+import ReactQuill from "react-quill";
 
 interface ClaimPreviewProps {
     claim: IClaimsItem;
@@ -30,10 +31,11 @@ const ClaimPreview = memo<ClaimPreviewProps>(({claim, showExample}) => {
 
     const getStatusName = (status: IClaimStatus): string => {
         switch (status) {
-            case IClaimStatus.created: return 'Создано';
-            case IClaimStatus.underConsideration: return 'На рассмотрении';
-            case IClaimStatus.inProcess: return 'В процессе';
-            case IClaimStatus.waitingForAction: return 'Требуется действие';
+            case IClaimStatus.draft: return 'Черновик';
+            case IClaimStatus.new: return 'Создано';
+            case IClaimStatus.open: return 'На рассмотрении';
+            case IClaimStatus.inProgress: return 'В процессе';
+            case IClaimStatus.needInfo: return 'Требуется действие';
             case IClaimStatus.resolved: return 'Решено';
             case IClaimStatus.declined: return 'Отклонено';
             default: return 'Создано';
@@ -47,90 +49,47 @@ const ClaimPreview = memo<ClaimPreviewProps>(({claim, showExample}) => {
                 <tbody>
                     <tr>
                         <td className={styles['key']}>Идентификатор</td>
-                        <td className={styles['value']}>{claim.id}</td>
+                        <td className={styles['value']}>{claim.genId}</td>
                     </tr>
                     <tr>
                         <td className={styles['key']}>Причина</td>
-                        <td className={styles['value']}>{claim.reason.text}</td>
+                        <td className={styles['value']}>{claim.claimInfo.contentType}</td>
                     </tr>
                     <tr>
                         <td className={styles['key']}>Текущий статус</td>
-                        <td className={styles['value']}>{getStatusName(claim.status)}</td>
+                        <td className={styles['value']}>{getStatusName(claim.claimInfo.status as IClaimStatus)}</td>
                     </tr>
                     <tr>
                         <td className={styles['key']}>Дата создания</td>
-                        <td className={styles['value']}>{datetimeUtils.formatTime(claim.createdDate, 'DD.MM.YYYY')}</td>
+                        <td className={styles['value']}>{datetimeUtils.formatTime(claim.claimInfo.createdAt, 'DD.MM.YYYY')}</td>
                     </tr>
                     <tr>
                         <td className={styles['key']}>Последнее обновление</td>
-                        <td className={styles['value']}>{datetimeUtils.formatTime(claim.createdDate, 'DD.MM.YYYY')}</td>
+                        <td className={styles['value']}>{datetimeUtils.formatTime(claim.claimInfo.lastUpd, 'DD.MM.YYYY')}</td>
                     </tr>
                 </tbody>
             </table>
         )
     }
 
-    const isSuggestion = (info: IOrganisationData): info is ISuggestions => {
-        return info && Boolean((info as ISuggestions).data) && Boolean((info as ISuggestions).value)
-    }
-
     const renderCompanyTable = (): React.JSX.Element => {
-        if (!claim) return null;
-
-        // @ts-ignore
-        const company = claim.organisation || claim['org'];
-
-        if (!company) return null;
-
-        if (isSuggestion(company)) {
-            return (
-                <>
-                    <div className={styles['company-caption']}>Обращение направлено в {company.value}</div>
-                    <table className={styles['about-table']}>
-                        <tbody>
-                            <tr>
-                                <td className={styles['key']}>Название</td>
-                                {/*// @ts-ignore*/}
-                                <td className={styles['value']}>{company.data.name['full_with_opf'] || company.value}</td>
-                            </tr>
-                            <tr>
-                                <td className={styles['key']}>Адресс</td>
-                                <td className={styles['value']}>{`${company.data.address.data.postal_code}, ${company.data.address.value}`}</td>
-                            </tr>
-                            <tr>
-                                <td className={styles['key']}>ИНН</td>
-                                <td className={styles['value']}>{company.data.inn}</td>
-                            </tr>
-                            <tr>
-                                <td className={styles['key']}>КПП</td>
-                                <td className={styles['value']}>{company.data.kpp}</td>
-                            </tr>
-                            <tr>
-                                <td className={styles['key']}>ОГРН</td>
-                                <td className={styles['value']}>{company.data.ogrn}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </>
-            )
-        }
-
+        if (!claim || !claim.claimInfo) return null;
         return (
             <>
-                <div className={styles['company-caption']}>Обращение направлено в {company.name}</div>
+                <div className={styles['company-caption']}>Обращение направлено в {claim.claimInfo.recipientName}</div>
                 <table className={styles['about-table']}>
                     <tbody>
                         <tr>
                             <td className={styles['key']}>Название</td>
-                            <td className={styles['value']}>{company.name}</td>
+                            <td className={styles['value']}>{claim.claimInfo.recipientName}</td>
                         </tr>
                         <tr>
                             <td className={styles['key']}>Адресс</td>
-                            <td className={styles['value']}>{company.address}</td>
+                            <td className={styles['value']}>{claim.claimInfo.recipientAddress}</td>
                         </tr>
                         <tr>
                             <td className={styles['key']}>ИНН</td>
-                            <td className={styles['value']}>{company.inn}</td>
+                            <td className={styles['value']}>{claim.claimInfo.recipientInn}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -141,21 +100,21 @@ const ClaimPreview = memo<ClaimPreviewProps>(({claim, showExample}) => {
     return (
         <div className={styles['claim-preview']}>
             <div className={styles['caption-container']}>
-                <div className={styles['caption']}>{claim.name}</div>
+                <div className={styles['caption']}>{claim.claimInfo.recipientName}</div>
                 <div className={styles['buttons']}>
                     <Button
                         className={styles['button']}
-                        onClick={() => navigate(`/mySpace/myRequests/${claim.id}`)}
+                        onClick={() => navigate(`/mySpace/myRequests/${claim.genId}`)}
                         children={
                             <div className={styles['comments']}>
                                 <RiMessage3Line className={styles['icon']} />
-                                <span className={styles['number']}>{claim.actions?.length ? claim.actions.length : 0}</span>
+                                <span className={styles['number']}>{claim.claimInfo.comments?.length ? claim.claimInfo.comments.length : 0}</span>
                             </div>
                         }
                     />
                     <Button
                         className={styles['button']}
-                        onClick={() => navigate(`/mySpace/myRequests/${claim.id}`)}
+                        onClick={() => navigate(`/mySpace/myRequests/${claim.genId}`)}
                         children={'Перейти к обращению'}
                     />
                 </div>
@@ -166,9 +125,15 @@ const ClaimPreview = memo<ClaimPreviewProps>(({claim, showExample}) => {
             <div className={styles['company']}>
                 {renderCompanyTable()}
             </div>
-            <div className={styles['text']}>
-                <div dangerouslySetInnerHTML={{__html: claim.text}}/>
-            </div>
+            <ReactQuill
+                className={styles['text']}
+                theme=""
+                onChange={() => {}}
+                value={claim.claimInfo.textClaim || ''}
+                formats={formats}
+                modules={{toolbar: null}}
+                readOnly={true}
+            />
         </div>
     )
 })

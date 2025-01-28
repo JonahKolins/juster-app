@@ -1,7 +1,7 @@
 import React, {memo} from "react";
 import {useLocation} from "react-router-dom";
 import MainWrapper from "../components/mainWrapper/MainWrapper";
-import styles from "./NewRequest.module.css";
+import styles from "./NewRequest.module.sass";
 import NewRequestDataLayerProvider from "./NewRequestDataLayer";
 import DraftCreator from "./DraftCreator";
 import NewRequestForm from "./newRequestForm/NewRequestForm";

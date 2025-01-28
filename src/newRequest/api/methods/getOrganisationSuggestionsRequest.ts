@@ -1,9 +1,9 @@
-import GetOrganisationSuggestionsRequest from "../requests/GetOrganisationSuggestionsRequest";
+import GetOrganisationSuggestionsRequest, { IRespondentSuggestionsResponse } from "../requests/GetOrganisationSuggestionsRequest";
 
-export default async (query: string) => {
-    const getOrganisationSuggestionsRequest = new GetOrganisationSuggestionsRequest(query);
+export const getRespondentSuggestions = async (query: string): Promise<IRespondentSuggestionsResponse> => {
+    const getRespondentSuggestionsRequest = new GetOrganisationSuggestionsRequest(query);
 
-    const data = await getOrganisationSuggestionsRequest.send();
+    const data = await getRespondentSuggestionsRequest.send();
 
     return data;
 }

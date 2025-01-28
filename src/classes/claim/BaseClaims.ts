@@ -6,6 +6,7 @@ import {Profile} from "../profile/Profile";
 import {requestClaims} from "../../cmd/network/claims/methods/requestClaims";
 import UnauthorizedError from "../../cmd/api/errors/UnauthorizedError";
 import {Session} from "../session/Session";
+import { IPostClaimsResponse } from "cmd/network/claims/requests/PostClaimsRequest";
 
 export class BaseClaims {
     private _claims: IClaimsItem[];
@@ -34,13 +35,13 @@ export class BaseClaims {
     private onProfileChanged = () => {
         // мы посылали запрос на Обращения, но сессия протухла
         // мы ее обновили -> обновился профиль -> теперь можем снова запросить Обращения
-        // if (
-        //     this._error &&
-        //     this._isClaimsReady &&
-        //     Profile.instance.profileReady
-        // ) {
-        //     this.readClaims();
-        // }
+        if (
+            this._error &&
+            !this._isClaimsReady &&
+            Profile.instance.profileReady
+        ) {
+            this.readClaims();
+        }
     }
 
     public get claims(): IClaimsItem[] {
@@ -58,7 +59,7 @@ export class BaseClaims {
     public getClaimById = (id: string): IClaimsItem => {
         if (!this._claims.length) return null;
 
-        const claim = this._claims.find((claim) => claim.id == id);
+        const claim = this._claims.find((claim) => claim.genId == id);
         return !!claim ? claim : null;
     }
 
@@ -68,6 +69,8 @@ export class BaseClaims {
     }
 
     public readClaims = () => {
+        console.log('== readClaims ==');
+        
         const sessionId = Session.instance.sessionId;
         if (!sessionId) return;
 
@@ -76,7 +79,7 @@ export class BaseClaims {
         this.claimsChanged.emit();
 
         requestClaims(sessionId)
-            .then((response) => {
+            .then((response: IPostClaimsResponse) => {
                 this._claims = response.claims;
                 this._isClaimsReady = true;
             })
@@ -84,16 +87,20 @@ export class BaseClaims {
                 // мы не авторизованны
                 if (error instanceof UnauthorizedError) {
                     console.log('== UnauthorizedError in readClaims ==', {error});
+                    // попытаемся обновить сессию
+                    Session.instance.refresh();
                 }
-                // сохраним ошибку
+                // сохраняем ошибку
                 this._error = error;
                 this._isClaimsReady = false;
             })
             .finally(() => {
-                // остановим загрузку
+                // останавливаем загрузку
                 this._isLoading = false;
-                // пошлем событие изменения подписчикам
+                // посылаем событие изменения подписчикам
                 this.claimsChanged.emit();
             })
     }
+
+
 }

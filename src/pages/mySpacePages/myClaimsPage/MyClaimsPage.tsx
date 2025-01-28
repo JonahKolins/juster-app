@@ -1,21 +1,16 @@
 import React, {useEffect, useState} from "react";
 import styles from "./MyClaimsPage.module.sass";
-import {LoaderCircle} from "../../../designSystem/loader/Loader.Circle";
 import {ISuggestions} from "../../../newRequest/api/requests/GetOrganisationSuggestionsRequest";
-import {formats} from "../../../requestItem/textEditor/EditorToolbar";
-import ReactQuill from "react-quill";
 import {IOrganisationData} from "../../../newRequest/NewRequestDataLayer";
 import {useNavigate} from "react-router-dom";
 import {ScrollBarVisibility} from "../../../controls/scrollArea";
 import {ScrollablePanel} from "../../../controls/panel/ScrollablePanel";
-import {Tabs, TabsProps, Tag} from "antd";
-import {useProfile} from "../../../app/hooks/useProfile";
-import {IClaimsItem, IClaimsItemResponse, IClaimStatus} from "../../../classes/claim/Claim.Types";
+import {TabsProps, Tag} from "antd";
+import {IClaimsItemResponse, IClaimStatus, IClaimsItem} from "../../../classes/claim/Claim.Types";
 import {useClaims} from "../../../app/hooks/useClaims";
 import classNames from "classnames";
 import { BsChevronRight } from "react-icons/bs";
 import { RiMessage3Line } from "react-icons/ri";
-import Button from "../../../designSystem/button/Button";
 import { IoAdd } from "react-icons/io5";
 import ClaimPreview from "./ClaimPreview";
 
@@ -91,10 +86,11 @@ const MyClaimsPage = () => {
 
     const getStatusName = (status: IClaimStatus): string => {
         switch (status) {
-            case IClaimStatus.created: return 'Создано';
-            case IClaimStatus.underConsideration: return 'На рассмотрении';
-            case IClaimStatus.inProcess: return 'В процессе';
-            case IClaimStatus.waitingForAction: return 'Требуется действие';
+            case IClaimStatus.draft: return 'Черновик';
+            case IClaimStatus.new: return 'Создано';
+            case IClaimStatus.open: return 'На рассмотрении';
+            case IClaimStatus.inProgress: return 'В процессе';
+            case IClaimStatus.needInfo: return 'Требуется действие';
             case IClaimStatus.resolved: return 'Решено';
             case IClaimStatus.declined: return 'Отклонено';
             default: return '';
@@ -113,27 +109,33 @@ const MyClaimsPage = () => {
                     <Tag color='volcano'>Отклонено</Tag>
                 )
             }
-            case IClaimStatus.created: {
+            case IClaimStatus.draft: {
+                return (
+                    <Tag color='orange'>Черновик</Tag>
+                )
+            }
+            case IClaimStatus.new: {
                 return (
                     <Tag color='geekblue'>Создано</Tag>
                 )
             }
-            case IClaimStatus.inProcess: {
+            case IClaimStatus.inProgress: {
                 return (
                     <Tag color='blue'>В процессе</Tag>
                 )
             }
-            case IClaimStatus.underConsideration: {
+            case IClaimStatus.open: {
                 return (
                     <Tag color='blue'>На рассмотрении</Tag>
                 )
             }
-            case IClaimStatus.waitingForAction: {
+            case IClaimStatus.needInfo: {
                 return (
                     <Tag color='orange'>Требуется действие</Tag>
                 )
             }
             default: {
+                // @ts-ignore
                 if (status === 'created') {
                     return <Tag color='geekblue'>Создано</Tag>
                 }
@@ -148,19 +150,24 @@ const MyClaimsPage = () => {
     }
 
     const renderRequests = (items: IClaimsItem[]): React.JSX.Element => {
+        if (!items.length) return null;
         return (
             <>
                 {items.map((claimsItem: IClaimsItem, index) => {
-                    const firstIndex = claimsItem.text.indexOf('<p>');
-                    const lastIndex = claimsItem.text.indexOf('</p>');
-                    const shortDescription = claimsItem.text.slice(firstIndex, lastIndex + 4) || claimsItem.text;
+
+                    let shortDescription = '';
+                    if (claimsItem.genId) {
+                        const firstIndex = claimsItem.claimInfo.textClaim.indexOf('<p>');
+                        const lastIndex = claimsItem.claimInfo.textClaim.indexOf('</p>');
+                        shortDescription = claimsItem.claimInfo.textClaim.slice(firstIndex, lastIndex + 4) || claimsItem.claimInfo.textClaim;
+                    }
 
                     return (
                         <div
-                            key={`${claimsItem.id}_${index}`}
+                            key={`${claimsItem.genId}_${index}`}
                             className={classNames(
                                 styles['list-item'],
-                                currentPreview?.id == claimsItem.id && styles['_selected']
+                                currentPreview?.genId == claimsItem.genId && styles['_selected']
                             )}
                             onClick={() => handleListItemClick(claimsItem)}
                         >
@@ -169,9 +176,9 @@ const MyClaimsPage = () => {
                             </div>
                             <div
                                 className={styles['list-item-caption']}
-                                onClick={() => handleRequestClick(claimsItem.id)}
+                                onClick={() => handleRequestClick(claimsItem.genId)}
                             >
-                                {claimsItem.reason.text}
+                                {claimsItem.claimInfo.contentType}
                             </div>
                             {shortDescription && (
                                 <div className={styles['list-item-text']} dangerouslySetInnerHTML={{__html: shortDescription}} />
@@ -179,7 +186,7 @@ const MyClaimsPage = () => {
                             <div className={styles['list-item-actions']}>
                                 <div className={styles['comments']}>
                                     <RiMessage3Line className={styles['icon']} />
-                                    <span className={styles['number']}>{claimsItem.actions?.length ? claimsItem.actions.length : 0}</span>
+                                    <span className={styles['number']}>{claimsItem.claimInfo.comments?.length ? claimsItem.claimInfo.comments.length : 0}</span>
                                 </div>
                             </div>
                         </div>
@@ -267,10 +274,10 @@ const MyClaimsPage = () => {
         const sentRequests = getSentRequests();
         return (
             <div className={styles['requests-container']}>
-                {!!sentRequests.length
+                {/* {!!sentRequests.length
                     ? renderRequests(sentRequests)
                     : <div>У вас пока что нет обращений</div>
-                }
+                } */}
             </div>
         )
     }

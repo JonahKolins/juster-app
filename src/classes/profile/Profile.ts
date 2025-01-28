@@ -8,6 +8,7 @@ import {
 } from "../../cmd/network/profile/requests/PostProfileRequest";
 import {EventEmitter} from "../../core/event";
 import {ApiError, NetworkError} from "../../core/errors";
+import UnauthorizedError from "cmd/api/errors/UnauthorizedError";
 
 export class Profile {
 
@@ -71,10 +72,17 @@ export class Profile {
                 this.applyReadProfileResponse(response);
             })
             .catch((error) => {
-                this._error = error;
-                this._isProfileReady = false;
-                this._isLoading = false;
-                this.profileChanged.emit();
+                // если ошибка авторизации, то попытаемся обновить сессию
+                if (error instanceof UnauthorizedError) {
+                    console.log('== UnauthorizedError in readProfile ==', {error});
+                    // попытаемся обновить сессию
+                    Session.instance.refresh();
+                } else {
+                    this._error = error;
+                    this._isProfileReady = false;
+                    this._isLoading = false;
+                    this.profileChanged.emit();
+                }
             })
     }
 

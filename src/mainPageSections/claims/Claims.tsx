@@ -29,18 +29,20 @@ const Claims: FC = () => {
     }
 
     const tableRows = useMemo<ClaimRowData[]>(() => {
-        if (!claims.length || isClaimsLoading) return [];
+        if (!claims?.length || isClaimsLoading) return [];
 
-        const rowsArray: ClaimRowData[] = claims.map((item) => {
+        const claimsToRender = claims.slice(0, 10);
+
+        const rowsArray: ClaimRowData[] = claimsToRender.map((item) => {
             return {
-                key: item.id,
-                id: item.id,
-                name: item.name,
-                createdDate: datetimeUtils.formatTime(item.createdDate, 'DD.MM.YYYY'),
-                status: item.status,
-                text: item.text,
-                isRowExpandable: !!item.text,
-                actions: item.actions
+                key: item.genId,
+                id: item.genId,
+                name: item.claimInfo.contentType,
+                createdDate: datetimeUtils.formatTime(item.claimInfo.createdAt, 'DD.MM.YYYY'),
+                status: item.claimInfo.status as IClaimStatus,
+                text: item.claimInfo.textClaim,
+                isRowExpandable: !!item.claimInfo.textClaim,
+                actions: [] // TODO: add actions
             }
         })
 
@@ -74,27 +76,33 @@ const Claims: FC = () => {
                     <Tag color='volcano'>Отклонено</Tag>
                 )
             }
-            case IClaimStatus.created: {
+            case IClaimStatus.new: {
                 return (
                     <Tag color='geekblue'>Создано</Tag>
                 )
             }
-            case IClaimStatus.inProcess: {
+            case IClaimStatus.inProgress: {
                 return (
                     <Tag color='blue'>В процессе</Tag>
                 )
             }
-            case IClaimStatus.underConsideration: {
+            case IClaimStatus.draft: {
+                return (
+                    <Tag color='geekblue'>Черновик</Tag>
+                )
+            }
+            case IClaimStatus.open: {
                 return (
                     <Tag color='blue'>На рассмотрении</Tag>
                 )
             }
-            case IClaimStatus.waitingForAction: {
+            case IClaimStatus.needInfo: {
                 return (
                     <Tag color='orange'>Требуется действие</Tag>
                 )
             }
             default: {
+                // @ts-ignore
                 if (status === 'created') {
                     return <Tag color='geekblue'>Создано</Tag>
                 }

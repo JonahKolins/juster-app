@@ -6,7 +6,6 @@ import EditorToolbar, {formats, modules} from "./EditorToolbar";
 import {DeltaStatic, Sources} from "quill";
 import UploadFiles from "../../components/uploadFilesNew/UploadFiles";
 import classNames from "classnames";
-import {useDraftCreatorContext} from "../../newRequest/DraftCreator";
 
 interface TextEditorProps {
     value?: string;
@@ -26,8 +25,6 @@ const TextEditor = memo<TextEditorProps>(({value, files, onChange, saveComment, 
     const [editorValue, setEditorValue] = useState<string>(value ? value : '');
     const [editorActive, setEditorActive] = useState<boolean>(false);
     const [addedFiles, setAddedFiles] = useState<UploadFile[]>(files ? files : []);
-
-    const {createOrEditDraft} = useDraftCreatorContext();
 
     useEffect(() => {
         if (clean) {
@@ -70,8 +67,9 @@ const TextEditor = memo<TextEditorProps>(({value, files, onChange, saveComment, 
 
     const handleFilesChanged = useCallback((files: UploadFile[]) => {
         setAddedFiles(files);
-        onChange && onChange(editorValue === '<p><br></p>' ? '' : editorValue, files);
-        localStorage.setItem("claim.draft.files", JSON.stringify(files));
+
+        const editorText = editorValue === '<p><br></p>' ? '' : editorValue;
+        onChange && onChange(editorText, files);
     }, [editorValue, onChange])
 
     const saveInDraft = useCallback(() => {

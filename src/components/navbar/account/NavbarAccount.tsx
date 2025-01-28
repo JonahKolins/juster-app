@@ -81,8 +81,6 @@ const NavbarAccount = memo<NavbarAccountProps>(({onClick: propsOnClick}) => {
         propsOnClick();
     }, [navigate, propsOnClick])
 
-    console.log('Navbar', clientInfo)
-
     return (
         <div className={styles['navbar-account']}>
             {isProfileLoading
