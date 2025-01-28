@@ -4,7 +4,7 @@ import {Button, Input} from "antd";
 import {ISuggestions} from "../api/requests/GetOrganisationSuggestionsRequest";
 import {AiOutlineRest} from "react-icons/ai";
 import {FaStarOfLife} from "react-icons/fa";
-import {useSafeNewRequestDataLayerContext} from "../NewRequestDataLayer";
+import { ClaimCreator } from "classes/claim/ClaimCreator";
 
 enum InputID {
     name,
@@ -32,8 +32,6 @@ const ManualForm: FC<ManualFormProps> = ({selectedOrganisation, saveOrganisation
     const [address, setAddress] = useState<string>(selectedOrganisation ? selectedOrganisation.data.address.value :'');
     const [error, setError] = useState<boolean>(false);
     const [message, setMessage] = useState<string>(null);
-
-    const {setOrganisationData} = useSafeNewRequestDataLayerContext();
 
     useEffect(() => {
         setName(selectedOrganisation ? selectedOrganisation.value : '');
@@ -93,7 +91,7 @@ const ManualForm: FC<ManualFormProps> = ({selectedOrganisation, saveOrganisation
         const isValid = validateSubmitData();
         if (isValid) {
             saveOrganisationData({name, inn, kpp, address});
-            setOrganisationData({name, inn, address});
+            ClaimCreator.instance.setRespondent({name, inn, address});
             setError(false);
         }
     }, [address, inn, kpp, name, saveOrganisationData, validateSubmitData])

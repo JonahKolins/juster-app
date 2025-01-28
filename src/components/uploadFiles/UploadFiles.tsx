@@ -2,7 +2,6 @@ import React, {ChangeEvent, useCallback, useRef, useState} from "react";
 import styles from "./UploadFiles.module.sass";
 import {HorizontalScroll} from "../horizontalScroll/HorizontalScroll";
 import {RiDeleteBin5Fill} from "react-icons/ri"
-import {useSafeNewRequestDataLayerContext} from "../../newRequest/NewRequestDataLayer";
 
 interface UploadFilesProps {
 
@@ -12,8 +11,6 @@ const UploadFiles = React.memo<UploadFilesProps>(() => {
     const uploadRef = useRef(null);
     const [files, setUpLoadedFiles] = useState<FileList>(null);
     const [hoveredEl, setHoveredEl] = useState<string>(null);
-
-    const {setFiles} = useSafeNewRequestDataLayerContext();
 
     const createFileList = (files: Array<File>): FileList => {
         return {
@@ -37,10 +34,10 @@ const UploadFiles = React.memo<UploadFilesProps>(() => {
             const newFileLIst = createFileList(newArrOfFiles);
 
             setUpLoadedFiles(newFileLIst);
-            setFiles(newFileLIst);
+            // setFiles(newFileLIst);
         } else {
             setUpLoadedFiles(e.target.files);
-            setFiles(e.target.files);
+            // setFiles(e.target.files);
         }
     }, [files])
 
@@ -79,7 +76,7 @@ const UploadFiles = React.memo<UploadFilesProps>(() => {
         }
 
         setUpLoadedFiles(createFileList(result));
-        setFiles(createFileList(result));
+        // setFiles(createFileList(result));
     }, [files])
 
     const renderUploadFilePreview = (file: File): JSX.Element => {

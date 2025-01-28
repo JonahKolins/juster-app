@@ -2,10 +2,9 @@ import React, {memo, useCallback, useEffect, useState} from "react";
 import styles from "./AdditionalInfo.module.sass";
 import {Dropdown, MenuProps, Modal, Tag} from "antd";
 import {BsChevronDown} from "react-icons/bs";
-import {IOrganisationData} from "../../newRequest/NewRequestDataLayer";
 import {ISuggestions} from "../../newRequest/api/requests/GetOrganisationSuggestionsRequest";
 import {Claim} from "../../classes/claim/Claim";
-import {IClaimAction, IClaimActionType, IClaimStatus} from "../../classes/claim/Claim.Types";
+import {IClaimAction, IClaimActionType, IClaimStatus, IMinRespondentData} from "../../classes/claim/Claim.Types";
 import {useProfile} from "../../app/hooks/useProfile";
 
 interface InfoRow {
@@ -27,10 +26,10 @@ interface AdditionalInfoProps {
     id: string;
     author: string;
     status: IClaimStatus;
-    org: IOrganisationData;
+    respondent: IMinRespondentData;
 }
 
-const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, org}) => {
+const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, respondent}) => {
     const {clientInfo} = useProfile();
 
     const [rows, setRows] = useState<InfoRow[]>(null);
@@ -41,11 +40,7 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
         createInfoRows();
     }, [])
 
-    const isSuggestion = (info: IOrganisationData): info is ISuggestions => {
-        return info && Boolean((info as ISuggestions).data) && Boolean((info as ISuggestions).value)
-    }
-
-    const renderOrgView = (name: string, address: string, inn: string) => {
+    const renderRespondentView = (name: string, address: string, inn: string) => {
         return (
             <div className={styles['org-table']}>
                 <div className={styles['org-row']}>
@@ -64,11 +59,9 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
         )
     }
 
-    const renderOrg = () => {
-        if (!org) return null;
-        return isSuggestion(org)
-            ? renderOrgView(org.value, org.data.address.value, org.data.inn)
-            : renderOrgView(org.name, org.address, org.inn)
+    const renderRespondent = () => {
+        if (!respondent) return null;
+        return renderRespondentView(respondent.name, respondent.address, respondent.inn)
     }
 
     const createInfoRows = useCallback(() => {
@@ -85,7 +78,7 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
                 resultRows.push({name: 'Автор', value: author})
             }
             if (field === 'institution') {
-                resultRows.push({name: 'Учреждение', value: renderOrg()})
+                resultRows.push({name: 'Учреждение', value: renderRespondent()})
             }
         }
 
@@ -193,7 +186,7 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
             const newMessageAction: Omit<IClaimAction, 'id'> = {
                 createdAt: new Date().getTime(),
                 text: `%user% поменял статус на %status% %date%`,
-                type: "action",
+                type: "ACTION",
                 actionType: IClaimActionType.statusChanged,
                 status: e.key as IClaimStatus,
                 user: {
@@ -247,7 +240,7 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
         const newMessageAction: Omit<IClaimAction, 'id'> = {
             createdAt: new Date().getTime(),
             text: `%user% поменял статус на %status% %date%`,
-            type: "action",
+            type: "ACTION",
             actionType: IClaimActionType.statusChanged,
             status: IClaimStatus.declined,
             user: {

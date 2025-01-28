@@ -2,7 +2,6 @@ import React, {memo} from "react";
 import {useLocation} from "react-router-dom";
 import MainWrapper from "../components/mainWrapper/MainWrapper";
 import styles from "./NewRequest.module.sass";
-import NewRequestDataLayerProvider from "./NewRequestDataLayer";
 import DraftCreator from "./DraftCreator";
 import NewRequestForm from "./newRequestForm/NewRequestForm";
 
@@ -34,19 +33,17 @@ const NewRequests = memo<NewRequestsProps>(() => {
     }
 
     return renderContent(
-        <NewRequestDataLayerProvider>
-            <DraftCreator>
-                <div className={styles.scroll_area}>
-                    <div className={styles.main_section}>
-                        <div className={styles.main_caption}>Новое обращение</div>
-                        {hasExternalSearchParams()
-                            ? <NewRequestForm />
-                            : <div>Не валидный url</div>
-                        }
-                    </div>
+        <DraftCreator>
+            <div className={styles.scroll_area}>
+                <div className={styles.main_section}>
+                    <div className={styles.main_caption}>Новое обращение</div>
+                    {hasExternalSearchParams()
+                        ? <NewRequestForm />
+                        : <div>Не валидный url</div>
+                    }
                 </div>
-            </DraftCreator>
-        </NewRequestDataLayerProvider>
+            </div>
+        </DraftCreator>
     );
 })
 

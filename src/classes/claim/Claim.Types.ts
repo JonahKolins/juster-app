@@ -42,7 +42,7 @@ export interface IComment {
 }
 
 interface IClaimActionBase {
-    type: 'action' | 'message';
+    type: 'ACTION' | 'MESSAGE';
     id: string;
     createdAt: number;
     text: string;
@@ -50,9 +50,9 @@ interface IClaimActionBase {
 }
 
 export enum IClaimActionType {
-    claimCreated = 'claimCreated',
-    statusChanged = 'statusChanged',
-    addDocs = 'addDocs'
+    claimCreated = 'CLAIM_CREATED',
+    statusChanged = 'CLAIM_STATUS_CHANGED',
+    addDocs = 'ADD_DOCS'
 }
 
 export interface IClaimAction extends IClaimActionBase {
@@ -77,7 +77,6 @@ export interface IClaimsItemResponse {
     partnerId?: string;
 }
 
-// TODO переименовать IClaimsItemResponse на IClaimsItem
 export interface IClaimsItem {
     genId: string;
     claimInfo: {
@@ -103,9 +102,9 @@ export interface IMinRespondentData {
 }
 
 export const isClaimAction = (obj: TClaimAction): obj is IClaimAction => {
-    return (obj as IClaimAction).type == 'action' && !!(obj as IClaimAction).actionType;
+    return (obj as IClaimAction).type == 'ACTION' && !!(obj as IClaimAction).actionType;
 }
 
 export const isClaimMessage = (obj: TClaimAction): obj is IClaimMessage => {
-    return (obj as IClaimMessage).type == 'message' && !!(obj as IClaimMessage).text;
+    return (obj as IClaimMessage).type == 'MESSAGE' && !!(obj as IClaimMessage).text;
 }

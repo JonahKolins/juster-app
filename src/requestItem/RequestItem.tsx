@@ -14,7 +14,7 @@ import {ScrollablePanel} from "../controls/panel/ScrollablePanel";
 import {useProfile} from "../app/hooks/useProfile";
 import {stringUtils} from "../core/utils";
 import NBSP = stringUtils.NBSP;
-import {IClaimMessage, IClaimsItemResponse} from "../classes/claim/Claim.Types";
+import {IClaimMessage, IClaimsItem, IClaimStatus} from "../classes/claim/Claim.Types";
 import {ApiError, NetworkError} from "../core/errors";
 import {IClaimInfoContext, withClaimInfoHOC} from "./withClaimInfo";
 
@@ -24,7 +24,7 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
     const {id} = useParams();
     const {clientInfo} = useProfile();
     //
-    const [data, setData] = useState<IClaimsItemResponse>(null);
+    const [data, setData] = useState<IClaimsItem>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<ApiError | NetworkError>(null);
 
@@ -54,7 +54,7 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
         const newMessageAction: Omit<IClaimMessage, 'id'> = {
             createdAt: new Date().getTime(),
             text: text,
-            type: "message",
+            type: "MESSAGE",
             user: {
                 firstName: clientInfo?.firstName,
                 lastName: clientInfo?.lastName
@@ -75,7 +75,7 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
                     <div className={styles.main_info}>
                         <div style={{color: '#6B778C', marginBottom: '12px'}}>{`bread > crumbs`}</div>
                         <div className={styles.form}>
-                            <div className={styles.caption}>{data.name}</div>
+                            <div className={styles.caption}>{data.claimInfo.contentType}</div>
                             <div className={styles.description}>Описание</div>
                             <ReactQuill
                                 className={classNames(
@@ -83,7 +83,7 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
                                 )}
                                 theme=""
                                 onChange={() => {}}
-                                value={data.text || ''}
+                                value={data.claimInfo.textClaim || ''}
                                 formats={formats}
                                 modules={{toolbar: null}}
                                 readOnly={true}
@@ -101,23 +101,27 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
                         <div className={styles.actions}>
                             <div className={styles.title}>Активность</div>
                             <TextEditor saveComment={handleSaveComment} />
-                            {data.actions?.length ? (
-                                <ClaimActions actions={data.actions} id={id}/>
+                            {data.claimInfo.comments?.length ? (
+                                <ClaimActions actions={data.claimInfo.comments} id={id}/>
                             ) : (
                                 <div className={styles.no_activities}>Нет активности</div>
                             )}
                         </div>
                     </div>
                     <AdditionalInfo
-                        id={data.id}
+                        id={data.genId}
                         manager={manager}
-                        status={data.status}
+                        status={data.claimInfo.status as IClaimStatus}
                         author={
                             clientInfo?.firstName || clientInfo?.lastName
                                 ? `${clientInfo?.firstName}${NBSP}${clientInfo?.lastName}`
                                 : `${clientInfo?.email}`
                         }
-                        org={data.organisation}
+                        respondent={{
+                            name: data.claimInfo.recipientName,
+                            address: data.claimInfo.recipientAddress,
+                            inn: data.claimInfo.recipientInn
+                        }}
                     />
                 </div>
             </DraftCreator>

@@ -1,23 +1,23 @@
 import React, {memo, useCallback} from "react";
 import styles from "./SubmitForm.module.sass";
 import {Button} from "antd";
-import {useSafeNewRequestDataLayerContext} from "../NewRequestDataLayer";
 import {requestCreateNewClaim} from "../api/methods/requestCreateNewClaim";
 import {CreateNewClaimParams} from "../api/requests/PostCreateNewClaimRequest";
+import { ClaimCreator } from "classes/claim/ClaimCreator";
 
 interface SubmitFormProps {
     error: string
 }
 
 const SubmitForm = memo<SubmitFormProps>(({error}) => {
-    const claimData = useSafeNewRequestDataLayerContext();
+    const claimData = ClaimCreator.instance.claimInfo;
 
     const submitFullForm = useCallback(async () => {
         const sessionId = localStorage.getItem('id');
 
         const params: CreateNewClaimParams = {
-            claimName: claimData.claimTitle,
-            claimText: claimData.claimText,
+            claimName: claimData?.name,
+            claimText: claimData?.text,
             contentSum: "1500000",
             contentType: "Appeal",
             recipientAddress: 'claimData.organisationData.address',

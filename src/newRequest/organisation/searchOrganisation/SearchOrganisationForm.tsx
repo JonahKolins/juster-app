@@ -2,8 +2,8 @@ import React, {FC, useCallback, useState} from "react";
 import styles from "./SearchOrganisationForm.module.sass";
 import {AutoComplete, Input} from "antd";
 import ManualForm from "../ManualForm";
-import getOrganisationSuggestionsRequest from "../../api/methods/getOrganisationSuggestionsRequest";
-import {ISuggestionData, ISuggestions} from "../../api/requests/GetOrganisationSuggestionsRequest";
+import { getRespondentSuggestions } from "../../api/methods/getOrganisationSuggestionsRequest";
+import {ISuggestions} from "../../api/requests/GetOrganisationSuggestionsRequest";
 import {SavedOrgData} from "../../clientProblemData/ClientProblemData";
 
 interface IOptions {
@@ -70,7 +70,7 @@ const SearchOrganisationForm: FC<SearchOrganisationFormProps> = ({disabled, subm
 
     // поиск организаций (подсказок)
     const searchHandle = useCallback((value: string) => {
-        getOrganisationSuggestionsRequest(value)
+        getRespondentSuggestions(value)
             .then((res) => {
                 console.log('res', res.suggestions)
                 setSearchResult(res.suggestions)

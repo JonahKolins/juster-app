@@ -6,7 +6,6 @@ import NewRequestRespondentInfoPart from "./parts/newRequestRespondentInfoPart/N
 import NewRequestRequestInfoPart from "./parts/newRequestRequestInfoPart/NewRequestRequestInfoPart";
 import NewRequestUserDataPart from "./parts/newRequestUserDataPart/NewRequestUserDataPart";
 import NewRequestFinalPart from "./parts/newRequestFinalPart/NewRequestFinalPart";
-import {useSafeNewRequestDataLayerContext} from "../NewRequestDataLayer";
 import {Steps} from "antd";
 import {partners} from "./utils/partners";
 import { ClaimCreator } from "classes/claim/ClaimCreator";
@@ -31,7 +30,6 @@ const PARTNER_ID_PARAM = 'id';
 
 const NewRequestForm = memo<NewRequestFormProps>(({}) => {
     const [currentPartId, setCurrentPartId] = useState<number>(PageId.reason);
-    const {setPartnerId, setOrganisationData} = useSafeNewRequestDataLayerContext();
     const location = useLocation();
 
     useEffect(() => {
@@ -40,12 +38,13 @@ const NewRequestForm = memo<NewRequestFormProps>(({}) => {
             const id = searchString.get(PARTNER_ID_PARAM);
             if (!id?.length) return;
             //
-            setPartnerId(id);
+            ClaimCreator.instance.setPartnerId(id);
             //
+            // TODO: добавить получение данных партнера
             const partnerData = partners.find((p) => p.id === id);
             if (!partnerData) return;
             //
-            setOrganisationData(partnerData);
+            // setOrganisationData(partnerData); 
         }
     }, [])
 

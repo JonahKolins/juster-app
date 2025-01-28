@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from "react";
 import styles from "./MyClaimsPage.module.sass";
-import {ISuggestions} from "../../../newRequest/api/requests/GetOrganisationSuggestionsRequest";
-import {IOrganisationData} from "../../../newRequest/NewRequestDataLayer";
 import {useNavigate} from "react-router-dom";
 import {ScrollBarVisibility} from "../../../controls/scrollArea";
 import {ScrollablePanel} from "../../../controls/panel/ScrollablePanel";
 import {TabsProps, Tag} from "antd";
-import {IClaimsItemResponse, IClaimStatus, IClaimsItem} from "../../../classes/claim/Claim.Types";
+import {IClaimStatus, IClaimsItem} from "../../../classes/claim/Claim.Types";
 import {useClaims} from "../../../app/hooks/useClaims";
 import classNames from "classnames";
 import { BsChevronRight } from "react-icons/bs";
@@ -52,7 +50,7 @@ const MyClaimsPage = () => {
     //     return resultArr;
     // }
 
-    const getSentRequests = (): IClaimsItemResponse[] => {
+    const getSentRequests = (): IClaimsItem[] => {
         //TODO сделать исходящие обращения для компании
         return []
     }
@@ -78,10 +76,6 @@ const MyClaimsPage = () => {
 
     const handleRequestClick = (id: string) => {
         navigate(`/mySpace/myRequests/${id}`)
-    }
-
-    const isSuggestion = (info: IOrganisationData): info is ISuggestions => {
-        return info && Boolean((info as ISuggestions).data) && Boolean((info as ISuggestions).value)
     }
 
     const getStatusName = (status: IClaimStatus): string => {

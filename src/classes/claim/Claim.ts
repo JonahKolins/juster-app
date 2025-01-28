@@ -1,11 +1,12 @@
-import {IClaimsItemResponse, TClaimAction} from "./Claim.Types";
+import {IClaimsItem, TClaimAction} from "./Claim.Types";
 import {EventEmitter} from "../../core/event";
 import {testClaimInfo} from "../../app/auth/methods/testClaimInfo";
 import {ICreateClaimActionRequestParams, testCreateClaimAction} from "../../app/auth/methods/testCreateClaimAction";
 import {ApiError, NetworkError} from "../../core/errors";
+import { BaseClaims } from "./BaseClaims";
 
 export class Claim {
-    private _claimData: IClaimsItemResponse;
+    private _claimData: IClaimsItem;
     //
     private _isLoading: boolean;
     private _error: ApiError | NetworkError;
@@ -30,10 +31,10 @@ export class Claim {
 
     public get actions(): TClaimAction[] {
         if (!this._claimData) return null;
-        return this._claimData.actions;
+        return this._claimData.claimInfo.comments || [];
     }
 
-    public get claimData(): IClaimsItemResponse {
+    public get claimData(): IClaimsItem {   
         return this._claimData
     }
 
@@ -54,7 +55,7 @@ export class Claim {
         this.setLoadingState(true);
         //
         this.readClaimInfoRequest(id)
-            .then((response) => {
+            .then((response: IClaimsItem) => {
                 console.log('readClaimInfoRequest', response)
                 this._claimData = response;
                 //
@@ -71,9 +72,9 @@ export class Claim {
     }
 
     public addAction = (action: Omit<TClaimAction, 'id'>) => {
-        this.addNewActionRequest({claimId: this._claimData.id, action: action})
+        this.addNewActionRequest({claimId: this._claimData.genId, action: action})
             .then((response) => {
-                this._claimData = response;
+                // this._claimData = response;
                 //
                 this._error = null;
             })
@@ -87,8 +88,11 @@ export class Claim {
             })
     }
 
-    private readClaimInfoRequest = (id: string): Promise<IClaimsItemResponse> => {
-        return testClaimInfo({id: id})
+    private readClaimInfoRequest = (id: string): Promise<IClaimsItem> => {
+        return new Promise((resolve, reject) => {
+            const data = BaseClaims.instance.getClaimById(id);
+            resolve(data)
+        })
     }
 
     private addNewActionRequest = (params: ICreateClaimActionRequestParams) => {
