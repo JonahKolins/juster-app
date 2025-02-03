@@ -33,10 +33,13 @@ const App: FC = () => {
                 },
                 components: {
                     Table: {
-                        headerBg: 'rgb(242, 240, 255, 0.3)',
+                        // headerBg: 'rgb(242, 240, 255, 0.3)',
                         borderColor: "#e8e8e8"
+                    },
+                    Modal: {
+                        colorBgMask: '#eceaf499'
                     }
-                }
+                }  
             }}
         >
             <HashRouter>

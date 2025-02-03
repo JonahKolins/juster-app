@@ -21,6 +21,7 @@ import Login from "../../pages/loginPages/Login";
 import Missing from "./Missing";
 import ProtectedRoute, {ProtectedRouteProps} from "./ProtectedRoute";
 import ResetPasswordPage from "../../pages/resetPasswordPage/ResetPasswordPage";
+import NewMyClaimsPage from "pages/mySpacePages/myClaimsPage/NewMyClaimsPage";
 
 const AppRoutes: FC = () => {
     const currentLocation = useLocation();
@@ -52,7 +53,7 @@ const AppRoutes: FC = () => {
             <Route path='/mySpace' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MySpacePage/>} />} />
             <Route path='/mySpace/dashboard' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<DashboardPage/>} />} />
             <Route path='/mySpace/category' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Categories/>} />} />
-            <Route path='/mySpace/myRequests' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MyRequests/>} />} />
+            <Route path='/mySpace/myRequests' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<NewMyClaimsPage/>} />} />
             <Route path='/mySpace/myRequests/:id' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<RequestItem/>} />} />
             <Route path='/mySpace/newRequest' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MySpaceNewRequestPage/>} />} />
             <Route path='/mySpace/notifications' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Notifications/>} />} />
