@@ -16,37 +16,35 @@
         height: 100%
         width: 100%
 
-.my-claims-drawer
-    top: 20px
-    right: 20px
-    bottom: 20px
-
-    & > div
-        padding: 0
+.claim-name
+    cursor: pointer
+    &:hover
+        color: var(--button__primary-hover)
 
 
 .my-claims-modal-title-container    
     display: flex
     align-items: center
     padding: 16px 20px
-    border-bottom: 1px solid #e8e8e8
+    border-bottom: 1px solid #dddddd
     
     .title-button
         display: flex
         align-items: center
         justify-content: center
-        background: #faf7ff
+        background: #ffffff
         color: var(--base-color__black)
         height: 100%
         border-radius: 12px
-        font-size: 14px
+        font-size: 13px
         line-height: 20px
         padding: 6px 12px
         box-shadow: rgb(235, 232, 232) 0 1px 2px 0
         cursor: pointer
 
         &:hover
-            opacity: 0.7
+            .title-button-text
+                color: var(--base-color__black70)
 
         .title-button-icon
             color: var(--button__primary)
@@ -78,11 +76,15 @@
     & > div
         padding: 0 !important
         border-radius: 16px !important
+        border: 1px solid #f6f6f6 !important
         height: calc(100vh - 40px)
+        background: hsla(0, 0%, 100%, 1)
+        background: linear-gradient(70deg, hsla(0, 0%, 100%, 1) 0%, hsla(228, 45%, 98%, 1) 62%, hsla(265, 38%, 94%, 1) 91%, hsla(228, 100%, 94%, 1) 100%)
+        background: -webkit-linear-gradient(70deg, hsla(0, 0%, 100%, 1) 0%, hsla(228, 45%, 98%, 1) 62%, hsla(265, 38%, 94%, 1) 91%, hsla(228, 100%, 94%, 1) 100%)
         // background: #fafafa !important
         // хедер
         & > div
-            // background: #fafafa !important
+            background: transparent !important
             border-radius: 16px !important
 
 .my-claims-modal
@@ -135,3 +137,4 @@
     display: flex
     align-items: center
     justify-content: center
+    color: var(--base-color__black70)

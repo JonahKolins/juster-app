@@ -18,14 +18,18 @@ import { LuGoal } from "react-icons/lu";
 import { IoDocumentOutline } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
 import { PiScales } from "react-icons/pi";
+import { useProfile } from 'app/hooks/useProfile';
+import { TbArrowsDiagonal } from "react-icons/tb";
 
 interface ClaimTableRowData {
     key: React.Key;
     id: string;
     name: string;
-    participants: string[];
+    user: string,
+    respondent?: string,
+    lawyer?: string,
     createdAt: string;
-    lastUpdate: string;
+    lastUpdate?: string;
     status: string;
 }
 
@@ -33,6 +37,7 @@ const OPEN_FULL_CLAIM = 'К обращению';
 
 const MyClaimsTable = () => {
     const navigate = useNavigate();
+    const { clientInfo } = useProfile();
     const { claims, isClaimsLoading, isClaimsReady } = useClaims();
 
     const [selectedClaim, setSelectedClaim] = useState<IClaimsItem>(null);
@@ -43,19 +48,17 @@ const MyClaimsTable = () => {
             title: 'Название',
             dataIndex: 'name',
             ellipsis: {
-                showTitle: false,
+                showTitle: true,
             },
-            render: (name) => (
-                <Tooltip placement="topLeft" title={name}>
-                    {name}
-                </Tooltip>
+            render: (name: string, record: ClaimTableRowData) => (
+                <span className={styles['claim-name']} onClick={(e) => handleClaimNameClick(e, record)}>{name}</span>
             ),
         },
         {
             title: 'Участники',
             dataIndex: 'participants',
             width: 160,
-            render: (participants) => renderParticipants(participants)
+            render: (_, record: ClaimTableRowData) => renderParticipants(record)
         },
         {
             title: 'Создано',
@@ -87,28 +90,33 @@ const MyClaimsTable = () => {
         }
     ]
 
+    const handleClaimNameClick = (e: React.MouseEvent<HTMLSpanElement>, record: ClaimTableRowData) => {
+        console.log('claim name clicked');
+        e.stopPropagation();
+        e.preventDefault();
+        navigate(`/mySpace/myRequests/${record.id}`)
+    }
+
     const handleDotsClick = (e: React.MouseEvent<HTMLDivElement>) => {
         console.log('dots clicked');
         e.stopPropagation();
         e.preventDefault();
     }
 
-    const renderParticipants = (participants: string[]): React.JSX.Element => {
-        if (!participants?.length) return null;
-
+    const renderParticipants = (record: ClaimTableRowData): React.JSX.Element => {
         return (
             <div className={styles['my-claims-table-participants']}>
-                <Tooltip placement="topRight" title={'Оптимус Прайм, вы'} arrow={true}>
+                <Tooltip placement="topRight" title={`${record.user}, вы`} arrow={true}>
                     <div className={styles['participant-item']}>
                         <IoPersonOutline size={13} />
                     </div>
                 </Tooltip>
-                <Tooltip placement="top" title={'Юра, юрист'} arrow={true}>
+                <Tooltip placement="top" title={record.lawyer ? `${record.lawyer}, юрист` : 'Юрист не назначен'} arrow={true}>
                     <div className={styles['participant-item']}>
                         <PiScales size={13} />
                     </div>
                 </Tooltip>
-                <Tooltip placement="topLeft" title={'ООО "Кек", ответчик'} arrow={true}>
+                <Tooltip placement="topLeft" title={record.respondent ? `${record.respondent}, ответчик` : 'Ответчик не указан'} arrow={true}>
                     <div className={styles['participant-item']}>
                         <HiOutlineBuildingLibrary size={13} />
                     </div>
@@ -173,9 +181,11 @@ const MyClaimsTable = () => {
             return {
                 key: item.genId,
                 id: item.genId,
-                name: item.claimInfo.contentType,
+                name: item.claimInfo.claimName ? item.claimInfo.claimName : item.claimInfo.contentType,
                 status: item.claimInfo.status,
-                participants: ['Вы', 'Юра'],
+                user: clientInfo.firstName ? `${clientInfo.firstName} ${clientInfo.lastName}` : clientInfo.email,
+                respondent: item.claimInfo.recipientName,
+                lawyer: 'Юра',
                 createdAt: datetimeUtils.formatTime(item.claimInfo.createdAt, 'DD.MM.YYYY'),
                 lastUpdate: datetimeUtils.formatTime(item.claimInfo.lastUpd, 'DD.MM.YYYY'),
             }
@@ -202,7 +212,7 @@ const MyClaimsTable = () => {
         return (
             <div className={styles['my-claims-modal-title-container']}>
                 <div className={styles['title-button']} onClick={handleOpenFullClaim}>
-                    <BsArrowsAngleExpand size={12} className={styles['title-button-icon']} />
+                    <TbArrowsDiagonal size={16} className={styles['title-button-icon']} />
                     <span className={styles['title-button-text']}>{OPEN_FULL_CLAIM}</span>
                 </div>
             </div>  

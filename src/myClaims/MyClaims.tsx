@@ -2,13 +2,16 @@ import React from 'react';
 import styles from './MyClaims.module.sass';
 import { Button } from 'antd';
 import MyClaimsTable from './components/MyClaimsTable';
-
+import { PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router';
 
 const MY_CLAIMS_CAPTION = 'Мои обращения';
 const MY_CLAIMS_ADD_BUTTON = 'Новое обращение';
 const MY_CLAIMS_DESCRIPTION = 'Управляйте своими обращениями и отслеживайте их статусы';
 
 const MyClaims = () => {
+    const navigate = useNavigate();
+
     return (
         <div className={styles['main-container']}>
             <div className={styles['my-claims-content']}>
@@ -22,7 +25,17 @@ const MyClaims = () => {
                         </div>
                     </div>
                     <div className={styles['header-actions']}>
-                        <Button type='primary'>{MY_CLAIMS_ADD_BUTTON}</Button>
+                        <Button 
+                            type='primary' 
+                            icon={<PlusOutlined color='white' style={{ width: 12, height: 12 }} />}
+                            size='middle'
+                            className={styles['add-button']}
+                            onClick={() => {
+                                navigate('/mySpace/newRequest')
+                            }}
+                        >
+                            {MY_CLAIMS_ADD_BUTTON}
+                        </Button>
                     </div>
                 </div>
                 <div className={styles['claims-list']}>
