@@ -108,7 +108,7 @@ const ClaimPreview = memo<ClaimPreviewProps>(({claim, showExample}) => {
                         children={
                             <div className={styles['comments']}>
                                 <RiMessage3Line className={styles['icon']} />
-                                <span className={styles['number']}>{claim.claimInfo.comments?.length ? claim.claimInfo.comments.length : 0}</span>
+                                {/* <span className={styles['number']}>{claim.claimInfo.comments?.length ? claim.claimInfo.comments.length : 0}</span> */}
                             </div>
                         }
                     />

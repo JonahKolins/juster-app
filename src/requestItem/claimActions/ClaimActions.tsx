@@ -2,11 +2,10 @@ import React, {memo} from "react";
 import styles from "./ClaimActions.module.sass";
 import classNames from "classnames";
 import {
-    IClaimAction,
-    IClaimActionType,
-    IClaimMessage, IClaimStatus,
-    isClaimAction,
-    TClaimAction
+    ActionType,
+    ClaimType,
+    IAction,
+    IClaimStatus
 } from "../../classes/claim/Claim.Types";
 import {datetimeUtils} from "../../core/utils/datetimeUtils";
 import {stringUtils} from "../../core/utils";
@@ -16,17 +15,18 @@ import { RiMessage3Line } from "react-icons/ri";
 
 interface ClaimActionsProps {
     id: string;
-    actions: TClaimAction[];
+    actions: IAction[];
 }
 
 const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
 
     const getStatusName = (status: IClaimStatus): string => {
         switch (status) {
-            case IClaimStatus.created: return 'Создано';
-            case IClaimStatus.underConsideration: return 'На рассмотрении';
-            case IClaimStatus.inProcess: return 'В процессе';
-            case IClaimStatus.waitingForAction: return 'Требуется действие';
+            case IClaimStatus.draft: return 'Черновик';
+            case IClaimStatus.new: return 'Создано';
+            case IClaimStatus.open: return 'На рассмотрении';
+            case IClaimStatus.inProgress: return 'В процессе';
+            case IClaimStatus.needInfo: return 'Требуется действие';
             case IClaimStatus.resolved: return 'Решено';
             case IClaimStatus.declined: return 'Отклонено';
             default: return '';
@@ -73,12 +73,15 @@ const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
         return result;
     }
 
-    const renderAction = (action: IClaimAction): React.JSX.Element => {
+    const renderAction = (action: IAction): React.JSX.Element => {
+        console.log('renderAction, action', action);
+        
 
         let text: React.ReactNode = action.text;
 
-        if (action.actionType == IClaimActionType.claimCreated) {
-            const formatDate = datetimeUtils.formatTime(action.createdAt, 'DD MMM YYYY в hh:mm')
+        if (action.actionType == ActionType.claimCreated) {
+             // TODO уничтожить этот костыль, нужно чтобы с сервера приходило число
+            const formatDate = datetimeUtils.formatTime(new Date(action.createdAt).getTime(), 'DD MMM YYYY в hh:mm')
 
             text = (
                 <span className={styles['action-message']}>
@@ -89,8 +92,9 @@ const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
             )
         }
 
-        if (action.actionType == IClaimActionType.statusChanged) {
-            const formatDate = datetimeUtils.formatTime(action.createdAt, 'DD MMM YYYY в hh:mm')
+        if (action.actionType == ActionType.statusChanged) {
+            // TODO уничтожить этот костыль, нужно чтобы с сервера приходило число
+            const formatDate = datetimeUtils.formatTime(new Date(action.createdAt).getTime(), 'DD MMM YYYY в hh:mm')
             const actionText = replacePlaceholdersWithElements(action.text, {
                 '%user%': <span className={styles['action-user-info']}>{action.user.firstName} {action.user.lastName}{NBSP}</span>,
                 '%status%': <>{NBSP}<span className={styles['status-inline']}>{getStatusName(action.status)}</span></>,
@@ -105,7 +109,7 @@ const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
 
 
         return (
-            <div key={action.id} className={styles['action-item']}>
+            <div key={action.createdAt} className={styles['action-item']}>
                 <div className={styles['item-from-icon-container']}>
                     <div className={styles['icon']}>
                         <BsStars size={16} />
@@ -120,15 +124,17 @@ const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
         )
     }
 
-    const renderMessage = (message: IClaimMessage): React.JSX.Element => {
+    const renderMessage = (message: IAction): React.JSX.Element => {
+        console.log('renderMessage, message', message);
+        
         return (
-            <div className={styles['message-container']}>
+            <div key={message.createdAt} className={styles['message-container']}>
                 <div className={styles['message-container-icon']}>
                     <div className={styles['message-container-icon-background']}>
                         <RiMessage3Line size={16} />
                     </div>
                 </div>
-                <div key={message.id} className={styles['message-item']}>
+                <div className={styles['message-item']}>
                     <div className={styles['message-icon-container']}>
                         <div className={classNames(styles['message-default-user-icon'])}>
                             <div className={styles['first-letter']}>{message.user.firstName ? message.user.firstName[0] : 'U'}</div>
@@ -137,10 +143,11 @@ const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
                     <div className={styles['message-main-container']}>
                         <div className={styles['message-user-data']}>
                             <div className={styles['name']}>{message.user.firstName}</div>
-                            {message.user.title?.value && <div className={styles['name']}>{message.user.title.value}</div>}
+                            {/* {message.user.title?.value && <div className={styles['name']}>{message.user.title.value}</div>} */}
                             <span className={styles['string-dot']}></span>
                             <div className={styles['time']}>
-                                {datetimeUtils.formatTime(message.createdAt, 'DD MMM YYYY в hh:mm')}
+                                {/*  // TODO уничтожить этот костыль, нужно чтобы с сервера приходило число */}
+                                {datetimeUtils.formatTime(new Date(message.createdAt).getTime(), 'DD MMM YYYY в hh:mm')}
                             </div>
                         </div>
                         {/*<div className={styles.item_text}>{action.text}</div>*/}
@@ -154,8 +161,8 @@ const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
     const renderActions = () => {
         if (!actions || !actions.length) return <div>no data</div>
 
-        const actionsElements = actions.map((action) => {
-            return isClaimAction(action) ? renderAction(action) : renderMessage(action);
+        const actionsElements = actions.slice().reverse().map((action) => {
+            return action.type == ClaimType.action ? renderAction(action) : renderMessage(action);
         })
 
         return (

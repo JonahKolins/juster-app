@@ -1,4 +1,6 @@
+import { ActionType, IClaimReason, IClaimStatus } from "classes/claim/Claim.Types";
 import {IUser, UserRole} from "./types";
+import { IOrganisationData } from "newRequest/NewRequestDataLayer";
 
 export interface IMockUsersData {
     users: {
@@ -29,3 +31,51 @@ export const mockUsersData: IMockUsersData = {
         ]
     }
 }
+
+export interface IClaimsItemResponse {
+    id: string;
+    name: string;
+    status: IClaimStatus;
+    text: string;
+    reason: IClaimReason;
+    organisation: IOrganisationData;
+    createdDate: number;
+    files: any[];
+    actions: TClaimAction[];
+    partnerId?: string;
+}
+
+type IUserTitle = {
+    id: 'iam' | 'admin' | 'lawyer', // и другие
+    value: string;
+}
+
+export interface IUserInfo {
+    firstName: string;
+    lastName?: string;
+    title?: IUserTitle;
+}
+
+export interface IComment {
+    createdAt: string;
+    id: number;
+    text: string;
+    user: IUserInfo
+}
+
+interface IClaimActionBase {
+    type: 'ACTION' | 'MESSAGE';
+    id: string;
+    createdAt: number;
+    text: string;
+    user: IUserInfo;
+}
+
+export interface IClaimAction extends IClaimActionBase {
+    actionType: ActionType;
+    status?: IClaimStatus;
+}
+
+export interface IClaimMessage extends IClaimActionBase {}
+
+export type TClaimAction = IClaimAction | IClaimMessage;

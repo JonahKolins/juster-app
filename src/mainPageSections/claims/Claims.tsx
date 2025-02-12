@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {Button, Table, Tag} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {useProfile} from "../../app/hooks/useProfile";
-import {IClaimStatus, TClaimAction} from "../../classes/claim/Claim.Types";
+import {IAction, IClaimStatus} from "../../classes/claim/Claim.Types";
 import {datetimeUtils} from "../../core/utils/datetimeUtils";
 import {useClaims} from "../../app/hooks/useClaims";
 
@@ -16,7 +16,7 @@ interface ClaimRowData {
     status: IClaimStatus; //"RESOLVED"
     text: string; //"Колоноскопия прошла не успешно - я обосрался"
     isRowExpandable: boolean;
-    actions: TClaimAction[];
+    actions: IAction[];
 }
 
 const Claims: FC = () => {

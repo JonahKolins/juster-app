@@ -2,23 +2,15 @@ import React, {memo, useCallback, useEffect, useState} from "react";
 import styles from "./AdditionalInfo.module.sass";
 import {Dropdown, MenuProps, Modal, Tag} from "antd";
 import {BsChevronDown} from "react-icons/bs";
-import {ISuggestions} from "../../newRequest/api/requests/GetOrganisationSuggestionsRequest";
 import {Claim} from "../../classes/claim/Claim";
-import {IClaimAction, IClaimActionType, IClaimStatus, IMinRespondentData} from "../../classes/claim/Claim.Types";
+import {ActionType, ClaimType, IClaimStatus, IMinRespondentData} from "../../classes/claim/Claim.Types";
 import {useProfile} from "../../app/hooks/useProfile";
+import { IClaimActionRequestInfo } from "cmd/network/claims/methods/requestAddClaimAction";
+import { datetimeUtils } from "core/utils/datetimeUtils";
 
 interface InfoRow {
     name: string;
     value: string | JSX.Element;
-}
-
-const MOCK_ADD_CLAIM_INFO = {
-    id: '120',
-    status: IClaimStatus.inProgress,
-    author: 'Пувел Диареевич',
-    institution: 'Роспотребнадзор',
-    createdDate: '01.07.2023 10:20',
-    lastUpdate: '01.07.2023 в 19:30'
 }
 
 interface AdditionalInfoProps {
@@ -65,25 +57,14 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
     }
 
     const createInfoRows = useCallback(() => {
-        const info = MOCK_ADD_CLAIM_INFO;
-        const resultRows: InfoRow[] = [];
-        for (let field in info) {
-            if (field === 'id') {
-                resultRows.push({name: 'Номер', value: id})
-            }
-            if (field === 'status'){
-                resultRows.push({name: 'Статус', value: renderStatusTag(info[field])})
-            }
-            if (field === 'author') {
-                resultRows.push({name: 'Автор', value: author})
-            }
-            if (field === 'institution') {
-                resultRows.push({name: 'Учреждение', value: renderRespondent()})
-            }
-        }
-
+        const resultRows: InfoRow[] = [
+            {name: 'Номер', value: id},
+            {name: 'Статус', value: renderStatusTag(status)},
+            {name: 'Автор', value: author},
+            {name: 'Учреждение', value: renderRespondent()}
+        ];
         setRows(resultRows);
-    }, [])
+    }, [status])
 
     const renderStatusTag = (status: IClaimStatus, className?: string, children?: React.JSX.Element): React.JSX.Element => {
         switch (status) {
@@ -91,6 +72,14 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
                 return (
                     <Tag color='geekblue' className={className}>
                         Создано
+                        {children}
+                    </Tag>
+                )
+            }
+            case IClaimStatus.draft: {
+                return (
+                    <Tag color='geekblue' className={className}>
+                        Черновик
                         {children}
                     </Tag>
                 )
@@ -183,18 +172,13 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
         setCurrentStatus(e.key as IClaimStatus);
         //
         if (currentStatus != e.key) {
-            const newMessageAction: Omit<IClaimAction, 'id'> = {
-                createdAt: new Date().getTime(),
+            const newAction: IClaimActionRequestInfo = {
                 text: `%user% поменял статус на %status% %date%`,
-                type: "ACTION",
-                actionType: IClaimActionType.statusChanged,
-                status: e.key as IClaimStatus,
-                user: {
-                    firstName: clientInfo.firstName,
-                    lastName: clientInfo.lastName
-                }
+                type: ClaimType.action,
+                actionType: ActionType.statusChanged,
+                status: e.key as IClaimStatus 
             }
-            manager.addAction(newMessageAction);
+            manager.addAction(newAction);
         }
     };
 
@@ -202,6 +186,10 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
         {
             label: 'Создано',
             key: IClaimStatus.new
+        },
+        {
+            label: 'Черновик',
+            key: IClaimStatus.draft
         },
         {
             label: 'На рассмотрении',
@@ -237,18 +225,13 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
     const handleDeclineModalOk = () => {
         setCurrentStatus(IClaimStatus.declined);
         //
-        const newMessageAction: Omit<IClaimAction, 'id'> = {
-            createdAt: new Date().getTime(),
+        const newAction: IClaimActionRequestInfo = {
             text: `%user% поменял статус на %status% %date%`,
-            type: "ACTION",
-            actionType: IClaimActionType.statusChanged,
-            status: IClaimStatus.declined,
-            user: {
-                firstName: clientInfo.firstName,
-                lastName: clientInfo.lastName
-            }
+            type: ClaimType.action,
+            actionType: ActionType.statusChanged,
+            status: IClaimStatus.declined
         }
-        manager.addAction(newMessageAction);
+        manager.addAction(newAction);
         //
         setDeclineDialogOpened(false);
     }
@@ -277,8 +260,8 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
                 ))}
             </div>
             <div className={styles.date_block}>
-                <div>Создано {MOCK_ADD_CLAIM_INFO.createdDate}</div>
-                <div>Последнее обноление {MOCK_ADD_CLAIM_INFO.lastUpdate}</div>
+                <div>Создано {datetimeUtils.formatTime(manager.claimData.claimInfo.createdAt, 'DD MMM YYYY в hh:mm')}</div>
+                <div>Последнее обноление {datetimeUtils.formatTime(manager.claimData.claimInfo.lastUpd, 'DD MMM YYYY в hh:mm')}</div>
             </div>
             <Modal
                 title={'Предупреждение'}

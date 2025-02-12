@@ -14,15 +14,18 @@ import {ScrollablePanel} from "../controls/panel/ScrollablePanel";
 import {useProfile} from "../app/hooks/useProfile";
 import {stringUtils} from "../core/utils";
 import NBSP = stringUtils.NBSP;
-import {IClaimMessage, IClaimsItem, IClaimStatus} from "../classes/claim/Claim.Types";
+import {ActionType, ClaimType, IClaimsItem, IClaimStatus} from "../classes/claim/Claim.Types";
 import {ApiError, NetworkError} from "../core/errors";
 import {IClaimInfoContext, withClaimInfoHOC} from "./withClaimInfo";
+import { IClaimActionRequestInfo } from "cmd/network/claims/methods/requestAddClaimAction";
+import { useClaims } from "app/hooks/useClaims";
 
 interface ClaimItemProps extends IClaimInfoContext {}
 
 const ClaimItem = memo<ClaimItemProps>(({manager}) => {
     const {id} = useParams();
     const {clientInfo} = useProfile();
+    const {claims} = useClaims();
     //
     const [data, setData] = useState<IClaimsItem>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -38,7 +41,7 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
             manager.dispose();
             claimChangedEvent?.dispose();
         }
-    }, [id, manager])
+    }, [id, manager, claims])
 
     const handleClaimDataChanged = () => {
         if (!manager) return;
@@ -51,16 +54,13 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
     }
 
     const handleSaveComment = (text: string) => {
-        const newMessageAction: Omit<IClaimMessage, 'id'> = {
-            createdAt: new Date().getTime(),
+        const newAction: IClaimActionRequestInfo = {
             text: text,
-            type: "MESSAGE",
-            user: {
-                firstName: clientInfo?.firstName,
-                lastName: clientInfo?.lastName
-            }
+            type: ClaimType.message,
+            actionType: "" as ActionType,
+            status: "" as IClaimStatus 
         }
-        manager.addAction(newMessageAction);
+        manager.addAction(newAction);
     }
 
     if (error) return <div>{error.text}</div>
@@ -101,8 +101,8 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
                         <div className={styles.actions}>
                             <div className={styles.title}>Активность</div>
                             <TextEditor saveComment={handleSaveComment} />
-                            {data.claimInfo.comments?.length ? (
-                                <ClaimActions actions={data.claimInfo.comments} id={id}/>
+                            {data.claimInfo.actions?.length ? (
+                                <ClaimActions actions={data.claimInfo.actions} id={id}/>
                             ) : (
                                 <div className={styles.no_activities}>Нет активности</div>
                             )}

@@ -1,9 +1,11 @@
-import {IClaimsItem, TClaimAction} from "./Claim.Types";
+import {IAction, IClaimsItem} from "./Claim.Types";
 import {EventEmitter} from "../../core/event";
-import {testClaimInfo} from "../../app/auth/methods/testClaimInfo";
 import {ICreateClaimActionRequestParams, testCreateClaimAction} from "../../app/auth/methods/testCreateClaimAction";
 import {ApiError, NetworkError} from "../../core/errors";
 import { BaseClaims } from "./BaseClaims";
+import { IAddClaimActionRequestParams, IClaimActionRequestInfo, requestAddClaimAction } from "cmd/network/claims/methods/requestAddClaimAction";
+import { Session } from "classes/session/Session";
+import { IPostAddClaimActionResponse } from "cmd/network/claims/requests/PostAddClaimAction";
 
 export class Claim {
     private _claimData: IClaimsItem;
@@ -13,6 +15,8 @@ export class Claim {
     //
     public readonly claimDataChanged: EventEmitter<void>;
 
+    // private _claimsChanged: VoidFunction;
+
     constructor() {
         this._claimData = null;
         //
@@ -20,6 +24,7 @@ export class Claim {
         this._error = null;
         //
         this.claimDataChanged = new EventEmitter('claimDataChanged');
+        // this._claimsChanged = BaseClaims.instance.claimsChanged.subscribe(onClaimsChanged);
     }
 
     public dispose = () => {
@@ -29,9 +34,9 @@ export class Claim {
         this._error = null;
     }
 
-    public get actions(): TClaimAction[] {
+    public get actions(): IAction[] {
         if (!this._claimData) return null;
-        return this._claimData.claimInfo.comments || [];
+        return this._claimData.claimInfo.actions || [];
     }
 
     public get claimData(): IClaimsItem {   
@@ -71,12 +76,24 @@ export class Claim {
             })
     }
 
-    public addAction = (action: Omit<TClaimAction, 'id'>) => {
-        this.addNewActionRequest({claimId: this._claimData.genId, action: action})
-            .then((response) => {
+    public addAction = (actionInfo: IClaimActionRequestInfo) => {
+        const sessionId = Session.instance.sessionId;
+        const claimId = this._claimData.genId;
+
+        if (!sessionId || !claimId) return;
+
+        const payload: IAddClaimActionRequestParams = {
+            sessionId,
+            claimId,
+            action: actionInfo
+        }
+
+        requestAddClaimAction(payload)
+            .then((response: IPostAddClaimActionResponse) => {
                 // this._claimData = response;
                 //
                 this._error = null;
+                BaseClaims.instance.readClaims();
             })
             .catch((error) => {
                 this._error = error;
@@ -88,10 +105,22 @@ export class Claim {
             })
     }
 
+    // TODO сделать отдельный запрос 
     private readClaimInfoRequest = (id: string): Promise<IClaimsItem> => {
         return new Promise((resolve, reject) => {
             const data = BaseClaims.instance.getClaimById(id);
-            resolve(data)
+
+            if (!data) {
+                BaseClaims.instance.readClaims();
+
+                // TODO убрать этот костыль когда будет отдельный запрос
+                window.setTimeout(() => {
+                    const secondData = BaseClaims.instance.getClaimById(id);
+                    resolve(secondData);
+                }, 1000);
+            } else {
+                resolve(data);
+            }
         })
     }
 

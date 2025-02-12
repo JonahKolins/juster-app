@@ -1,4 +1,5 @@
-import {IClaimsItemResponse} from "../../../classes/claim/Claim.Types";
+import { IClaimsItemResponse } from "../types/mockUsersData";
+
 
 export interface IClaimInfoRequestParams {
     id: string;

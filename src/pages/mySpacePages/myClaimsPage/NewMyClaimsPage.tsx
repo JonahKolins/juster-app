@@ -165,7 +165,7 @@ const MyClaimsPage = () => {
                             <div className={styles['list-item-actions']}>
                                 <div className={styles['comments']}>
                                     <RiMessage3Line className={styles['icon']} />
-                                    <span className={styles['number']}>{claimsItem.claimInfo.comments?.length ? claimsItem.claimInfo.comments.length : 0}</span>
+                                    {/* <span className={styles['number']}>{claimsItem.claimInfo.comments?.length ? claimsItem.claimInfo.comments.length : 0}</span> */}
                                 </div>
                             </div>
                         </div>

@@ -1,5 +1,3 @@
-import {IOrganisationData} from "../../newRequest/NewRequestDataLayer";
-
 export type IClaimReasonId = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export interface IClaimReason {
@@ -23,59 +21,17 @@ export enum IClaimStatus {
     declined = "DECLINED"
 }
 
-type IUserTitle = {
-    id: 'iam' | 'admin' | 'lawyer', // и другие
-    value: string;
-}
-
-export interface IUserInfo {
-    firstName: string;
-    lastName?: string;
-    title?: IUserTitle;
-}
-
-export interface IComment {
-    createdAt: string;
-    id: number;
-    text: string;
-    user: IUserInfo
-}
-
-interface IClaimActionBase {
-    type: 'ACTION' | 'MESSAGE';
-    id: string;
-    createdAt: number;
-    text: string;
-    user: IUserInfo;
-}
-
-export enum IClaimActionType {
+export enum ActionType {
     claimCreated = 'CLAIM_CREATED',
-    statusChanged = 'CLAIM_STATUS_CHANGED',
+    statusChanged = 'STATUS_CHANGED',
     addDocs = 'ADD_DOCS'
 }
 
-export interface IClaimAction extends IClaimActionBase {
-    actionType: IClaimActionType;
-    status?: IClaimStatus;
+export enum ClaimType {
+    action = 'ACTION',
+    message = 'MESSAGE'
 }
 
-export interface IClaimMessage extends IClaimActionBase {}
-
-export type TClaimAction = IClaimAction | IClaimMessage;
-
-export interface IClaimsItemResponse {
-    id: string;
-    name: string;
-    status: IClaimStatus;
-    text: string;
-    reason: IClaimReason;
-    organisation: IOrganisationData;
-    createdDate: number;
-    files: any[];
-    actions: TClaimAction[];
-    partnerId?: string;
-}
 
 export interface IClaimsItem {
     genId: string;
@@ -91,7 +47,7 @@ export interface IClaimsItem {
         contentSum: string;
         textClaim: string;
         status: string;
-        comments: any[];
+        actions: IAction[];
     };
 }
 
@@ -101,10 +57,14 @@ export interface IMinRespondentData {
     address: string;
 }
 
-export const isClaimAction = (obj: TClaimAction): obj is IClaimAction => {
-    return (obj as IClaimAction).type == 'ACTION' && !!(obj as IClaimAction).actionType;
-}
-
-export const isClaimMessage = (obj: TClaimAction): obj is IClaimMessage => {
-    return (obj as IClaimMessage).type == 'MESSAGE' && !!(obj as IClaimMessage).text;
+export interface IAction {
+    text: string;
+    status: IClaimStatus;
+    type: ClaimType;
+    actionType: ActionType;
+    user: {
+        firstName: string;
+        lastName: string;
+    };
+    createdAt: string;
 }
