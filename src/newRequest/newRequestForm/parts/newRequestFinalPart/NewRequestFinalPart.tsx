@@ -1,7 +1,7 @@
 import React, {memo, useEffect, useState} from "react";
 import styles from "./NewRequestFinalPart.module.sass";
 import Button from "../../../../designSystem/button/Button";
-import {Modal, UploadFile} from "antd";
+import {Modal} from "antd";
 import {LoaderCircle} from "../../../../designSystem/loader/Loader.Circle";
 import {useNavigate} from "react-router-dom";
 import {formats} from "../../../../requestItem/textEditor/EditorToolbar";
@@ -26,7 +26,7 @@ const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) =
     const [respondentData, setRespondentData] = useState<IMinRespondentData>(ClaimCreator.instance.minRespondentData);
     const [reason, setReason] = useState<IClaimReason>(ClaimCreator.instance.claimInfo.reason);
     const [claimText, setClaimText] = useState<string>(ClaimCreator.instance.claimInfo.text);
-    const [files, setFiles] = useState<UploadFile[]>(ClaimCreator.instance.files);
+    const [files, setFiles] = useState<File[]>(ClaimCreator.instance.files);
 
     const [createdId, setCreatedId] = useState<string>('');
     const [successDialogOpened, setSuccessDialogOpened] = useState<boolean>(false);

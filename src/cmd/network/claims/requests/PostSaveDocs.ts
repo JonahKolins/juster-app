@@ -1,11 +1,10 @@
-import PostRequest from "cmd/api/requests/PostRequest";
 import JSONResponseHandler from "cmd/api/handlers/JSONResponseHandler";
-import { UploadFile } from "antd";
+import PostFormDataRequest from "cmd/api/requests/PostFormDataRequest";
 
 export interface ISaveDocsRequestParams {
     claimId: string;
     sessionId: string;
-    files: UploadFile[];
+    files: File[];
 }
 
 export interface ISaveDocsResponse {
@@ -15,21 +14,27 @@ export interface ISaveDocsResponse {
 
 const SAVE_DOCS_URL = '/saveclaimsdoc';
 
-class PostSaveDocsRequest extends PostRequest<ISaveDocsResponse> {
+class PostSaveDocsRequest extends PostFormDataRequest<ISaveDocsResponse> {
+    protected formData: FormData;
+
     public constructor(private params: ISaveDocsRequestParams) {
         super();
+        
+        this.formData = new FormData();
+        this.formData.append('claimId', params.claimId);
+        this.formData.append('sessionId', params.sessionId);
+        
+        params.files.forEach((file, index) => {
+            this.formData.append(`files`, file, file.name);
+        });
     }
-
-    protected responseHandler = new JSONResponseHandler<ISaveDocsResponse>();
 
     protected url = SAVE_DOCS_URL;
+    
+    protected responseHandler = new JSONResponseHandler<ISaveDocsResponse>();
 
     protected additionalRequestInit: Partial<RequestInit> = {
-        credentials: 'include'  // чтобы браузер отправил cookies с запросом
-    }
-
-    protected body = {
-        ...this.params
+        credentials: 'include'
     }
 }
 

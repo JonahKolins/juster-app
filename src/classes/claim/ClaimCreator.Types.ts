@@ -1,4 +1,3 @@
-import { UploadFile } from "antd";
 import { IClaimReason, IMinRespondentData } from "./Claim.Types";
 
 export interface ICreateClaimInfo {
@@ -6,7 +5,7 @@ export interface ICreateClaimInfo {
     name: string;
     text: string;
     respondent: IMinRespondentData; // TODO дополнить интерфейс до полных данных организации
-    files: UploadFile[];
+    files: File[];
     partnerId: string;
     reason: IClaimReason;
     claimAmount: string;

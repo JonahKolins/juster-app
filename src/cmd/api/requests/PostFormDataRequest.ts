@@ -1,45 +1,57 @@
 import RequestSender from '../RequestSender';
 import IResponseHandler from '../handlers/IResponseHandler';
 
-const HOST = 'http://juster-test-ift.ru/api';
+const HOST = 'https://juster-test-ift.ru';
 
 export default abstract class PostFormDataRequest<TData> {
   protected abstract url: string;
-
-  protected abstract body: Record<string, string | Blob>;
-
+  protected abstract formData: FormData;
   protected abstract responseHandler: IResponseHandler<TData>;
-
-  protected timeout = 15000;
-
+  
   protected additionalHeaders: Record<string, string> = {};
+  protected additionalRequestInit: Partial<RequestInit> = {};
+  protected timeout = 15000;
+  protected host?: string;
 
   private get requestInit(): RequestInit {
-    const { body, additionalHeaders } = this;
-
-    const formData = new FormData();
-    Object.entries(body).forEach(([key, value]) => {
-      console.log('[key, value]', [key, value])
-      formData.append(key, value);
-    });
-
     return {
       method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        ...additionalHeaders,
-      },
-      body: formData,
+      headers: this.headers,
+      body: this.formData,
+      ...this.additionalRequestInit
     };
   }
 
-  public async send() {
-    const { url, requestInit, timeout, responseHandler } = this;
+  private get headers(): Headers {
+    const headers = new Headers(this.additionalHeaders);
+    
+    // Не устанавливаем Content-Type - браузер сделает это автоматически
+    // с правильным boundary для FormData
+    
+    return headers;
+  }
 
-    const response = await RequestSender.sendRequest(`${HOST}${url}`, requestInit, timeout);
+  private getFullUrl(): string {
+    const requestHost = this.host ?? HOST;
+    return new URL(this.url, requestHost).toString();
+  }
 
-    const data = await responseHandler.handleResponse(response);
+  public async send(): Promise<TData> {
+    try {
+      const response = await RequestSender.sendRequest(
+        this.getFullUrl(),
+        this.requestInit,
+        this.timeout
+      );
 
-    return data;
+      return await this.responseHandler.handleResponse(response);
+    } catch (error) {
+      throw new Error(`FormData request to ${this.url} failed: ${error.message}`);
+    }
+  }
+
+  // Дополнительные методы при необходимости
+  public abort(): void {
+    // Реализация отмены запроса при необходимости
   }
 }

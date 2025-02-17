@@ -3,10 +3,10 @@ import styles from "./NewRequestRequestInfoPart.module.sass";
 import Button from "../../../../designSystem/button/Button";
 import TextEditor from "../../../../requestItem/textEditor/TextEditor";
 import classNames from "classnames";
-import {UploadFile} from "antd";
 import {Input, InputSize} from "../../../../designSystem/input";
 import { ClaimCreator } from "classes/claim/ClaimCreator";
 import { IClaimReasonId } from "classes/claim/Claim.Types";
+import FilesUploader from "components/filesUploader/FilesUploader";
 
 interface NewRequestRequestInfoPartProps {
     onPrevPageClick: () => void;
@@ -21,7 +21,7 @@ const NewRequestRequestInfoPart = memo<NewRequestRequestInfoPartProps>(({onPrevP
     // текст обращения
     const [descriptionText, setDescriptionText] = useState<string>(ClaimCreator.instance.claimInfo?.text || '');
     // файлы
-    const [savedFiles, setSavedFiles] = useState<UploadFile[]>(ClaimCreator.instance.files);
+    const [savedFiles, setSavedFiles] = useState<File[]>(ClaimCreator.instance.files);
     // флаг наличия изменений
     const [hasChangesToSave, setHasChangesToSave] = useState<boolean>(false);
     // ссылка на товар или услугу
@@ -46,7 +46,7 @@ const NewRequestRequestInfoPart = memo<NewRequestRequestInfoPartProps>(({onPrevP
         }
     }
 
-    const handleChangeTextEditor = useCallback((text: string, files: UploadFile[]) => {
+    const handleChangeTextEditor = useCallback((text: string, files: File[]) => {
         // сохраняем текст
         setDescriptionText(text || '');
         ClaimCreator.instance.setText(text || '');
@@ -61,14 +61,14 @@ const NewRequestRequestInfoPart = memo<NewRequestRequestInfoPartProps>(({onPrevP
         if (newFiles.length) {
             setSavedFiles(newFiles);
             // сохраняем файлы в класс
-            ClaimCreator.instance.saveFiles(files)
-                .then(() => {
-                    // можно показать загрузку
-                })
-                .catch((error) => {
-                    // можно показать ошибку
-                    console.log('NewRequestRequestInfoPart: Ошибка при сохранении файлов:', error);
-                })
+            // ClaimCreator.instance.saveFiles(files)
+            //     .then(() => {
+            //         // можно показать загрузку
+            //     })
+            //     .catch((error) => {
+            //         // можно показать ошибку
+            //         console.log('NewRequestRequestInfoPart: Ошибка при сохранении файлов:', error);
+            //     })
         }
     }, [])
 
@@ -102,6 +102,10 @@ const NewRequestRequestInfoPart = memo<NewRequestRequestInfoPartProps>(({onPrevP
                 })
         }
         onNextPageClick();
+    }
+
+    const handleFilesChange = () => {
+        setHasChangesToSave(true);
     }
 
     const renderContentByReasonId = () => {
@@ -144,6 +148,7 @@ const NewRequestRequestInfoPart = memo<NewRequestRequestInfoPartProps>(({onPrevP
                     )}
                     withDraft={true}
                 />
+                <FilesUploader onChange={handleFilesChange} />
             </div>
             <div className={styles['buttons']}>
                 <Button onClick={handlePrevPageClick} className={styles['back-btn']}>Назад</Button>

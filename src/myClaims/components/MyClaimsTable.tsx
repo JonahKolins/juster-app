@@ -75,7 +75,7 @@ const MyClaimsTable = () => {
         {
             title: 'Статус',
             dataIndex: 'status',
-            width: 140,
+            width: 160,
             render: (_, {status}) => renderStatusTag(status as IClaimStatus),
         },
         {
@@ -183,7 +183,7 @@ const MyClaimsTable = () => {
                 id: item.genId,
                 name: item.claimInfo.claimName ? item.claimInfo.claimName : item.claimInfo.contentType,
                 status: item.claimInfo.status,
-                user: clientInfo.firstName ? `${clientInfo.firstName} ${clientInfo.lastName}` : clientInfo.email,
+                user: clientInfo?.firstName ? `${clientInfo.firstName} ${clientInfo.lastName}` : clientInfo?.email,
                 respondent: item.claimInfo.recipientName,
                 lawyer: 'Юра',
                 createdAt: datetimeUtils.formatTime(item.claimInfo.createdAt, 'DD.MM.YYYY'),

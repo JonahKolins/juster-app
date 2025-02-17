@@ -20,8 +20,8 @@ const getBase64 = (file: RcFile): Promise<string> =>
     });
 
 interface UploadFilesProps {
-    onFilesChanged: (files: UploadFile[]) => void;
-    files?: UploadFile[];
+    onFilesChanged: (files: File[]) => void;
+    files?: File[];
     clean?: boolean;
 }
 
@@ -30,7 +30,7 @@ const UploadFiles = React.memo<UploadFilesProps>(({onFilesChanged, files, clean}
     const [previewImage, setPreviewImage] = useState('');
     const [previewPdf, setPreviewPdf] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
-    const [fileList, setFileList] = useState<UploadFile[]>(files ? files : []);
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     const {createOrEditDraft} = useDraftCreatorContext();
 
@@ -42,7 +42,7 @@ const UploadFiles = React.memo<UploadFilesProps>(({onFilesChanged, files, clean}
 
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
         setFileList(newFileList);
-        onFilesChanged(newFileList);
+        // onFilesChanged(newFileList);
     }
 
     const handleCancel = () => setPreviewOpen(false);

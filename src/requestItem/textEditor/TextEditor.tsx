@@ -1,7 +1,7 @@
 import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
 import styles from "./TextEditor.module.sass";
 import ReactQuill, {UnprivilegedEditor} from "react-quill";
-import {Button, UploadFile} from "antd";
+import {Button} from "antd";
 import EditorToolbar, {formats, modules} from "./EditorToolbar";
 import {DeltaStatic, Sources} from "quill";
 import UploadFiles from "../../components/uploadFilesNew/UploadFiles";
@@ -9,9 +9,9 @@ import classNames from "classnames";
 
 interface TextEditorProps {
     value?: string;
-    files?: UploadFile[];
-    onChange?: (text: string, files?: UploadFile[]) => void;
-    saveComment?: (text: string, files?: UploadFile[]) => void;
+    files?: File[];
+    onChange?: (text: string, files?: File[]) => void;
+    saveComment?: (text: string, files?: File[]) => void;
     placeHolder?: string;
     toolBarClassName?: string;
     editTextClassName?: string;
@@ -24,7 +24,7 @@ interface TextEditorProps {
 const TextEditor = memo<TextEditorProps>(({value, files, onChange, saveComment, placeHolder, toolBarClassName, editTextClassName, showButtons, clean, withDraft, withFiles}) => {
     const [editorValue, setEditorValue] = useState<string>(value ? value : '');
     const [editorActive, setEditorActive] = useState<boolean>(false);
-    const [addedFiles, setAddedFiles] = useState<UploadFile[]>(files ? files : []);
+    const [addedFiles, setAddedFiles] = useState<File[]>(files ? files : []);
 
     useEffect(() => {
         if (clean) {
@@ -65,7 +65,7 @@ const TextEditor = memo<TextEditorProps>(({value, files, onChange, saveComment, 
         setEditorActive(true);
     }, [])
 
-    const handleFilesChanged = useCallback((files: UploadFile[]) => {
+    const handleFilesChanged = useCallback((files: File[]) => {
         setAddedFiles(files);
 
         const editorText = editorValue === '<p><br></p>' ? '' : editorValue;

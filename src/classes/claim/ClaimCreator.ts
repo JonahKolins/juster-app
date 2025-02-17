@@ -11,7 +11,6 @@ import { getRespondentSuggestions } from "newRequest/api/methods/getOrganisation
 import { requestSaveDocs } from "cmd/network/claims/methods/requestSaveDocs";
 import { ICreateClaimInfo } from "./ClaimCreator.Types";
 import { IClaimReason, IMinRespondentData } from "./Claim.Types";
-import { UploadFile } from "antd";
 import UnauthorizedError from "../../cmd/api/errors/UnauthorizedError";
 
 export class ClaimCreator {
@@ -102,7 +101,7 @@ export class ClaimCreator {
         return !!this._claimInfo.draftId;
     }
 
-    public get files(): UploadFile[] {
+    public get files(): File[] {
         if (!this._claimInfo) return [];
         return this._claimInfo.files?.length ? this._claimInfo.files : [];
     }
@@ -301,14 +300,14 @@ export class ClaimCreator {
     */
 
     // сохранение файлов
-    public saveFiles = (files: UploadFile[], withUpload: boolean = true): Promise<void> => {
+    public saveFiles = (files: File[], withUpload: boolean = true): Promise<void> => {
         // добавим файл в список файлов
         this._claimInfo.files = [...this._claimInfo.files, ...files];
 
         const sessionId = Session.instance.sessionId;
         const claimId = this._claimInfo.draftId;
 
-        if (!sessionId || !claimId) return Promise.reject('sessionId or claimId not found');
+        if (!sessionId || !claimId) return Promise.reject(`sessionId or claimId not found. sessionId: ${sessionId}, claimId: ${claimId}`);
 
         if (!withUpload) return Promise.resolve();
 
@@ -327,6 +326,14 @@ export class ClaimCreator {
                     console.log('Ошибка при выполнении запроса сохранения файла:', error);
                     reject(error);
                 });
+        })
+    }
+
+    public deleteFile = (fileId: string): Promise<void> => {
+
+
+        return new Promise((resolve, reject) => {
+
         })
     }
 

@@ -1,0 +1,118 @@
+.container
+    width: 100%
+    padding: 20px 0
+
+    .filesGrid
+        display: flex
+        flex-wrap: wrap
+        gap: 10px
+        margin-bottom: 20px
+
+        .fileCard
+            display: flex
+            align-items: center
+            max-width: 170px
+            min-width: 120px
+            height: 56px
+            padding: 0px 12px
+            border: 1px solid #e0e0e0
+            border-radius: 8px
+            position: relative
+            background: rgb(236, 241, 245, 0.3)
+            
+            &:hover
+                border-color: #c4c4c4
+
+                .deleteButton
+                    display: flex
+
+            .fileIcon
+                display: flex
+                align-items: center
+                justify-content: center
+                height: 30px
+                width: 30px
+                flex: 0 0 30px
+                font-size: 28px
+                color: #333
+
+            .infoContainer
+                display: flex
+                flex-direction: column
+                justify-content: space-between
+                align-items: flex-start
+                margin-left: 6px
+                overflow: hidden
+
+                .fileName
+                    width: 100%
+                    text-align: start
+                    white-space: nowrap
+                    overflow: hidden
+                    text-overflow: ellipsis
+                    font-size: 13px
+                    font-weight: 500
+                    color: #333
+
+                .fileSize
+                    width: 100%
+                    text-align: start
+                    white-space: nowrap
+                    overflow: hidden
+                    text-overflow: ellipsis
+                    font-size: 12px
+                    font-weight: 500
+                    color: #b2b2b2
+
+            .deleteButton
+                position: absolute
+                bottom: 0px
+                right: 0px
+                cursor: pointer
+                height: 22px
+                width: 22px
+                border-radius: 50% 0 50% 0 
+                border-top: 1px solid #e0e0e0
+                border-left: 1px solid #e0e0e0
+                display: none
+                align-items: center
+                justify-content: center
+                background: rgb(255, 255, 255)
+                color: #6f6f6f
+                font-size: 16px
+
+                &:hover
+                    color: rgb(111, 111, 111, 0.7)
+
+        .addButton
+            display: flex
+            align-items: center
+            justify-content: center
+            width: 42px
+            height: 56px
+            border: 1px solid #e8e8e8
+            border-radius: 8px
+            cursor: pointer
+            transition: border-color 0.3s ease
+            background: rgb(236, 241, 245, 0.3)
+
+            &:hover
+                border-color: #c4c4c4
+
+            .plusIcon
+                color: #6f6f6f
+
+.hiddenInput
+  display: none
+
+.submitButton
+  background-color: #2196f3
+  color: white
+  border: none
+  padding: 10px 20px
+  border-radius: 5px
+  cursor: pointer
+  transition: background-color 0.3s ease
+
+  &:hover
+    background-color: #1976d2

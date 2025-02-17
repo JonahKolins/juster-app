@@ -2,11 +2,10 @@ import React, {ChangeEvent, memo, useCallback, useEffect, useMemo, useState} fro
 import styles from "./CreateNewClaimForm.module.sass";
 import TextArea from "antd/es/input/TextArea";
 import classNames from "classnames";
-import {Dropdown, Input, MenuProps, Modal, UploadFile, message} from "antd";
+import {Dropdown, Input, MenuProps, Modal, message} from "antd";
 import {IoIosSearch} from "react-icons/io";
-import getOrganisationSuggestionsRequest from "../api/methods/getOrganisationSuggestionsRequest";
+// import getOrganisationSuggestionsRequest from "../api/methods/getOrganisationSuggestionsRequest";
 import {ISuggestions} from "../api/requests/GetOrganisationSuggestionsRequest";
-import ManualForm, {SavedOrgData} from "./manualForm/ManualForm";
 import TextEditor from "../../requestItem/textEditor/TextEditor";
 import { IoClose, IoWarningOutline } from "react-icons/io5";
 import {CreateNewClaimParams} from "../api/requests/PostCreateNewClaimRequest";
@@ -46,7 +45,7 @@ interface CreateNewClaimFormProps {}
 
 const CreateNewClaimForm = memo<CreateNewClaimFormProps>(({}) => {
     // organisation data
-    const [orgData, setOrgData] = useState<SavedOrgData>(null);
+    const [orgData, setOrgData] = useState<any>(null);
     const [inputSearchValue, setInputSearchValue] = useState<string>('');
     const [dropdownItems, setDropdownItems] = useState<MenuProps['items']>([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -54,7 +53,7 @@ const CreateNewClaimForm = memo<CreateNewClaimFormProps>(({}) => {
     // claim data
     const [claimName, setClaimName] = useState<string>('');
     const [claimText, setClaimText] = useState<string>('');
-    const [claimFiles, setClaimFiles] = useState<UploadFile[]>([]);
+    const [claimFiles, setClaimFiles] = useState<File[]>([]);
     // ошибка
     const [error, setError] = useState<IFormError>(null);
     // modal
@@ -127,14 +126,14 @@ const CreateNewClaimForm = memo<CreateNewClaimFormProps>(({}) => {
 
     const handleSearch = useCallback(() => {
         if (!inputSearchValue) return;
-        getOrganisationSuggestionsRequest(inputSearchValue)
-            .then((res) => {
-                console.log('res', res.suggestions)
-                createMenuItems(res.suggestions);
-            })
-            .catch((err) => {
-                console.log('error', err)
-            })
+        // getOrganisationSuggestionsRequest(inputSearchValue)
+        //     .then((res) => {
+        //         console.log('res', res.suggestions)
+        //         createMenuItems(res.suggestions);
+        //     })
+        //     .catch((err) => {
+        //         console.log('error', err)
+        //     })
     }, [inputSearchValue])
 
     const createMenuItems = useCallback((suggestions: ISuggestions[]) => {
@@ -164,12 +163,12 @@ const CreateNewClaimForm = memo<CreateNewClaimFormProps>(({}) => {
         setInputSearchValue('');
     }, [])
 
-    const handleSaveOrganisationData = useCallback((data: SavedOrgData) => {
+    const handleSaveOrganisationData = useCallback((data: any) => {
         setOrgData(data);
         setError(null);
     }, [])
 
-    const handleChangeTextEditor = useCallback((text: string, files: UploadFile[]) => {
+    const handleChangeTextEditor = useCallback((text: string, files: File[]) => {
         setClaimText(text);
         setClaimFiles(files);
         setError(null);
@@ -269,7 +268,7 @@ const CreateNewClaimForm = memo<CreateNewClaimFormProps>(({}) => {
 
     const submitFullForm = useCallback(async () => {
         const sessionId = localStorage.getItem('id');
-        const files = claimFiles.map((file) => file.originFileObj);
+        // const files = claimFiles.map((file) => file.originFileObj);
         // TODO прикрутить files
         const params: CreateNewClaimParams = {
             claimName: claimName,
@@ -281,7 +280,7 @@ const CreateNewClaimForm = memo<CreateNewClaimFormProps>(({}) => {
             recipientInn: orgData.inn,
             recipientName: orgData.name,
             sessionId: sessionId,
-            file: files[0]
+            file: null
         }
 
         try {
@@ -296,18 +295,19 @@ const CreateNewClaimForm = memo<CreateNewClaimFormProps>(({}) => {
 
 
     const renderOrganisationData = (): JSX.Element => {
-        return <ManualForm clean={cleanOrg} saveOrganisationData={handleSaveOrganisationData} />
+        return null
+        // return <ManualForm clean={cleanOrg} saveOrganisationData={handleSaveOrganisationData} />
     }
 
     const renderSelectedItem = (): JSX.Element => {
         if (!selectedItem) return null;
-        return (
-            <ManualForm
-                clean={cleanOrg}
-                // data={selectedItem}
-                saveOrganisationData={handleSaveOrganisationData}
-            />
-        )
+        // return (
+        //     <ManualForm
+        //         clean={cleanOrg}
+        //         // data={selectedItem}
+        //         saveOrganisationData={handleSaveOrganisationData}
+        //     />
+        // )
     }
 
     const menuStyle = (): React.CSSProperties => {
