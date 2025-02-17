@@ -12,13 +12,16 @@ import {stringUtils} from "../../core/utils";
 import NBSP = stringUtils.NBSP;
 import { BsStars } from "react-icons/bs";
 import { RiMessage3Line } from "react-icons/ri";
+import { useProfile } from "app/hooks/useProfile";
+import { IClaimInfoContext } from "requestItem/withClaimInfo";
 
-interface ClaimActionsProps {
+interface ClaimActionsProps extends IClaimInfoContext {
     id: string;
     actions: IAction[];
 }
 
-const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
+const ClaimActions = memo<ClaimActionsProps>(({ manager, id, actions }) => {
+    const {clientInfo} = useProfile();
 
     const getStatusName = (status: IClaimStatus): string => {
         switch (status) {
@@ -66,7 +69,7 @@ const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
         }
 
         // Добавляем оставшийся текст
-        if (lastIndex < input.length) {
+        if (lastIndex < input?.length) {
             result.push(input.substring(lastIndex));
         }
 
@@ -75,17 +78,17 @@ const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
 
     const renderAction = (action: IAction): React.JSX.Element => {
         console.log('renderAction, action', action);
-        
 
         let text: React.ReactNode = action.text;
 
         if (action.actionType == ActionType.claimCreated) {
+            const actionText = action.text || `Вы создали обращение %date%`;
              // TODO уничтожить этот костыль, нужно чтобы с сервера приходило число
             const formatDate = datetimeUtils.formatTime(new Date(action.createdAt).getTime(), 'DD MMM YYYY в hh:mm')
 
             text = (
                 <span className={styles['action-message']}>
-                    {action.text.replace('%date%', '')}
+                    {actionText.replace('%date%', '')}
                     <span className={styles['string-dot']}></span>
                     <span className={styles['action-time']}>{formatDate}</span>
                 </span>
@@ -93,16 +96,18 @@ const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
         }
 
         if (action.actionType == ActionType.statusChanged) {
+            const actionText = action.text || `%user% поменял статус на %status% %date%`;
             // TODO уничтожить этот костыль, нужно чтобы с сервера приходило число
-            const formatDate = datetimeUtils.formatTime(new Date(action.createdAt).getTime(), 'DD MMM YYYY в hh:mm')
-            const actionText = replacePlaceholdersWithElements(action.text, {
-                '%user%': <span className={styles['action-user-info']}>{action.user.firstName} {action.user.lastName}{NBSP}</span>,
+            const formatDate = datetimeUtils.formatTime(new Date(action.createdAt).getTime(), 'DD MMM YYYY в hh:mm');
+            const userString = action.user.firstName ? `${action.user.firstName} ${action.user.lastName}` : clientInfo.email;
+            const actionTextView = replacePlaceholdersWithElements(actionText, {
+                '%user%': <span className={styles['action-user-info']}>{userString}{NBSP}</span>,
                 '%status%': <>{NBSP}<span className={styles['status-inline']}>{getStatusName(action.status)}</span></>,
                 '%date%': <><span className={styles['string-dot']}></span><span className={styles['action-time']}>{formatDate}</span></>
             })
             text = (
                 <span className={styles['action-message']}>
-                    {actionText}
+                    {actionTextView}
                 </span>
             )
         }
@@ -159,9 +164,25 @@ const ClaimActions = memo<ClaimActionsProps>(({id, actions}) => {
     }
 
     const renderActions = () => {
-        if (!actions || !actions.length) return <div>no data</div>
+        let allActions: IAction[] = actions || [];
 
-        const actionsElements = actions.slice().reverse().map((action) => {
+        if (!allActions.length) {
+            allActions = [
+                {
+                    text: '',
+                    status: IClaimStatus.new,
+                    type: ClaimType.action,
+                    actionType: ActionType.claimCreated,
+                    user: {
+                        firstName: '',
+                        lastName: '',
+                    },
+                    createdAt: `${manager.claimData.claimInfo.createdAt}`
+                }
+            ]
+        }
+
+        const actionsElements = allActions.slice().reverse().map((action) => {
             return action.type == ClaimType.action ? renderAction(action) : renderMessage(action);
         })
 

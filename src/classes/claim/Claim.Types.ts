@@ -66,5 +66,5 @@ export interface IAction {
         firstName: string;
         lastName: string;
     };
-    createdAt: string;
+    createdAt: string; // TODO нужно переделать на число
 }

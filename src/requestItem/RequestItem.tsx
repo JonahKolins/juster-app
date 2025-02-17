@@ -101,11 +101,7 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
                         <div className={styles.actions}>
                             <div className={styles.title}>Активность</div>
                             <TextEditor saveComment={handleSaveComment} />
-                            {data.claimInfo.actions?.length ? (
-                                <ClaimActions actions={data.claimInfo.actions} id={id}/>
-                            ) : (
-                                <div className={styles.no_activities}>Нет активности</div>
-                            )}
+                            <ClaimActions manager={manager} actions={data.claimInfo.actions} id={id}/>
                         </div>
                     </div>
                     <AdditionalInfo

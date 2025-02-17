@@ -1,4 +1,4 @@
-import {IAction, IClaimsItem} from "./Claim.Types";
+import {IAction, IClaimsItem, IClaimStatus} from "./Claim.Types";
 import {EventEmitter} from "../../core/event";
 import {ICreateClaimActionRequestParams, testCreateClaimAction} from "../../app/auth/methods/testCreateClaimAction";
 import {ApiError, NetworkError} from "../../core/errors";
@@ -6,6 +6,8 @@ import { BaseClaims } from "./BaseClaims";
 import { IAddClaimActionRequestParams, IClaimActionRequestInfo, requestAddClaimAction } from "cmd/network/claims/methods/requestAddClaimAction";
 import { Session } from "classes/session/Session";
 import { IPostAddClaimActionResponse } from "cmd/network/claims/requests/PostAddClaimAction";
+import { IChangeClaimStatusRequestParams, requestChangeClaimStatus } from "cmd/network/claims/methods/requestChangeClaimStatus";
+import { IPostChangeClaimStatusResponse } from "cmd/network/claims/requests/PostChangeClaimStatusRequest";
 
 export class Claim {
     private _claimData: IClaimsItem;
@@ -104,6 +106,36 @@ export class Claim {
                 this.claimDataChanged.emit();
             })
     }
+
+    // меняет статус -> создает экшен 
+    public changeStatus = (status: IClaimStatus) => {
+        const sessionId = Session.instance.sessionId;
+        const claimId = this._claimData.genId;
+
+        if (!sessionId || !claimId) return;
+
+        const payload: IChangeClaimStatusRequestParams = {
+            sessionId,
+            claimId,
+            status
+        }
+
+        requestChangeClaimStatus(payload)
+            .then((response: IPostChangeClaimStatusResponse) => {
+                // this._claimData = response;
+                //
+                this._error = null;
+                BaseClaims.instance.readClaims();
+            })
+            .catch((error) => {
+                this._error = error;
+                console.log('Claim, changeStatus -> error:', error);
+            })
+            .finally(() => {
+                this.setLoadingState(false);
+                this.claimDataChanged.emit();
+            })
+    }    
 
     // TODO сделать отдельный запрос 
     private readClaimInfoRequest = (id: string): Promise<IClaimsItem> => {

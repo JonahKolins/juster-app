@@ -10,7 +10,6 @@ import classNames from "classnames";
 import { BsChevronRight } from "react-icons/bs";
 import { RiMessage3Line } from "react-icons/ri";
 import { IoAdd } from "react-icons/io5";
-import ClaimPreview from "./ClaimPreview";
 import MyClaims from "myClaims/MyClaims";
 
 enum IRequestsPageId {

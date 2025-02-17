@@ -168,17 +168,10 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
             setDeclineDialogOpened(true);
             return;
         }
-        //
-        setCurrentStatus(e.key as IClaimStatus);
-        //
         if (currentStatus != e.key) {
-            const newAction: IClaimActionRequestInfo = {
-                text: `%user% поменял статус на %status% %date%`,
-                type: ClaimType.action,
-                actionType: ActionType.statusChanged,
-                status: e.key as IClaimStatus 
-            }
-            manager.addAction(newAction);
+            const newStatus = e.key as IClaimStatus;
+            setCurrentStatus(newStatus);
+            manager.changeStatus(newStatus);
         }
     };
 
@@ -260,8 +253,8 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
                 ))}
             </div>
             <div className={styles.date_block}>
-                <div>Создано {datetimeUtils.formatTime(manager.claimData.claimInfo.createdAt, 'DD MMM YYYY в hh:mm')}</div>
-                <div>Последнее обноление {datetimeUtils.formatTime(manager.claimData.claimInfo.lastUpd, 'DD MMM YYYY в hh:mm')}</div>
+                <div>Создано: {datetimeUtils.formatTime(manager.claimData.claimInfo.createdAt, 'DD MMM YYYY в hh:mm')}</div>
+                <div>Последнее обноление: {datetimeUtils.formatTime(manager.claimData.claimInfo.lastUpd, 'DD MMM YYYY в hh:mm')}</div>
             </div>
             <Modal
                 title={'Предупреждение'}
