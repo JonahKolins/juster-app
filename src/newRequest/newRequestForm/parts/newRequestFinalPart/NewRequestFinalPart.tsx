@@ -12,6 +12,7 @@ import {IClaimReason, IMinRespondentData} from "../../../../classes/claim/Claim.
 import NBSP = stringUtils.NBSP;
 import { ClaimCreator } from "classes/claim/ClaimCreator";
 import { ICreateNewClaimResponse } from "cmd/network/claims/requests/PostCreateNewClaimRequest";
+import FilesUploader from "components/filesUploader/FilesUploader";
 
 interface NewRequestFinalPartProps {
     onPrevPageClick: () => void;
@@ -111,7 +112,10 @@ const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) =
                             modules={{toolbar: null}}
                             readOnly={true}
                         />
-                        {files && <div>files are here</div>}
+                        {files?.length 
+                            ? <FilesUploader onChange={() => {}} viewMode={true} />
+                            : null
+                        }
                     </div>
                 </div>
                 <div className={styles['content-block']}>

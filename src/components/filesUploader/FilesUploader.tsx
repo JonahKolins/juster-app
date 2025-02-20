@@ -13,9 +13,10 @@ interface FileData {
 
 interface FilesUploaderProps {
     onChange: () => void;
+    viewMode?: boolean;
 }
 
-const FilesUploader = React.memo<FilesUploaderProps>(({onChange}) => {
+const FilesUploader = React.memo<FilesUploaderProps>(({onChange, viewMode}) => {
 
     const createFilesData = (files: File[]): FileData[] => {
         if (!files?.length) return [];
@@ -90,26 +91,30 @@ const FilesUploader = React.memo<FilesUploaderProps>(({onChange}) => {
                             <span className={styles.fileName}>{file.name}</span>
                             <div className={styles.fileSize}>{`${(file.size/(1024*1024)).toFixed(2)} Мб`}</div>
                         </div>
-                        <div
-                            className={styles.deleteButton}
-                            onClick={() => handleDelete(id)}
-                            aria-label="Delete file"
-                        >
-                            <IoClose size={18}/>
-                        </div>
+                        {!viewMode && (
+                            <div
+                                className={styles.deleteButton}
+                                onClick={() => handleDelete(id)}
+                                aria-label="Delete file"
+                            >
+                                <IoClose size={18}/>
+                            </div>
+                        )}
                     </div>
                 ))}
-                <label className={styles.addButton}>
-                <input
-                    type="file"
-                    multiple
-                    onChange={handleAddFiles}
-                    className={styles.hiddenInput}
-                />
-                    <span className={styles.plusIcon}>
-                        <HiPlus size={22}/>
-                    </span>
-                </label>
+                {!viewMode && (
+                    <label className={styles.addButton}>
+                        <input
+                            type="file"
+                            multiple
+                            onChange={handleAddFiles}
+                            className={styles.hiddenInput}
+                        />
+                        <span className={styles.plusIcon}>
+                            <HiPlus size={22}/>
+                        </span>
+                    </label>
+                )}
             </div>
         </div>
     );
