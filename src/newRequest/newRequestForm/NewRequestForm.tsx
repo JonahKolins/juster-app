@@ -27,6 +27,7 @@ interface IRequestPart {
 }
 
 const PARTNER_ID_PARAM = 'id';
+const EDIT_CLAIM_ID_PARAM = 'claimId';
 
 const NewRequestForm = memo<NewRequestFormProps>(({}) => {
     const [currentPartId, setCurrentPartId] = useState<number>(PageId.reason);
@@ -34,6 +35,7 @@ const NewRequestForm = memo<NewRequestFormProps>(({}) => {
 
     useEffect(() => {
         const searchString = new URLSearchParams(location.search);
+        
         if (searchString.has(PARTNER_ID_PARAM)) {
             const id = searchString.get(PARTNER_ID_PARAM);
             if (!id?.length) return;
@@ -45,6 +47,14 @@ const NewRequestForm = memo<NewRequestFormProps>(({}) => {
             if (!partnerData) return;
             //
             // setOrganisationData(partnerData); 
+        }
+
+        // есть id жалобы которую можно продолжить создавать
+        if (searchString.has(EDIT_CLAIM_ID_PARAM)) {
+            const claimId = searchString.get(EDIT_CLAIM_ID_PARAM);
+            if (!claimId?.length) return;
+            // загрузим для нее данные
+            ClaimCreator.instance.loadExistedDraft(claimId);
         }
     }, [])
 

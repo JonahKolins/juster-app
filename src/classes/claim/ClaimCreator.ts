@@ -12,6 +12,7 @@ import { requestSaveDocs } from "cmd/network/claims/methods/requestSaveDocs";
 import { ICreateClaimInfo } from "./ClaimCreator.Types";
 import { IClaimReason, IMinRespondentData } from "./Claim.Types";
 import UnauthorizedError from "../../cmd/api/errors/UnauthorizedError";
+import { BaseClaims } from "./BaseClaims";
 
 export class ClaimCreator {
     private _claimInfo: ICreateClaimInfo;
@@ -153,6 +154,29 @@ export class ClaimCreator {
             return this.updateDraft();
         }
         return this.createDraft();
+    }
+
+    // загрузить существующий черновик 
+    public loadExistedDraft = (claimId: string) => {
+        // сначала зачистим, вдруг что-то есть 
+        this.initClaimInfo();
+        const draftInfo = BaseClaims.instance.getClaimById(claimId);
+        if (draftInfo) {
+            this._claimInfo.draftId = draftInfo.genId;
+            this._claimInfo.reason = {
+                text: draftInfo.claimInfo.contentType,
+                id: 7
+            };
+            this._claimInfo.respondent = {
+                address: draftInfo.claimInfo.recipientAddress,
+                inn: draftInfo.claimInfo.recipientInn,
+                name: draftInfo.claimInfo.recipientName
+            };
+            this._claimInfo.text = draftInfo.claimInfo.textClaim || "";
+            this._claimInfo.name = draftInfo.claimInfo.claimName || "";
+            //
+            this.claimCreatorDataChanged.emit();
+        }
     }
 
     // только создает черновик (не обновляет)

@@ -46,7 +46,7 @@ export interface IClaimsItem {
         contentType: string;
         contentSum: string;
         textClaim: string;
-        status: string;
+        status: IClaimStatus;
         actions: IAction[];
     };
 }

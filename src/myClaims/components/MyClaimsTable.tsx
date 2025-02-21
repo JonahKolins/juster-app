@@ -6,8 +6,6 @@ import type { ColumnsType } from 'antd/es/table';
 import { datetimeUtils } from 'core/utils/datetimeUtils';
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { IClaimsItem, IClaimStatus } from 'classes/claim/Claim.Types';
-import { IoClose, IoCalendarClearOutline } from 'react-icons/io5';
-import { BsArrowsAngleExpand } from "react-icons/bs";
 import { useNavigate } from 'react-router';
 import { TbGrid3X3 } from "react-icons/tb";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
@@ -15,11 +13,10 @@ import { RxClock } from "react-icons/rx";
 import { RxCounterClockwiseClock } from "react-icons/rx";
 import { HiOutlineBuildingLibrary } from "react-icons/hi2";
 import { LuGoal } from "react-icons/lu";
-import { IoDocumentOutline } from "react-icons/io5";
-import { IoPersonOutline } from "react-icons/io5";
 import { PiScales } from "react-icons/pi";
 import { useProfile } from 'app/hooks/useProfile';
 import { TbArrowsDiagonal } from "react-icons/tb";
+import { IoClose, IoCalendarClearOutline, IoDocumentOutline, IoPersonOutline, IoCreateOutline, IoTrashOutline } from "react-icons/io5";
 
 interface ClaimTableRowData {
     key: React.Key;
@@ -34,6 +31,7 @@ interface ClaimTableRowData {
 }
 
 const OPEN_FULL_CLAIM = 'К обращению';
+const CONTINUE_CREATE_CLAIM = 'Продолжить создание';
 
 const MyClaimsTable = () => {
     const navigate = useNavigate();
@@ -208,13 +206,32 @@ const MyClaimsTable = () => {
         setSelectedClaim(null);
     }
 
+    console.log('selectedClaim', selectedClaim);
+    
     const renderModalTitle = (): JSX.Element => {
         return (
             <div className={styles['my-claims-modal-title-container']}>
-                <div className={styles['title-button']} onClick={handleOpenFullClaim}>
-                    <TbArrowsDiagonal size={16} className={styles['title-button-icon']} />
-                    <span className={styles['title-button-text']}>{OPEN_FULL_CLAIM}</span>
-                </div>
+                {selectedClaim && selectedClaim.claimInfo.status == IClaimStatus.draft 
+                    ? (
+                        <>
+                            <div className={styles['title-button']} onClick={handleContinueToCreateClaim}>
+                                <IoCreateOutline size={16} className={styles['title-button-icon']} />
+                                <span className={styles['title-button-text']}>{CONTINUE_CREATE_CLAIM}</span>
+                            </div>
+                            <Tooltip placement="bottom" title={'Удалить'} arrow={true}>
+                                <div className={styles['title-button']} onClick={handleContinueToCreateClaim}>
+                                    <IoTrashOutline size={16} className={styles['title-button-icon']} />
+                                </div>
+                            </Tooltip>
+                        </>
+                    )
+                    : (
+                        <div className={styles['title-button']} onClick={handleOpenFullClaim}>
+                            <TbArrowsDiagonal size={16} className={styles['title-button-icon']} />
+                            <span className={styles['title-button-text']}>{OPEN_FULL_CLAIM}</span>
+                        </div>
+                    )
+                }
             </div>  
         )
     }
@@ -222,6 +239,11 @@ const MyClaimsTable = () => {
     const handleOpenFullClaim = () => {
         console.log('open full claim');
         navigate(`/mySpace/myRequests/${selectedClaim.genId}`)
+    }
+
+    const handleContinueToCreateClaim = () => {
+        if (!selectedClaim) return;
+        navigate(`/mySpace/newRequest?claimId=${encodeURIComponent(selectedClaim.genId)}`);
     }
 
     const renderCloseIcon = (): React.ReactNode => {
@@ -281,7 +303,7 @@ const MyClaimsTable = () => {
                                 <RxClock />
                                 <span>Текущий статус</span>
                             </td>
-                            <td className={styles['value']}>{getStatusName(selectedClaim.claimInfo.status as IClaimStatus)}</td>
+                            <td className={styles['value']}>{renderStatusTag(selectedClaim.claimInfo.status as IClaimStatus)}</td>
                         </tr>
                         <tr>
                             <td className={styles['key']}>
