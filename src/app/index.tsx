@@ -37,7 +37,7 @@ const App: FC = () => {
                         borderColor: "#e8e8e8"
                     },
                     Modal: {
-                        colorBgMask: '#eceaf499'
+                        colorBgMask: '#b0b0b063'
                     }
                 }  
             }}

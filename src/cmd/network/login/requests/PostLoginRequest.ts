@@ -1,10 +1,11 @@
 import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
+import { Roles } from "classes/role/AccessControl";
 
 export interface LoginResponse {
     accessToken: string;
     sessionId: string;
-    role: string;
+    role: Roles;
     // error
     errorCode?: number;
     message?: string;

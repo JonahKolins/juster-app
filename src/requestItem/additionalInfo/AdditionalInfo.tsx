@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect, useState} from "react";
+import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
 import styles from "./AdditionalInfo.module.sass";
 import {Dropdown, MenuProps, Modal, Tag} from "antd";
 import {BsChevronDown} from "react-icons/bs";
@@ -7,6 +7,7 @@ import {ActionType, ClaimType, IClaimStatus, IMinRespondentData} from "../../cla
 import {useProfile} from "../../app/hooks/useProfile";
 import { IClaimActionRequestInfo } from "cmd/network/claims/methods/requestAddClaimAction";
 import { datetimeUtils } from "core/utils/datetimeUtils";
+import { AccessControl } from "classes/role/AccessControl";
 
 interface InfoRow {
     name: string;
@@ -23,10 +24,12 @@ interface AdditionalInfoProps {
 
 const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, respondent}) => {
     const {clientInfo} = useProfile();
+    const statuses = AccessControl.instance.claimStatusesList();
 
     const [rows, setRows] = useState<InfoRow[]>(null);
     const [currentStatus, setCurrentStatus] = useState<IClaimStatus>(status);
     const [declineDialogOpened, setDeclineDialogOpened] = useState<boolean>(false);
+    const [successDialogOpened, setSuccessDialogOpened] = useState<boolean>(false);
 
     useEffect(() => {
         createInfoRows();
@@ -111,7 +114,7 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
             case IClaimStatus.resolved: {
                 return (
                     <Tag color='green' className={className}>
-                        Готово
+                        Решено
                         {children}
                     </Tag>
                 )
@@ -158,14 +161,19 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
             case IClaimStatus.needInfo: return 'Требуется действие';
             case IClaimStatus.resolved: return 'Решено';
             case IClaimStatus.declined: return 'Отклонено';
+            case IClaimStatus.deleted: return 'Удалить';
             default: return '';
         }
     }
 
     const handleMenuClick: MenuProps['onClick'] = (e) => {
         console.log('click', e);
-        if (e.key === IClaimStatus.declined) {
+        if (e.key === IClaimStatus.declined || e.key === IClaimStatus.deleted) {
             setDeclineDialogOpened(true);
+            return;
+        }
+        if (e.key === IClaimStatus.resolved) {
+            setSuccessDialogOpened(true);
             return;
         }
         if (currentStatus != e.key) {
@@ -175,41 +183,53 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
         }
     };
 
-    const items: MenuProps['items'] = [
-        {
-            label: 'Создано',
-            key: IClaimStatus.new
-        },
-        {
-            label: 'Черновик',
-            key: IClaimStatus.draft
-        },
-        {
-            label: 'На рассмотрении',
-            key: IClaimStatus.open,
-        },
-        {
-            label: 'В процессе',
-            key: IClaimStatus.inProgress,
-        },
-        {
-            label: 'Требуется действие',
-            key: IClaimStatus.needInfo,
-        },
-        {
-            label: 'Решено',
-            key: IClaimStatus.resolved,
-            danger: true,
-        },
-        {
-            label: 'Отклонено',
-            key: IClaimStatus.declined,
-            danger: true
-        }
-    ];
+    // const items: MenuProps['items'] = [
+    //     {
+    //         label: 'Создано',
+    //         key: IClaimStatus.new
+    //     },
+    //     {
+    //         label: 'Черновик',
+    //         key: IClaimStatus.draft
+    //     },
+    //     {
+    //         label: 'На рассмотрении',
+    //         key: IClaimStatus.open,
+    //     },
+    //     {
+    //         label: 'В процессе',
+    //         key: IClaimStatus.inProgress,
+    //     },
+    //     {
+    //         label: 'Требуется действие',
+    //         key: IClaimStatus.needInfo,
+    //     },
+    //     {
+    //         label: 'Решено',
+    //         key: IClaimStatus.resolved,
+    //         danger: true,
+    //     },
+    //     {
+    //         label: 'Отклонено',
+    //         key: IClaimStatus.declined,
+    //         danger: true
+    //     }
+    // ];
+
+    const statusItems: MenuProps['items'] = useMemo(() => {
+        if (currentStatus == IClaimStatus.resolved) return [];
+        return statuses.map((st: IClaimStatus) => {
+            return {
+                label: getStatusName(st),
+                key: st,
+                danger: st == IClaimStatus.deleted
+            }
+        })
+    }, []) 
+
 
     const menuProps = {
-        items,
+        items: statusItems,
         selectable: true,
         onClick: handleMenuClick,
         defaultSelectedKeys: [currentStatus]
@@ -231,6 +251,24 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
 
     const handleDeclineModalCancel = () => {
         setDeclineDialogOpened(false);
+    }
+
+    const handleSuccessModalOk = () => {
+        setCurrentStatus(IClaimStatus.resolved);
+        //
+        const newAction: IClaimActionRequestInfo = {
+            text: `%user% поменял статус на %status% %date%`,
+            type: ClaimType.action,
+            actionType: ActionType.statusChanged,
+            status: IClaimStatus.resolved
+        }
+        manager.addAction(newAction);
+        //
+        setSuccessDialogOpened(false);
+    }
+
+    const handleSuccessModalCancel = () => {
+        setSuccessDialogOpened(false);
     }
 
     if (!rows || !rows.length) return null;
@@ -265,6 +303,16 @@ const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, 
                 cancelText="Закрыть"
             >
                 <div>{'Вы уверены, что хотите отклонить обращение? Рассмотрение обращения прекратится.'}</div>
+            </Modal>
+            <Modal
+                title={'Ура'}
+                open={successDialogOpened}
+                onOk={handleSuccessModalOk}
+                onCancel={handleSuccessModalCancel}
+                okText="Да, все супер"
+                cancelText="Отмена"
+            >
+                <div>{'Вы полностью удовлетворены результатом обращения? После завершения вы больше не сможете вести диалог с компанией.'}</div>
             </Modal>
         </div>
     )

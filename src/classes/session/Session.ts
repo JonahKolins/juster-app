@@ -6,6 +6,7 @@ import {requestSessionInfo} from "../../cmd/network/session/methods/requestInfo"
 import {requestRefresh} from "../../cmd/network/session/methods/requestRefresh";
 import {RefreshResponse} from "../../cmd/network/session/requests/PostRefreshRequest";
 import UnauthorizedError from "../../cmd/api/errors/UnauthorizedError";
+import { AccessControl } from "classes/role/AccessControl";
 
 // описание типов для события loginStateChanged
 export type LoginStateChangedMessage = void;
@@ -138,6 +139,9 @@ export class Session {
 
                     this._sessionId = response.sessionId;
                     localStorage.setItem('sessionId', response.sessionId);
+                    // устанавливаем роль
+                    AccessControl.instance.setRole(response.role);
+                    //
                     this.setLoginState(LoginState.loggedIn);
                     this.sessionDataChangedEvent.emit();
 
@@ -166,9 +170,12 @@ export class Session {
                 .then((response) => {
                     console.log('session restore response', response)
                     if (!response) return;
-
+                    //
                     this._sessionId = response.sessionId;
                     localStorage.setItem('sessionId', response.sessionId);
+                    // устанавливаем роль
+                    AccessControl.instance.setRole(response.role);
+                    //
                     this.setLoginState(LoginState.loggedIn);
                     this.sessionDataChangedEvent.emit();
 
@@ -197,6 +204,8 @@ export class Session {
                 // обновим sessionId
                 this._sessionId = refreshResponse.sessionId;
                 localStorage.setItem('sessionId', refreshResponse.sessionId);
+                // устанавливаем роль
+                AccessControl.instance.setRole(refreshResponse.role);
                 // установим состояние авторизованного пользователя
                 this.setLoginState(LoginState.loggedIn);
                 // может быть сохраненная ошибка -> удалим ее
@@ -216,6 +225,8 @@ export class Session {
         this._error = null;
         this.setLoginState(LoginState.loggedOut);
         localStorage.removeItem('token');
+        // убираем роль
+        AccessControl.instance.setRole(null);
         // тут будет код логаута
     }
 

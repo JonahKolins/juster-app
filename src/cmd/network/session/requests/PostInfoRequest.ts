@@ -1,10 +1,11 @@
 import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
+import { Roles } from "classes/role/AccessControl";
 
 export interface InfoResponse {
     sessionId: string;
     accessToken: string;
-    role: string;
+    role: Roles;
 }
 
 const INFO_URL = '/session/info';

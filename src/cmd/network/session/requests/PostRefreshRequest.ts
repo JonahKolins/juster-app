@@ -1,8 +1,9 @@
 import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
+import { Roles } from "classes/role/AccessControl";
 
 export interface RefreshResponse {
-    role: string,
+    role: Roles,
     sessionId: string
 }
 

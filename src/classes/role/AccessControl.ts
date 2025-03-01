@@ -1,12 +1,13 @@
 import { IClaimStatus } from "classes/claim/Claim.Types";
+import { Instance } from "core/entity";
 import { RuntimeError } from "core/errors";
 
 // роли в приложении 
 export enum Roles {
-    CLIENT = 'client',
-    COMPANY = 'company',
-    LAWYER = 'lawyer',
-    ADMIN = 'admin'
+    USER = 'USER',
+    COMPANY = 'COMPANY',
+    LAWYER = 'LAWYER',
+    ADMIN = 'ADMIN'
   }
   
 // перечень строковых ключей для действий, которые нужно проверять в приложении
@@ -33,7 +34,7 @@ export type StatusPermissionsMap = {
 
 // словарь, задающий разрешения для каждой роли. При необходимости можно расширять список действий
 const PERMISSIONS: PermissionsMap = {
-    [Roles.CLIENT]: {
+    [Roles.USER]: {
         canCreateAcountOnSite: true,
         canCreateClaim: true,
         сanReceiveClaim: false,
@@ -74,7 +75,7 @@ const PERMISSIONS: PermissionsMap = {
 // перечисление статусов, которые доступны каждой роли (это статусы, которые роль может применить к жалобе)
 // то есть те, которые отображаются в дропдауне на странице жалобы
 const STATUS_PERMISSIONS: StatusPermissionsMap = {
-    [Roles.CLIENT]: {
+    [Roles.USER]: {
         statusesList: [
             IClaimStatus.resolved,
             IClaimStatus.deleted,
@@ -123,26 +124,31 @@ export class AccessControl {
         this.currentRole = initialRole;
     }
 
+    // синглтон
+    public static get instance() {
+        return Instance.getOrCreate<AccessControl>(AccessControl, 'AccessControl');
+    }
+
+    // геттер для текущей роли
+    public getRole = (): Roles => {
+        return this.currentRole;
+    }
+
     // метод для смены роли
-    public setRole(newRole: Roles): void {
+    public setRole = (newRole: Roles) => {
         this.currentRole = newRole;
     }
 
     // проверяем, имеет ли текущая роль доступ к нужному действию
-    public can(permission: PermissionKey): boolean {
+    public can = (permission: PermissionKey): boolean => {
         if (!this.currentRole) {
             throw new RuntimeError('AccessControl.can: ROLE is not defined');
         }
         return PERMISSIONS[this.currentRole][permission];
     }
 
-    // геттер для текущей роли
-    public getRole(): Roles {
-        return this.currentRole;
-    }
-
     // возращает статусы обращения для текущей роли 
-    public claimStatusesList(): IClaimStatus[] {
+    public claimStatusesList = (): IClaimStatus[] => {
         if (!this.currentRole) {
             throw new RuntimeError('AccessControl.statusesList: ROLE is not defined');
         }
