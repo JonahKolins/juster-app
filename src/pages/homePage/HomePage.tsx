@@ -9,6 +9,7 @@ import { BsChevronRight } from "react-icons/bs";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { CiBullhorn } from "react-icons/ci";
 import { HiOutlineBuildingLibrary } from "react-icons/hi2";
+import SearchBar from "components/searchBar/SearchBar";
 
 interface HomePageProps {}
 
@@ -39,8 +40,9 @@ const HomePage = memo<HomePageProps>(() => {
                                 Превратите ваше недовольство в действие: <span className={styles['link']} onClick={onCreateClick}>создайте жалобу</span> в мгновение и получите решение незамедлительно.
                             </div>
                             <div className={styles['text']}>
-                                <span className={styles['link']} onClick={onSignInClick}>Начать бесплатно</span>
+                                <span className={styles['link']} onClick={onSignInClick}></span>
                             </div>
+                            <SearchBar withHistory={true} placeholder="Поиск компании, сервиса, продукта" />
                         </div>
                     </div>
                 </div>
