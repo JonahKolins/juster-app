@@ -23,7 +23,7 @@ import ProtectedRoute, {ProtectedRouteProps} from "./ProtectedRoute";
 import ResetPasswordPage from "../../pages/resetPasswordPage/ResetPasswordPage";
 import NewMyClaimsPage from "pages/mySpacePages/myClaimsPage/NewMyClaimsPage";
 import SearchResultPage from "pages/searchResultPage/SearchResultPage";
-import CompanyPage from "pages/mySpacePages/companyPage/CompanyPage";
+import CompanyPage from "pages/companyPage/CompanyPage";
 
 const AppRoutes: FC = () => {
     const currentLocation = useLocation();

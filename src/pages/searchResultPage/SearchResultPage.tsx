@@ -55,12 +55,12 @@ const SearchResultPage: React.FC = () => {
       <div className={styles.searchResultPage}>
         <div className={styles.container}>
           <div className={styles.header}>
-            <h1 className={styles.title}>Результаты поиска</h1>
+            <h1 className={styles.title}>{`Результаты поиска по запросу "${searchQuery}"`}</h1>
             <div className={styles.searchBarContainer}>
               <SearchBar 
                 placeholder="Поиск компании, сервиса, продукта" 
                 onSearch={handleSearch}
-                withHistory={true}
+                withDropdown={true}
               />
             </div>
           </div>
@@ -70,7 +70,7 @@ const SearchResultPage: React.FC = () => {
               <h2 className={styles.resultsTitle}>
                 {isLoading
                   ? "Поиск..."
-                  : `Результаты поиска по запросу "${searchQuery}" (${searchResults.length})`}
+                  : `${searchResults.length} компании`}
               </h2>
             )}
           </div>
@@ -87,12 +87,12 @@ const SearchResultPage: React.FC = () => {
                     onClick={() => handleCompanyClick(company)}
                   >
                     <h3 className={styles.companyName}>{company.name}</h3>
-                    <div className={styles.companyFullName}>{company.fullName}</div>
+                    <div className={styles.companyFullName}>{company.fullName} - {company.description}</div>
                     <div className={styles.companyInfo}>
                       <span className={styles.companyInn}>ИНН: {company.inn}</span>
                       <span className={styles.companyAddress}>{company.address}</span>
                     </div>
-                    <p className={styles.companyDescription}>{company.description}</p>
+                    {/* <p className={styles.companyDescription}>{company.description}</p> */}
                   </div>
                 ))
               ) : (

@@ -1,0 +1,152 @@
+[
+  {
+    "id": 1,
+    "name": "Газпром",
+    "fullName": "ПАО \"Газпром\"",
+    "inn": "7736050003",
+    "description": "Российская транснациональная энергетическая компания",
+    "address": "Санкт-Петербург, пл. Победы, д.2",
+    "email": "info@gazprom.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Gazprom-Logo.svg",
+    "rating": 4.2,
+    "claimsCount": 87,
+    "claims": [
+      {
+        "id": 101,
+        "title": "Некорректное начисление за газ",
+        "status": "Рассмотрено",
+        "date": "2023-08-15",
+        "description": "Два месяца подряд в квитанциях указываются неправильные показания счетчика.",
+        "isPublic": true
+      },
+      {
+        "id": 102,
+        "title": "Отсутствие ответа на обращение",
+        "status": "В обработке",
+        "date": "2023-09-02",
+        "description": "Направлял запрос на перерасчет, ответа не получил в течение месяца.",
+        "isPublic": true
+      },
+      {
+        "id": 103,
+        "title": "Качество газоснабжения",
+        "status": "Закрыто",
+        "date": "2023-07-10",
+        "description": "Низкое давление газа в сети, невозможно пользоваться газовой колонкой.",
+        "isPublic": false
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Сбербанк",
+    "fullName": "ПАО \"Сбербанк России\"",
+    "inn": "7707083893",
+    "description": "Крупнейший банк России и Восточной Европы",
+    "address": "Москва, ул. Вавилова, д.19",
+    "email": "sberbank@sberbank.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Sberbank_Logo_2020.svg",
+    "rating": 3.8,
+    "claimsCount": 142,
+    "claims": [
+      {
+        "id": 201,
+        "title": "Проблема с онлайн-банкингом",
+        "status": "Рассмотрено",
+        "date": "2023-08-20",
+        "description": "Не работает вход в личный кабинет через мобильное приложение.",
+        "isPublic": true
+      },
+      {
+        "id": 202,
+        "title": "Двойное списание средств",
+        "status": "Решено",
+        "date": "2023-09-05",
+        "description": "При оплате покупки с карты дважды списались средства.",
+        "isPublic": true
+      },
+      {
+        "id": 203,
+        "title": "Неправомерная блокировка счета",
+        "status": "В обработке",
+        "date": "2023-09-10",
+        "description": "Счет заблокирован без объяснения причин и предупреждения.",
+        "isPublic": true
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Ростелеком",
+    "fullName": "ПАО \"Ростелеком\"",
+    "inn": "7707049388",
+    "description": "Российская телекоммуникационная компания",
+    "address": "Москва, ул. Гончарная, д.30",
+    "email": "info@rt.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/1/15/Rostelecom_logo.svg",
+    "rating": 3.5,
+    "claimsCount": 95,
+    "claims": [
+      {
+        "id": 301,
+        "title": "Отсутствие интернета",
+        "status": "Решено",
+        "date": "2023-08-17",
+        "description": "Более суток отсутствует доступ в интернет, техподдержка не реагирует.",
+        "isPublic": true
+      },
+      {
+        "id": 302,
+        "title": "Некорректное начисление за услуги",
+        "status": "В обработке",
+        "date": "2023-09-01",
+        "description": "В счете указаны услуги, которыми я не пользовался.",
+        "isPublic": false
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Яндекс",
+    "fullName": "ООО \"Яндекс\"",
+    "inn": "7736207543",
+    "description": "Российская IT-компания, владеющая поисковой системой Яндекс",
+    "address": "Москва, ул. Льва Толстого, д.16",
+    "email": "info@yandex.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/5/58/Yandex_icon.svg",
+    "rating": 4.5,
+    "claimsCount": 42,
+    "claims": [
+      {
+        "id": 401,
+        "title": "Проблемы с Яндекс.Такси",
+        "status": "Рассмотрено",
+        "date": "2023-08-25",
+        "description": "Водитель отказался выполнять заказ, но деньги списались.",
+        "isPublic": true
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "МТС",
+    "fullName": "ПАО \"Мобильные ТелеСистемы\"",
+    "inn": "7740000076",
+    "description": "Российская телекоммуникационная компания",
+    "address": "Москва, ул. Марксистская, д.4",
+    "email": "info@mts.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/MTS_logo_2015.svg",
+    "rating": 3.7,
+    "claimsCount": 74,
+    "claims": [
+      {
+        "id": 501,
+        "title": "Некорректное списание средств",
+        "status": "В обработке",
+        "date": "2023-09-07",
+        "description": "Подключена платная подписка без моего согласия.",
+        "isPublic": true
+      }
+    ]
+  }
+] 

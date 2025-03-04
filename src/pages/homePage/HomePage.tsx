@@ -42,7 +42,7 @@ const HomePage = memo<HomePageProps>(() => {
                             <div className={styles['text']}>
                                 <span className={styles['link']} onClick={onSignInClick}></span>
                             </div>
-                            <SearchBar withHistory={true} placeholder="Поиск компании, сервиса, продукта" />
+                            <SearchBar withDropdown={true} placeholder="Поиск компании, сервиса, продукта" />
                         </div>
                     </div>
                 </div>

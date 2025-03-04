@@ -6,12 +6,14 @@ import { IoIosSearch, IoIosArrowRoundForward } from "react-icons/io";
 import { ICompanyInfo, searchCompanies } from "cmd/network/search/searchService";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { IoCloseOutline } from "react-icons/io5";
+import { ScrollablePanel } from "controls/panel/ScrollablePanel";
+import { ScrollBarVisibility } from "controls/scrollArea";
 
 interface SearchBarProps {
     placeholder?: string;
     onSearch?: (searchText: string) => void;
     className?: string;
-    withHistory?: boolean;
+    withDropdown?: boolean;
 }
 
 interface RoutesObject {
@@ -32,7 +34,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     placeholder = "Поиск...", 
     onSearch, 
     className,
-    withHistory
+    withDropdown
 }) => {
     const navigate = useNavigate();
     const [text, setText] = useState<string>('');
@@ -203,14 +205,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
                     <IoIosSearch size={18} />
                 </div> */}
             </div>
-            {withHistory && (
+            {withDropdown && !!text && (
                 <div 
                     className={classNames(
                         styles['history'],
                         isHistoryOpened && styles['history-open']
                     )}
                 >
-                    <div className={styles['history-container']}>
+                    <ScrollablePanel
+                        vScroll={ScrollBarVisibility.autoWhenScrollOverArea}
+                        hScroll={ScrollBarVisibility.auto}
+                        className={styles['history-container']}
+                    >
                         {!text ? (
                             <>
                                 <div className={styles['history-title']}>
@@ -237,12 +243,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
                                 </div>
                             </>
                         ) : (
-                            <>
-                                <div className={styles['history-title']}>
-                                    Результаты для: {text}
-                                </div>
-                                <div className={styles['items']}>
-                                    {searchResults.length > 0 ? (
+                            <div className={styles['items']}>
+                                {searchResults.length > 0 
+                                    ? (
                                         searchResults.map((resultItem, index) => (
                                             <div
                                                 key={`${resultItem.id}.${index}`}
@@ -263,11 +266,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
                                         <div className={styles['no-results']}>
                                             Ничего не найдено
                                         </div>
-                                    )}
-                                </div>
-                            </>
+                                    )
+                                }
+                            </div>
                         )}
-                    </div>
+                    </ScrollablePanel>
                 </div>
             )}
         </div>
