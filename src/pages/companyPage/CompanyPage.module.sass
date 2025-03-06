@@ -1,3 +1,5 @@
+@import "src/variables.module.sass"
+  
 .page-body
   display: flex
   flex-direction: column
@@ -5,23 +7,28 @@
   padding: 0
   position: relative
   overflow: hidden
+  background: rgb(248,248,248)
+  @include respond-to('md')
+    min-height: 100%
 
-  .greetings-section
+  .company-section
     display: flex
     flex-direction: column
-    background: var(--base-color__white)
-    padding-top: 124px
+    background: rgb(248,248,248)
+    padding-top: var(--sizes-navHeight)
+    height: 100%
 
     .content-container
-      max-width: 1200px
+      width: 100%
+      max-width: var(--sizes-landingPageWidth)
       will-change: transform, opacity
       padding: 0 2rem
       margin-left: auto
       margin-right: auto
       position: relative
       z-index: 0
-      overflow: hidden
-
+      overflow: visible
+      
       .content
         width: 100%
         display: flex
