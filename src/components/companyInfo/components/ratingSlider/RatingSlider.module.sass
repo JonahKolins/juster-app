@@ -1,0 +1,66 @@
+.rating-slider
+  display: flex
+  flex-direction: column
+  width: 100%
+  margin: 20px 0
+  
+  .slider-labels
+    display: flex
+    justify-content: space-between
+    margin-bottom: 8px
+    
+    .slider-label-resolved, .slider-label-unresolved
+      display: flex
+      flex-direction: column
+      
+      .label-value
+        font-size: 16px
+        font-weight: 600
+      
+      .label-text
+        font-size: 14px
+        color: #666
+    
+    .slider-label-resolved
+      color: #2ecc71
+      
+    .slider-label-unresolved
+      color: #e74c3c
+      text-align: right
+  
+  .slider-container
+    width: 100%
+    height: 10px
+    background-color: #f0f0f0
+    border-radius: 5px
+    overflow: hidden
+    
+    .slider-progress
+      display: flex
+      height: 100%
+      width: 100%
+      
+      .slider-resolved
+        height: 100%
+        background-color: #2ecc71
+        transition: width 0.3s ease
+      
+      .slider-unresolved
+        height: 100%
+        background-color: #e74c3c
+        transition: width 0.3s ease
+  
+  .slider-percentage
+    display: flex
+    flex-direction: column
+    align-items: center
+    margin-top: 12px
+    
+    .percentage-value
+      font-size: 18px
+      font-weight: 600
+      color: #333
+    
+    .percentage-label
+      font-size: 14px
+      color: #666

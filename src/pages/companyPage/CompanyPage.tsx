@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ScrollablePanel } from "../../controls/panel/ScrollablePanel";
 import { ScrollBarVisibility } from "../../controls/scrollArea";
-import { ICompanyInfo, ICompanyClaim, getCompanyById } from "../../cmd/network/company/companyService";
+import { ICompanyInfo, getCompanyById } from "../../cmd/network/company/companyService";
 import styles from "./CompanyPage.module.sass";
 import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 import { FiMail, FiMapPin } from "react-icons/fi";
@@ -88,144 +88,37 @@ const CompanyPage: React.FC = () => {
     }
   };
 
+  const renderError = (): React.JSX.Element => {
+    return (
+      <div className={styles.errorContainer}>
+        <div className={styles.errorMessage}>{error}</div>
+        <button 
+          className={styles.goBackButton}
+          onClick={() => navigate(-1)}
+        >
+          Вернуться назад
+        </button>
+      </div>
+    )
+  }
+
   return (
     <ScrollablePanel
       vScroll={ScrollBarVisibility.autoWhenScrollOverArea}
       hScroll={ScrollBarVisibility.auto}
     >
       <div className={styles['page-body']}>
-        {isLoading ? (
-            <LoaderCircle />
-          ) : (
+        {isLoading 
+          ? <LoaderCircle />
+          : (
             <div className={styles['company-section']}>
               <div className={styles['content-container']}>
-              {error ? (
-                <div className={styles.errorContainer}>
-                  <div className={styles.errorMessage}>{error}</div>
-                  <button 
-                    className={styles.goBackButton}
-                    onClick={() => navigate(-1)}
-                  >
-                    Вернуться назад
-                  </button>
-                </div>
-              ) : company ? (
-                <CompanyInfo info={company} />
-                // <div className={styles.container}>
-                //   <div className={styles.header}>
-                //     <div className={styles.companyHeader}>
-                //       <div className={styles.logoContainer}>
-                //         {company.logoUrl ? (
-                //           <img src={company.logoUrl} alt={company.name} className={styles.logo} />
-                //         ) : (
-                //           <div className={styles.placeholderLogo}>
-                //             {company.name.charAt(0)}
-                //           </div>
-                //         )}
-                //       </div>
-                //       <div className={styles.companyInfo}>
-                //         <h1 className={styles.companyName}>{company.name}</h1>
-                //         <div className={styles.companyFullName}>{company.fullName}</div>
-                        
-                //         <div className={styles.companyRating}>
-                //           {renderRatingStars(company.rating)}
-                //           <span className={styles.claimsCount}>
-                //             {company.claimsCount} обращений
-                //           </span>
-                //         </div>
-                //       </div>
-                //       <button 
-                //         className={styles.createClaimButton}
-                //         onClick={handleCreateClaimClick}
-                //       >
-                //         Написать обращение
-                //       </button>
-                //     </div>
-                //   </div>
-                  
-                //   <div className={styles.detailsSection}>
-                //     <div className={styles.detailsCard}>
-                //       <h2 className={styles.sectionTitle}>Информация о компании</h2>
-                //       <div className={styles.detailsGrid}>
-                //         <div className={styles.detailItem}>
-                //           <BsBuilding className={styles.detailIcon} />
-                //           <div className={styles.detailContent}>
-                //             <div className={styles.detailLabel}>ИНН</div>
-                //             <div className={styles.detailValue}>{company.inn}</div>
-                //           </div>
-                //         </div>
-                        
-                //         <div className={styles.detailItem}>
-                //           <FiMapPin className={styles.detailIcon} />
-                //           <div className={styles.detailContent}>
-                //             <div className={styles.detailLabel}>Адрес</div>
-                //             <div className={styles.detailValue}>{company.address}</div>
-                //           </div>
-                //         </div>
-                        
-                //         {company.email && (
-                //           <div className={styles.detailItem}>
-                //             <FiMail className={styles.detailIcon} />
-                //             <div className={styles.detailContent}>
-                //               <div className={styles.detailLabel}>Email</div>
-                //               <div className={styles.detailValue}>{company.email}</div>
-                //             </div>
-                //           </div>
-                //         )}
-                        
-                //         <div className={styles.detailItem}>
-                //           <BsFileEarmarkText className={styles.detailIcon} />
-                //           <div className={styles.detailContent}>
-                //             <div className={styles.detailLabel}>Описание</div>
-                //             <div className={styles.detailValue}>{company.description}</div>
-                //           </div>
-                //         </div>
-                //       </div>
-                //     </div>
-                //   </div>
-                  
-                //   <div className={styles.claimsSection}>
-                //     <h2 className={styles.sectionTitle}>
-                //       Обращения
-                //       <span className={styles.claimsCounter}>{company.claims.length}</span>
-                //     </h2>
-                    
-                //     {company.claims.length > 0 ? (
-                //       <div className={styles.claimsList}>
-                //         {company.claims.map((claim: ICompanyClaim) => (
-                //           <div key={claim.id} className={styles.claimCard}>
-                //             <div className={styles.claimHeader}>
-                //               <h3 className={styles.claimTitle}>{claim.title}</h3>
-                //               <div className={`${styles.claimStatus} ${getStatusClass(claim.status)}`}>
-                //                 {claim.status}
-                //               </div>
-                //             </div>
-                            
-                //             <div className={styles.claimInfo}>
-                //               <div className={styles.claimDate}>
-                //                 {new Date(claim.date).toLocaleDateString('ru-RU', {
-                //                   day: 'numeric',
-                //                   month: 'long',
-                //                   year: 'numeric'
-                //                 })}
-                //               </div>
-                //               {claim.isPublic && (
-                //                 <div className={styles.publicBadge}>Публичное</div>
-                //               )}
-                //             </div>
-                            
-                //             <p className={styles.claimDescription}>{claim.description}</p>
-                //           </div>
-                //         ))}
-                //       </div>
-                //     ) : (
-                //       <div className={styles.emptyClaimsList}>
-                //         <p>Пока нет обращений</p>
-                //       </div>
-                //     )}
-                //   </div>
-                // </div>
-              ) : null}
+              {error 
+                ? renderError()
+                : company 
+                  ? <CompanyInfo info={company} />
+                  : null
+              }
               </div>
             </div>
         )}

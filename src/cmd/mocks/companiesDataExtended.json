@@ -8,32 +8,121 @@
     "address": "Санкт-Петербург, пл. Победы, д.2",
     "email": "info@gazprom.ru",
     "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Gazprom-Logo.svg",
-    "rating": 4.2,
+    "rating": 4.0,
     "claimsCount": 87,
+    "resolvedClaimsCount": 52,
+    "unresolvedClaimsCount": 35,
+    "resolvedPercentage": 59.8,
+    "searchKeywords": ["газоснабжение", "начисления"],
     "claims": [
       {
-        "id": 101,
-        "title": "Некорректное начисление за газ",
-        "status": "Рассмотрено",
-        "date": "2023-08-15",
-        "description": "Два месяца подряд в квитанциях указываются неправильные показания счетчика.",
-        "isPublic": true
+        "genId": "gas-claim-101",
+        "claimInfo": {
+          "createdAt": 1692057600000,
+          "lastUpd": 1692057600000,
+          "claimName": "Некорректное начисление за газ",
+          "recipientInn": "7736050003",
+          "recipientName": "ПАО \"Газпром\"",
+          "recipientAddress": "Санкт-Петербург, пл. Победы, д.2",
+          "recipientEmail": "info@gazprom.ru",
+          "contentType": "Оплата",
+          "contentSum": "",
+          "textClaim": "Два месяца подряд в квитанциях указываются неправильные показания счетчика.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Иван",
+                "lastName": "Петров"
+              },
+              "createdAt": "2023-08-15"
+            },
+            {
+              "text": "Статус изменен на Рассмотрено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Мария",
+                "lastName": "Смирнова"
+              },
+              "createdAt": "2023-08-22"
+            }
+          ]
+        }
       },
       {
-        "id": 102,
-        "title": "Отсутствие ответа на обращение",
-        "status": "В обработке",
-        "date": "2023-09-02",
-        "description": "Направлял запрос на перерасчет, ответа не получил в течение месяца.",
-        "isPublic": true
+        "genId": "gas-claim-102",
+        "claimInfo": {
+          "createdAt": 1693612800000,
+          "lastUpd": 1693612800000,
+          "claimName": "Отсутствие ответа на обращение",
+          "recipientInn": "7736050003",
+          "recipientName": "ПАО \"Газпром\"",
+          "recipientAddress": "Санкт-Петербург, пл. Победы, д.2",
+          "recipientEmail": "info@gazprom.ru",
+          "contentType": "Обслуживание",
+          "contentSum": "",
+          "textClaim": "Направлял запрос на перерасчет, ответа не получил в течение месяца.",
+          "status": "IN_PROGRESS",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Алексей",
+                "lastName": "Иванов"
+              },
+              "createdAt": "2023-09-02"
+            }
+          ]
+        }
       },
       {
-        "id": 103,
-        "title": "Качество газоснабжения",
-        "status": "Закрыто",
-        "date": "2023-07-10",
-        "description": "Низкое давление газа в сети, невозможно пользоваться газовой колонкой.",
-        "isPublic": false
+        "genId": "gas-claim-103",
+        "claimInfo": {
+          "createdAt": 1688947200000,
+          "lastUpd": 1689206400000,
+          "claimName": "Качество газоснабжения",
+          "recipientInn": "7736050003",
+          "recipientName": "ПАО \"Газпром\"",
+          "recipientAddress": "Санкт-Петербург, пл. Победы, д.2",
+          "recipientEmail": "info@gazprom.ru",
+          "contentType": "Качество",
+          "contentSum": "",
+          "textClaim": "Низкое давление газа в сети, невозможно пользоваться газовой колонкой.",
+          "status": "CLOSE",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Сергей",
+                "lastName": "Кузнецов"
+              },
+              "createdAt": "2023-07-10"
+            },
+            {
+              "text": "Статус изменен на Закрыто",
+              "status": "CLOSE",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Ольга",
+                "lastName": "Соколова"
+              },
+              "createdAt": "2023-07-13"
+            }
+          ]
+        }
       }
     ]
   },
@@ -46,32 +135,132 @@
     "address": "Москва, ул. Вавилова, д.19",
     "email": "sberbank@sberbank.ru",
     "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Sberbank_Logo_2020.svg",
-    "rating": 3.8,
+    "rating": 3.6,
     "claimsCount": 142,
+    "resolvedClaimsCount": 76,
+    "unresolvedClaimsCount": 66,
+    "resolvedPercentage": 53.5,
+    "searchKeywords": ["платежи", "приложение"],
     "claims": [
       {
-        "id": 201,
-        "title": "Проблема с онлайн-банкингом",
-        "status": "Рассмотрено",
-        "date": "2023-08-20",
-        "description": "Не работает вход в личный кабинет через мобильное приложение.",
-        "isPublic": true
+        "genId": "sber-claim-201",
+        "claimInfo": {
+          "createdAt": 1692489600000,
+          "lastUpd": 1692576000000,
+          "claimName": "Проблема с онлайн-банкингом",
+          "recipientInn": "7707083893",
+          "recipientName": "ПАО \"Сбербанк России\"",
+          "recipientAddress": "Москва, ул. Вавилова, д.19",
+          "recipientEmail": "sberbank@sberbank.ru",
+          "contentType": "Сервис",
+          "contentSum": "",
+          "textClaim": "Не работает вход в личный кабинет через мобильное приложение.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Дмитрий",
+                "lastName": "Николаев"
+              },
+              "createdAt": "2023-08-20"
+            },
+            {
+              "text": "Статус изменен на Рассмотрено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Анна",
+                "lastName": "Михайлова"
+              },
+              "createdAt": "2023-08-21"
+            }
+          ]
+        }
       },
       {
-        "id": 202,
-        "title": "Двойное списание средств",
-        "status": "Решено",
-        "date": "2023-09-05",
-        "description": "При оплате покупки с карты дважды списались средства.",
-        "isPublic": true
+        "genId": "sber-claim-202",
+        "claimInfo": {
+          "createdAt": 1693872000000,
+          "lastUpd": 1694044800000,
+          "claimName": "Двойное списание средств",
+          "recipientInn": "7707083893",
+          "recipientName": "ПАО \"Сбербанк России\"",
+          "recipientAddress": "Москва, ул. Вавилова, д.19",
+          "recipientEmail": "sberbank@sberbank.ru",
+          "contentType": "Финансы",
+          "contentSum": "2500",
+          "textClaim": "При оплате покупки с карты дважды списались средства.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Елена",
+                "lastName": "Морозова"
+              },
+              "createdAt": "2023-09-05"
+            },
+            {
+              "text": "Статус изменен на Решено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Павел",
+                "lastName": "Соловьев"
+              },
+              "createdAt": "2023-09-07"
+            }
+          ]
+        }
       },
       {
-        "id": 203,
-        "title": "Неправомерная блокировка счета",
-        "status": "В обработке",
-        "date": "2023-09-10",
-        "description": "Счет заблокирован без объяснения причин и предупреждения.",
-        "isPublic": true
+        "genId": "sber-claim-203",
+        "claimInfo": {
+          "createdAt": 1694304000000,
+          "lastUpd": 1694304000000,
+          "claimName": "Неправомерная блокировка счета",
+          "recipientInn": "7707083893",
+          "recipientName": "ПАО \"Сбербанк России\"",
+          "recipientAddress": "Москва, ул. Вавилова, д.19",
+          "recipientEmail": "sberbank@sberbank.ru",
+          "contentType": "Блокировка",
+          "contentSum": "",
+          "textClaim": "Счет заблокирован без объяснения причин и предупреждения.",
+          "status": "IN_PROGRESS",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Виктор",
+                "lastName": "Лебедев"
+              },
+              "createdAt": "2023-09-10"
+            },
+            {
+              "text": "Статус изменен на В обработке",
+              "status": "IN_PROGRESS",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Ирина",
+                "lastName": "Козлова"
+              },
+              "createdAt": "2023-09-11"
+            }
+          ]
+        }
       }
     ]
   },
@@ -84,24 +273,92 @@
     "address": "Москва, ул. Гончарная, д.30",
     "email": "info@rt.ru",
     "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/1/15/Rostelecom_logo.svg",
-    "rating": 3.5,
+    "rating": 3.3,
     "claimsCount": 95,
+    "resolvedClaimsCount": 48,
+    "unresolvedClaimsCount": 47,
+    "resolvedPercentage": 50.5,
+    "searchKeywords": ["интернет", "тарифы"],
     "claims": [
       {
-        "id": 301,
-        "title": "Отсутствие интернета",
-        "status": "Решено",
-        "date": "2023-08-17",
-        "description": "Более суток отсутствует доступ в интернет, техподдержка не реагирует.",
-        "isPublic": true
+        "genId": "rt-claim-301",
+        "claimInfo": {
+          "createdAt": 1692230400000,
+          "lastUpd": 1692403200000,
+          "claimName": "Отсутствие интернета",
+          "recipientInn": "7707049388",
+          "recipientName": "ПАО \"Ростелеком\"",
+          "recipientAddress": "Москва, ул. Гончарная, д.30",
+          "recipientEmail": "info@rt.ru",
+          "contentType": "Интернет",
+          "contentSum": "",
+          "textClaim": "Более суток отсутствует доступ в интернет, техподдержка не реагирует.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Максим",
+                "lastName": "Волков"
+              },
+              "createdAt": "2023-08-17"
+            },
+            {
+              "text": "Статус изменен на Решено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Наталья",
+                "lastName": "Сергеева"
+              },
+              "createdAt": "2023-08-19"
+            }
+          ]
+        }
       },
       {
-        "id": 302,
-        "title": "Некорректное начисление за услуги",
-        "status": "В обработке",
-        "date": "2023-09-01",
-        "description": "В счете указаны услуги, которыми я не пользовался.",
-        "isPublic": false
+        "genId": "rt-claim-302",
+        "claimInfo": {
+          "createdAt": 1693526400000,
+          "lastUpd": 1693526400000,
+          "claimName": "Некорректное начисление за услуги",
+          "recipientInn": "7707049388",
+          "recipientName": "ПАО \"Ростелеком\"",
+          "recipientAddress": "Москва, ул. Гончарная, д.30",
+          "recipientEmail": "info@rt.ru",
+          "contentType": "Счет",
+          "contentSum": "850",
+          "textClaim": "В счете указаны услуги, которыми я не пользовался.",
+          "status": "IN_PROGRESS",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Артем",
+                "lastName": "Соколов"
+              },
+              "createdAt": "2023-09-01"
+            },
+            {
+              "text": "Статус изменен на В обработке",
+              "status": "IN_PROGRESS",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Екатерина",
+                "lastName": "Новикова"
+              },
+              "createdAt": "2023-09-03"
+            }
+          ]
+        }
       }
     ]
   },
@@ -114,16 +371,51 @@
     "address": "Москва, ул. Льва Толстого, д.16",
     "email": "info@yandex.ru",
     "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/5/58/Yandex_icon.svg",
-    "rating": 4.5,
+    "rating": 4.6,
     "claimsCount": 42,
+    "resolvedClaimsCount": 38,
+    "unresolvedClaimsCount": 4,
+    "resolvedPercentage": 90.5,
     "claims": [
       {
-        "id": 401,
-        "title": "Проблемы с Яндекс.Такси",
-        "status": "Рассмотрено",
-        "date": "2023-08-25",
-        "description": "Водитель отказался выполнять заказ, но деньги списались.",
-        "isPublic": true
+        "genId": "yandex-claim-401",
+        "claimInfo": {
+          "createdAt": 1692921600000,
+          "lastUpd": 1693008000000,
+          "claimName": "Проблемы с Яндекс.Такси",
+          "recipientInn": "7736207543",
+          "recipientName": "ООО \"Яндекс\"",
+          "recipientAddress": "Москва, ул. Льва Толстого, д.16",
+          "recipientEmail": "info@yandex.ru",
+          "contentType": "Такси",
+          "contentSum": "350",
+          "textClaim": "Водитель отказался выполнять заказ, но деньги списались.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Александр",
+                "lastName": "Белов"
+              },
+              "createdAt": "2023-08-25"
+            },
+            {
+              "text": "Статус изменен на Рассмотрено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Юлия",
+                "lastName": "Захарова"
+              },
+              "createdAt": "2023-08-26"
+            }
+          ]
+        }
       }
     ]
   },
@@ -136,16 +428,393 @@
     "address": "Москва, ул. Марксистская, д.4",
     "email": "info@mts.ru",
     "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/MTS_logo_2015.svg",
-    "rating": 3.7,
+    "rating": 3.5,
     "claimsCount": 74,
+    "resolvedClaimsCount": 32,
+    "unresolvedClaimsCount": 42,
+    "resolvedPercentage": 43.2,
     "claims": [
       {
-        "id": 501,
-        "title": "Некорректное списание средств",
-        "status": "В обработке",
-        "date": "2023-09-07",
-        "description": "Подключена платная подписка без моего согласия.",
-        "isPublic": true
+        "genId": "mts-claim-501",
+        "claimInfo": {
+          "createdAt": 1694044800000,
+          "lastUpd": 1694131200000,
+          "claimName": "Некорректное списание средств",
+          "recipientInn": "7740000076",
+          "recipientName": "ПАО \"Мобильные ТелеСистемы\"",
+          "recipientAddress": "Москва, ул. Марксистская, д.4",
+          "recipientEmail": "info@mts.ru",
+          "contentType": "Счет",
+          "contentSum": "250",
+          "textClaim": "Подключена платная подписка без моего согласия.",
+          "status": "IN_PROGRESS",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Татьяна",
+                "lastName": "Григорьева"
+              },
+              "createdAt": "2023-09-07"
+            },
+            {
+              "text": "Статус изменен на В обработке",
+              "status": "IN_PROGRESS",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Евгений",
+                "lastName": "Кузнецов"
+              },
+              "createdAt": "2023-09-08"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Магнит",
+    "fullName": "ПАО \"Магнит\"",
+    "inn": "2309085638",
+    "description": "Российская сеть розничных магазинов",
+    "address": "Краснодар, ул. Солнечная, д.15/5",
+    "email": "info@magnit.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Magnit_Logo.svg",
+    "rating": 3.8,
+    "claimsCount": 68,
+    "resolvedClaimsCount": 37,
+    "unresolvedClaimsCount": 31,
+    "resolvedPercentage": 54.4,
+    "claims": [
+      {
+        "genId": "magnit-claim-601",
+        "claimInfo": {
+          "createdAt": 1692662400000,
+          "lastUpd": 1692835200000,
+          "claimName": "Некачественный товар",
+          "recipientInn": "2309085638",
+          "recipientName": "ПАО \"Магнит\"",
+          "recipientAddress": "Краснодар, ул. Солнечная, д.15/5",
+          "recipientEmail": "info@magnit.ru",
+          "contentType": "Качество",
+          "contentSum": "380",
+          "textClaim": "Приобрел просроченные молочные продукты, отказали в возврате.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Игорь",
+                "lastName": "Смирнов"
+              },
+              "createdAt": "2023-08-22"
+            },
+            {
+              "text": "Статус изменен на Решено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Марина",
+                "lastName": "Павлова"
+              },
+              "createdAt": "2023-08-24"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Лукойл",
+    "fullName": "ПАО \"Лукойл\"",
+    "inn": "7708004767",
+    "description": "Российская нефтяная компания",
+    "address": "Москва, Сретенский бульвар, д.11",
+    "email": "info@lukoil.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9b/LUKOIL_Logo.svg",
+    "rating": 4.1,
+    "claimsCount": 56,
+    "resolvedClaimsCount": 38,
+    "unresolvedClaimsCount": 18,
+    "resolvedPercentage": 67.9,
+    "claims": [
+      {
+        "genId": "lukoil-claim-701",
+        "claimInfo": {
+          "createdAt": 1693180800000,
+          "lastUpd": 1693353600000,
+          "claimName": "Качество топлива",
+          "recipientInn": "7708004767",
+          "recipientName": "ПАО \"Лукойл\"",
+          "recipientAddress": "Москва, Сретенский бульвар, д.11",
+          "recipientEmail": "info@lukoil.ru",
+          "contentType": "Качество",
+          "contentSum": "3500",
+          "textClaim": "После заправки на АЗС Лукойл автомобиль начал работать с перебоями.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Владимир",
+                "lastName": "Орлов"
+              },
+              "createdAt": "2023-08-28"
+            },
+            {
+              "text": "Статус изменен на Решено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Алексей",
+                "lastName": "Петров"
+              },
+              "createdAt": "2023-08-30"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "ВТБ",
+    "fullName": "ПАО \"Банк ВТБ\"",
+    "inn": "7702070139",
+    "description": "Российский коммерческий банк",
+    "address": "Санкт-Петербург, ул. Большая Морская, д.29",
+    "email": "info@vtb.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7c/VTB_Logo_2018.svg",
+    "rating": 3.9,
+    "claimsCount": 89,
+    "resolvedClaimsCount": 52,
+    "unresolvedClaimsCount": 37,
+    "resolvedPercentage": 58.4,
+    "claims": [
+      {
+        "genId": "vtb-claim-801",
+        "claimInfo": {
+          "createdAt": 1693785600000,
+          "lastUpd": 1693872000000,
+          "claimName": "Проблемы с переводом",
+          "recipientInn": "7702070139",
+          "recipientName": "ПАО \"Банк ВТБ\"",
+          "recipientAddress": "Санкт-Петербург, ул. Большая Морская, д.29",
+          "recipientEmail": "info@vtb.ru",
+          "contentType": "Перевод",
+          "contentSum": "12500",
+          "textClaim": "Перевод не дошел до получателя, деньги списаны.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Константин",
+                "lastName": "Федоров"
+              },
+              "createdAt": "2023-09-04"
+            },
+            {
+              "text": "Статус изменен на Решено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Елена",
+                "lastName": "Васильева"
+              },
+              "createdAt": "2023-09-05"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "РЖД",
+    "fullName": "ОАО \"Российские железные дороги\"",
+    "inn": "7708503727",
+    "description": "Российская государственная компания, владелец инфраструктуры железных дорог",
+    "address": "Москва, ул. Новая Басманная, д.2",
+    "email": "info@rzd.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Russian_Railways_logo.svg",
+    "rating": 3.6,
+    "claimsCount": 112,
+    "resolvedClaimsCount": 54,
+    "unresolvedClaimsCount": 58,
+    "resolvedPercentage": 48.2,
+    "claims": [
+      {
+        "genId": "rzd-claim-901",
+        "claimInfo": {
+          "createdAt": 1692403200000,
+          "lastUpd": 1692662400000,
+          "claimName": "Задержка поезда",
+          "recipientInn": "7708503727",
+          "recipientName": "ОАО \"Российские железные дороги\"",
+          "recipientAddress": "Москва, ул. Новая Басманная, д.2",
+          "recipientEmail": "info@rzd.ru",
+          "contentType": "Перевозка",
+          "contentSum": "",
+          "textClaim": "Поезд Москва-Санкт-Петербург задержался на 3 часа без объяснения причин.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Андрей",
+                "lastName": "Макаров"
+              },
+              "createdAt": "2023-08-19"
+            },
+            {
+              "text": "Статус изменен на Решено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Светлана",
+                "lastName": "Козлова"
+              },
+              "createdAt": "2023-08-22"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Аэрофлот",
+    "fullName": "ПАО \"Аэрофлот - Российские авиалинии\"",
+    "inn": "7712040126",
+    "description": "Российская авиакомпания",
+    "address": "Москва, Арбат, д.10",
+    "email": "info@aeroflot.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/5/53/Aeroflot_Airlines_logo.svg",
+    "rating": 4.0,
+    "claimsCount": 78,
+    "resolvedClaimsCount": 45,
+    "unresolvedClaimsCount": 33,
+    "resolvedPercentage": 57.7,
+    "claims": [
+      {
+        "genId": "aero-claim-1001",
+        "claimInfo": {
+          "createdAt": 1693008000000,
+          "lastUpd": 1693267200000,
+          "claimName": "Потерянный багаж",
+          "recipientInn": "7712040126",
+          "recipientName": "ПАО \"Аэрофлот - Российские авиалинии\"",
+          "recipientAddress": "Москва, Арбат, д.10",
+          "recipientEmail": "info@aeroflot.ru",
+          "contentType": "Багаж",
+          "contentSum": "",
+          "textClaim": "При перелете Москва-Сочи багаж не прибыл в аэропорт назначения.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Екатерина",
+                "lastName": "Иванова"
+              },
+              "createdAt": "2023-08-26"
+            },
+            {
+              "text": "Статус изменен на Решено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Михаил",
+                "lastName": "Кузнецов"
+              },
+              "createdAt": "2023-08-29"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Русал",
+    "fullName": "ОК \"РУСАЛ\"",
+    "inn": "3808642912",
+    "description": "Российская алюминиевая компания",
+    "address": "Москва, Николоямская ул., д.13, стр.1",
+    "email": "info@rusal.ru",
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Rusal_logo.svg",
+    "rating": 3.9,
+    "claimsCount": 42,
+    "resolvedClaimsCount": 24,
+    "unresolvedClaimsCount": 18,
+    "resolvedPercentage": 57.1,
+    "claims": [
+      {
+        "genId": "rusal-claim-1101",
+        "claimInfo": {
+          "createdAt": 1692748800000,
+          "lastUpd": 1692921600000,
+          "claimName": "Экологические проблемы",
+          "recipientInn": "3808642912",
+          "recipientName": "ОК \"РУСАЛ\"",
+          "recipientAddress": "Москва, Николоямская ул., д.13, стр.1",
+          "recipientEmail": "info@rusal.ru",
+          "contentType": "Экология",
+          "contentSum": "",
+          "textClaim": "Выбросы с завода превышают допустимые нормы, негативно влияя на экологию района.",
+          "status": "RESOLVED",
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Николай",
+                "lastName": "Савельев"
+              },
+              "createdAt": "2023-08-23"
+            },
+            {
+              "text": "Статус изменен на Решено",
+              "status": "RESOLVED",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Ирина",
+                "lastName": "Добрынина"
+              },
+              "createdAt": "2023-08-25"
+            }
+          ]
+        }
       }
     ]
   }

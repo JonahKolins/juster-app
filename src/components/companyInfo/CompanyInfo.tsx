@@ -6,7 +6,8 @@ import { ICompanyInfo } from 'cmd/network/company/companyService';
 import { HiOutlineBuildingLibrary } from 'react-icons/hi2';
 import { LuGoal } from 'react-icons/lu';
 import { IoDocumentOutline } from 'react-icons/io5';
-import RatingSlider from './RatingSlider';
+import RatingSlider from './components/ratingSlider/RatingSlider';
+import CompanyInfoClaims from './components/claims/CompanyInfoClaims';
 
 interface CompanyInfoProps {
     info: ICompanyInfo;
@@ -34,7 +35,7 @@ const CompanyInfo = React.memo<CompanyInfoProps>(({info}) => {
                             <span className={styles['caption']}>{info.name}</span>
                         </div>
                         <div className={styles['tags-container']}>
-                            <div className={classNames(styles['tag'], styles['_left'])}>Что-то</div>
+                            <div className={classNames(styles['tag'], styles['_left'])}>Верифицировано</div>
                             <div className={classNames(styles['tag'], styles['_right'])}>Активная</div>
                         </div>
                     </div>
@@ -77,8 +78,8 @@ const CompanyInfo = React.memo<CompanyInfoProps>(({info}) => {
                 <div className={styles['info-title']}>Обращения</div>
                 <div className={styles['info-block']}>
                     <div className={styles['rating-container']}>
-                        <span className={styles['rating-caption']}>{`Насколько отзывчива служба поддержки клиетов в ${info.name}?`}</span>
-                        <RatingSlider min={0} max={info.claimsCount} current={34} marks={marks} />
+                        <span className={styles['rating-caption']}>{`Насколько отзывчива служба поддержки клиентов в ${info.name}?`}</span>
+                        <RatingSlider leftNum={info.resolvedClaimsCount} rightNum={info.unresolvedClaimsCount}  />
                         <table className={styles['about-table']}>
                             <tbody>
                                 <tr>
@@ -91,13 +92,13 @@ const CompanyInfo = React.memo<CompanyInfoProps>(({info}) => {
                                     <td className={styles['key']}>
                                         <span>Завершенные</span>
                                     </td>
-                                    <td className={styles['value']}>{'34'}</td>
+                                    <td className={styles['value']}>{info.resolvedClaimsCount}</td>
                                 </tr>
                                 <tr>
                                     <td className={styles['key']}>
                                         <span>Не завершенные</span>
                                     </td>
-                                    <td className={styles['value']}>{'50'}</td>
+                                    <td className={styles['value']}>{info.unresolvedClaimsCount}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -105,10 +106,11 @@ const CompanyInfo = React.memo<CompanyInfoProps>(({info}) => {
                         <div className={styles['total-description']}>Компания {info.name} является постоянным пользователем нашего приложения и неплохо справляется</div>
                     </div>
                 </div>
+                <CompanyInfoClaims claims={info.claims} searchKeywords={info.searchKeywords} />
             </div>
             <div className={styles['rigth-colomn']}>
                 <div className={styles['info-block']}>
-                    <div className={styles['header']}>Хотите написать обращение в эту компанию?</div>
+                    <div className={styles['header']}>Хотите написать обращение в {info.name}?</div>
                     <div className={styles['description']}>
                         Решите ваши вопросы напрямую с компанией. Создайте обращение за 4 простых шага.
                     </div>
