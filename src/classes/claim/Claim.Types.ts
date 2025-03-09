@@ -68,3 +68,27 @@ export interface IAction {
     };
     createdAt: string; // TODO нужно переделать на число
 }
+
+
+export interface IClaimsPublicItem {
+    genId: string;
+    claimInfo: {
+        createdAt: number;
+        lastUpd: number;
+        claimName: string;
+        recipientInn: string;
+        recipientName: string;
+        recipientAddress: string;
+        recipientEmail: string;
+        contentType: string;
+        contentSum: string;
+        textClaim: string;
+        status: IClaimStatus;
+        actions: IAction[];
+        user: {
+            firstName: string;
+            lastName: string;
+            verified: boolean;
+        };
+    };
+}

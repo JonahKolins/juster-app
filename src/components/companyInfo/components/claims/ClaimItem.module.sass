@@ -1,0 +1,122 @@
+
+.claims-item
+    display: flex
+    flex-direction: column
+    padding: 15px
+    border-bottom: 1px solid #e8e8e8
+    background-color: #fff
+    // transition: box-shadow 0.3s ease
+
+    &._last
+        border-radius: 0 0 16px 16px
+    
+    &:hover
+        // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)
+    
+    .claim-header
+        display: flex
+        justify-content: space-between
+        align-items: flex-start
+        margin-bottom: 12px
+
+        .header-user-info
+            display: flex
+            align-items: stretch
+
+            .logo-container
+                height: 40px
+                width: 40px
+                flex: 0 0 40px
+                display: flex
+                align-items: center
+                justify-content: center
+                border: 1px solid #e8e8e8
+                border-radius: 50%
+                color: var(--button__primary)
+                font-size: 14px
+                font-weight: 600
+                letter-spacing: -2px
+                background: #4500ff30
+
+            .user-data
+                display: flex
+                flex-direction: column
+                justify-content: space-between
+                margin-left: 12px
+
+                .name-container
+                    display: flex
+                    align-items: center
+                    gap: 8px
+
+                    .name
+                        font-size: 15px
+                        line-height: 16px
+                        font-weight: 500
+                        color: #000
+
+                    .verify
+                        display: flex
+                        align-items: center
+                        justify-content: center
+                        color: #4b78ff
+
+                .date
+                    display: flex
+                    align-items: center
+
+                    .date-item
+                        font-size: 14px
+                        line-height: 16px
+                        font-weight: 500
+                        color: #888
+        
+        .claim-title
+            margin: 0
+            font-size: 16px
+            font-weight: 600
+
+        .options
+            display: flex
+            align-items: center
+            justify-content: center
+            height: 26px
+            width: 26px
+            flex: 0 0 26px
+            cursor: pointer
+            border: 1px solid #e8e8e8
+            border-radius: 50%
+
+        .filter-dropdown
+
+    .status
+        display: flex
+        align-items: center
+        margin-bottom: 8px
+
+        .tag
+            padding: 2px 10px
+            border-radius: 8px
+            font-size: 12px
+
+            &._resolved
+                background: #008f2845
+                color: #0f5425
+
+            &._unresolved
+                background: #a7050534
+                color: #a70505
+    
+    .claim-info
+        display: flex
+        flex-direction: column
+        margin-bottom: 8px
+       
+        .claim-title
+            color: #000
+            font-size: 14px
+    
+        .claim-text
+            color: #333
+            font-size: 14px
+            line-height: 1.5

@@ -1,12 +1,14 @@
 import React from 'react';
-import styles from './CompanyInfoClaims.module.sass';
-import { IClaimsItem, IClaimStatus } from 'classes/claim/Claim.Types';
-import { Tag } from 'antd';
+import styles from './ClaimItem.module.sass';
+import { IClaimsPublicItem, IClaimStatus } from 'classes/claim/Claim.Types';
+import { Dropdown, Tag, Tooltip } from 'antd';
+import { RiVerifiedBadgeFill } from "react-icons/ri";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 import { datetimeUtils } from 'core/utils/datetimeUtils';
 import classNames from 'classnames';
 
 interface ClaimItemProps {
-    claim: IClaimsItem;
+    claim: IClaimsPublicItem;
     isLast: boolean;
     className?: string;
 }
@@ -55,31 +57,83 @@ const getStatusText = (status: IClaimStatus): string => {
     }
 };
 
+// Опции для выпадающего списка опций
+const filterMenuItems = [
+    {
+        key: 'copy',
+        label: 'Поделиться ссылкой',
+        onClick: () => {}
+    },
+    {
+        key: 'like',
+        label: 'Нравится',
+        onClick: () => {}
+    }
+];
+
 const ClaimItem: React.FC<ClaimItemProps> = ({ claim, isLast, className }) => {
     const { claimInfo } = claim;
     const formattedDate = datetimeUtils.formatTime(claimInfo.createdAt, 'DD.MM.YYYY hh:mm');
     
+    const logoLetters = `${claim.claimInfo.user.firstName[0]} ${claim.claimInfo.user.lastName[0]}`;
+    const showStatus = claim.claimInfo.status == IClaimStatus.resolved || claim.claimInfo.status == IClaimStatus.declined;
+
     return (
         <div className={classNames(styles['claims-item'], isLast && styles['_last'])}>
             <div className={styles['claim-header']}>
-                <h3 className={styles['claim-title']}>{claimInfo.claimName}</h3>
-                <Tag color={getStatusColor(claimInfo.status)}>
-                    {getStatusText(claimInfo.status)}
-                </Tag>
+                <div className={styles['header-user-info']}>
+                    <div className={styles['logo-container']}>
+                        {logoLetters}
+                    </div>
+                    <div className={styles['user-data']}>
+                        <div className={styles['name-container']}>
+                            <div className={styles['name']}>
+                                {`${claimInfo.user.firstName} ${claimInfo.user.lastName}`}
+                            </div>
+                            {claimInfo.user.verified && (
+                                <div className={styles['verify']}>
+                                    <Tooltip placement="bottom" title={'Пользователь верифицирован'} arrow={false}>
+                                        <RiVerifiedBadgeFill size={18} />
+                                    </Tooltip> 
+                                </div>
+                            )}
+                        </div>
+                        <div className={styles['date']}>
+                            <div className={styles['date-item']}>
+                                {formattedDate}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <Dropdown 
+                    menu={{ items: filterMenuItems }} 
+                    trigger={['click']}
+                    className={styles['filter-dropdown']}
+                >
+                    <div className={styles['options']}>
+                        <HiOutlineDotsVertical />
+                    </div>
+                </Dropdown>
             </div>
-            
+            {showStatus && (
+                <div className={styles['status']}>
+                    <div 
+                        className={classNames(
+                            styles['tag'],
+                            claim.claimInfo.status == IClaimStatus.resolved 
+                                ? styles['_resolved']
+                                : styles['_unresolved']
+                        )}
+                    >
+                        {getStatusText(claim.claimInfo.status)}
+                    </div>
+                </div>
+            )}
             <div className={styles['claim-info']}>
-                <div className={styles['claim-date']}>
-                    {formattedDate}
+                <h3 className={styles['claim-title']}>{claimInfo.claimName}</h3>
+                <div className={styles['claim-text']}>
+                    {claimInfo.textClaim}
                 </div>
-                <div className={styles['claim-type']}>
-                    {claimInfo.contentType}
-                    {claimInfo.contentSum && ` (${claimInfo.contentSum} руб.)`}
-                </div>
-            </div>
-            
-            <div className={styles['claim-text']}>
-                {claimInfo.textClaim}
             </div>
         </div>
     );

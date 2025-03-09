@@ -13,7 +13,36 @@
     "resolvedClaimsCount": 52,
     "unresolvedClaimsCount": 35,
     "resolvedPercentage": 59.8,
+    "summary": "Удовлетворительно",
+    "summaryDescription": "ПАО \"Газпром\" является постоянным пользователем нашего сервиса и неплохо справляется. Чуть больше половины обращений были решены, но еще есть над чем поработать",
     "searchKeywords": ["газоснабжение", "начисления"],
+    "category": {
+      "name": "Энергетика",
+      "alias": "energy"
+    },
+    "placeInCategory": 3,
+    "companiesInCategory": [
+      {
+        "place": 1,
+        "name": "Новатэка",
+        "pathName": "novatech-001"
+      },
+      {
+        "place": 2,
+        "name": "Роснефти",
+        "pathName": "rosneft-002"
+      },
+      {
+        "place": 3,
+        "name": "Газпром",
+        "pathName": "gazprom-003"
+      },
+      {
+        "place": 4,
+        "name": "Русал",
+        "pathName": "rusal-004"
+      }
+    ],
     "claims": [
       {
         "genId": "gas-claim-101",
@@ -29,6 +58,11 @@
           "contentSum": "",
           "textClaim": "Два месяца подряд в квитанциях указываются неправильные показания счетчика.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Иван",
+            "lastName": "Петров",
+            "verified": true
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -69,6 +103,11 @@
           "contentSum": "",
           "textClaim": "Направлял запрос на перерасчет, ответа не получил в течение месяца.",
           "status": "IN_PROGRESS",
+          "user": {
+            "firstName": "Алексей",
+            "lastName": "Иванов",
+            "verified": true
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -98,6 +137,11 @@
           "contentSum": "",
           "textClaim": "Низкое давление газа в сети, невозможно пользоваться газовой колонкой.",
           "status": "CLOSE",
+          "user": {
+            "firstName": "Сергей",
+            "lastName": "Кузнецов",
+            "verified": false
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -140,7 +184,36 @@
     "resolvedClaimsCount": 76,
     "unresolvedClaimsCount": 66,
     "resolvedPercentage": 53.5,
+    "summary": "Удовлетворительно",
+    "summaryDescription": "ПАО \"Сбербанк России\" является постоянным пользователем нашего сервиса и неплохо справляется. Чуть больше половины обращений были решены, но еще есть над чем поработать",
     "searchKeywords": ["платежи", "приложение"],
+    "category": {
+      "name": "Финансы",
+      "alias": "finance"
+    },
+    "placeInCategory": 1,
+    "companiesInCategory": [
+      {
+        "place": 1,
+        "name": "Сбербанк",
+        "pathName": "sberbank-001"
+      },
+      {
+        "place": 2,
+        "name": "Т-банк",
+        "pathName": "tbank-002"
+      },
+      {
+        "place": 3,
+        "name": "ВТБ",
+        "pathName": "vtb-003"
+      },
+      {
+        "place": 4,
+        "name": "Альфабанк",
+        "pathName": "alphabank-004"
+      }
+    ],
     "claims": [
       {
         "genId": "sber-claim-201",
@@ -156,6 +229,11 @@
           "contentSum": "",
           "textClaim": "Не работает вход в личный кабинет через мобильное приложение.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Дмитрий",
+            "lastName": "Николаев",
+            "verified": true
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -196,6 +274,11 @@
           "contentSum": "2500",
           "textClaim": "При оплате покупки с карты дважды списались средства.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Елена",
+            "lastName": "Морозова",
+            "verified": false
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -236,6 +319,11 @@
           "contentSum": "",
           "textClaim": "Счет заблокирован без объяснения причин и предупреждения.",
           "status": "IN_PROGRESS",
+          "user": {
+            "firstName": "Виктор",
+            "lastName": "Лебедев",
+            "verified": true
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -278,7 +366,36 @@
     "resolvedClaimsCount": 48,
     "unresolvedClaimsCount": 47,
     "resolvedPercentage": 50.5,
+    "summary": "Удовлетворительно",
+    "summaryDescription": "ПАО \"Ростелеком\" является постоянным пользователем нашего сервиса и неплохо справляется. Чуть больше половины обращений были решены, но еще есть над чем поработать",
     "searchKeywords": ["интернет", "тарифы"],
+    "category": {
+      "name": "Телекоммуникации",
+      "alias": "telecommunication"
+    },
+    "placeInCategory": 6,
+    "companiesInCategory": [
+      {
+        "place": 4,
+        "name": "Билайн",
+        "pathName": "bilain-004"
+      },
+      {
+        "place": 5,
+        "name": "МТС",
+        "pathName": "mts-005"
+      },
+      {
+        "place": 6,
+        "name": "Ростелеком",
+        "pathName": "rostelecom-006"
+      },
+      {
+        "place": 7,
+        "name": "Мегафон",
+        "pathName": "megaphone-007"
+      }
+    ],
     "claims": [
       {
         "genId": "rt-claim-301",
@@ -294,6 +411,11 @@
           "contentSum": "",
           "textClaim": "Более суток отсутствует доступ в интернет, техподдержка не реагирует.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Максим",
+            "lastName": "Волков",
+            "verified": true
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -334,6 +456,11 @@
           "contentSum": "850",
           "textClaim": "В счете указаны услуги, которыми я не пользовался.",
           "status": "IN_PROGRESS",
+          "user": {
+            "firstName": "Артем",
+            "lastName": "Соколов",
+            "verified": false
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -376,6 +503,31 @@
     "resolvedClaimsCount": 38,
     "unresolvedClaimsCount": 4,
     "resolvedPercentage": 90.5,
+    "summary": "Очень хорошо",
+    "summaryDescription": "ООО \"Яндекс\" является постоянным пользователем нашего сервиса и отлично справляется. Почти все обращения были решены. Поэтому компания заслуженно лидирует в своей категории",
+    "searchKeywords": ["IT", "такси", "Яндекс"],
+    "category": {
+      "name": "IT",
+      "alias": "it"
+    },
+    "placeInCategory": 1,
+    "companiesInCategory": [
+      {
+        "place": 1,
+        "name": "Яндекс",
+        "pathName": "yandex-001"
+      },
+      {
+        "place": 2,
+        "name": "Mail",
+        "pathName": "mail-002"
+      },
+      {
+        "place": 3,
+        "name": "Рамблер",
+        "pathName": "rambler-003"
+      }
+    ],
     "claims": [
       {
         "genId": "yandex-claim-401",
@@ -391,6 +543,11 @@
           "contentSum": "350",
           "textClaim": "Водитель отказался выполнять заказ, но деньги списались.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Александр",
+            "lastName": "Белов",
+            "verified": true
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -433,6 +590,35 @@
     "resolvedClaimsCount": 32,
     "unresolvedClaimsCount": 42,
     "resolvedPercentage": 43.2,
+    "summary": "Выше среднего. Есть над чем поработать",
+    "searchKeywords": ["подписка", "такси", "подписка", "такси", "подписка", "такси", "подписка", "такси", "подписка", "такси", "подписка", "такси"],
+    "category": {
+      "name": "Телекоммуникации",
+      "alias": "telecommunication"
+    },
+    "placeInCategory": 5,
+    "companiesInCategory": [
+      {
+        "place": 4,
+        "name": "Билайн",
+        "pathName": "bilain-004"
+      },
+      {
+        "place": 5,
+        "name": "МТС",
+        "pathName": "mts-005"
+      },
+      {
+        "place": 6,
+        "name": "Ростелеком",
+        "pathName": "rostelecom-006"
+      },
+      {
+        "place": 7,
+        "name": "Мегафон",
+        "pathName": "megaphone-007"
+      }
+    ],
     "claims": [
       {
         "genId": "mts-claim-501",
@@ -446,8 +632,13 @@
           "recipientEmail": "info@mts.ru",
           "contentType": "Счет",
           "contentSum": "250",
-          "textClaim": "Подключена платная подписка без моего согласия.",
-          "status": "IN_PROGRESS",
+          "textClaim": "Подключена платная подписка без моего согласия. Это возмутительно! Требую свои бэбки обратно",
+          "status": "RESOLVED",
+          "user": {
+            "firstName": "Татьяна",
+            "lastName": "Григорьева",
+            "verified": true
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -457,6 +648,51 @@
               "user": {
                 "firstName": "Татьяна",
                 "lastName": "Григорьева"
+              },
+              "createdAt": "2023-09-07"
+            },
+            {
+              "text": "Статус изменен на В обработке",
+              "status": "IN_PROGRESS",
+              "type": "ACTION",
+              "actionType": "STATUS_CHANGED",
+              "user": {
+                "firstName": "Евгений",
+                "lastName": "Кузнецов"
+              },
+              "createdAt": "2023-09-08"
+            }
+          ]
+        }
+      },
+      {
+        "genId": "mts-claim-502",
+        "claimInfo": {
+          "createdAt": 1694055900000,
+          "lastUpd": 16941342400000,
+          "claimName": "Не прошла оплата",
+          "recipientInn": "7740000076",
+          "recipientName": "ПАО \"Мобильные ТелеСистемы\"",
+          "recipientAddress": "Москва, ул. Марксистская, д.4",
+          "recipientEmail": "info@mts.ru",
+          "contentType": "Счет",
+          "contentSum": "250",
+          "textClaim": "Оплатил через МТС банк себе симкарту на месяц. Деньги списались, но опалата не прошла. Оплатил через МТС банк себе симкарту на месяц. Деньги списались, но опалата не прошла. Оплатил через МТС банк себе симкарту на месяц. Деньги списались, но опалата не прошла.",
+          "status": "DECLINED",
+          "user": {
+            "firstName": "Замир",
+            "lastName": "Безгеев",
+            "verified": false
+          },
+          "actions": [
+            {
+              "text": "Жалоба создана",
+              "status": "NEW",
+              "type": "ACTION",
+              "actionType": "CLAIM_CREATED",
+              "user": {
+                "firstName": "Замир",
+                "lastName": "Безгеев"
               },
               "createdAt": "2023-09-07"
             },
@@ -490,6 +726,36 @@
     "resolvedClaimsCount": 37,
     "unresolvedClaimsCount": 31,
     "resolvedPercentage": 54.4,
+    "summary": "Удовлетворительно",
+    "summaryDescription": "ПАО \"Магнит\" является постоянным пользователем нашего сервиса и неплохо справляется. Чуть больше половины обращений были решены, но еще есть над чем поработать",
+    "searchKeywords": ["возврат", "продукты"],
+    "category": {
+      "name": "Розничная торговля",
+      "alias": "retail"
+    },
+    "placeInCategory": 5,
+    "companiesInCategory": [
+      {
+        "place": 3,
+        "name": "Перекресток",
+        "pathName": "perekrestok-001"
+      },
+      {
+        "place": 4,
+        "name": "Пятерочка",
+        "pathName": "piaterochka-002"
+      },
+      {
+        "place": 5,
+        "name": "Магнит",
+        "pathName": "magnit-005"
+      },
+      {
+        "place": 6,
+        "name": "Глобус",
+        "pathName": "globus-004"
+      }
+    ],
     "claims": [
       {
         "genId": "magnit-claim-601",
@@ -505,6 +771,11 @@
           "contentSum": "380",
           "textClaim": "Приобрел просроченные молочные продукты, отказали в возврате.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Игорь",
+            "lastName": "Смирнов",
+            "verified": true
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -547,6 +818,41 @@
     "resolvedClaimsCount": 38,
     "unresolvedClaimsCount": 18,
     "resolvedPercentage": 67.9,
+    "summary": "Хорошо",
+    "summaryDescription": "ПАО \"Лукойл\" является постоянным пользователем нашего сервиса и неплохо справляется. Более половины обращений были решены, но еще есть над чем поработать",
+    "searchKeywords": ["АЗС", "автомобиль"],
+    "category": {
+      "name": "Энергетика",
+      "alias": "energy"
+    },
+    "placeInCategory": 5,
+    "companiesInCategory": [
+      {
+        "place": 1,
+        "name": "Новатэка",
+        "pathName": "novatech-001"
+      },
+      {
+        "place": 2,
+        "name": "Роснефти",
+        "pathName": "rosneft-002"
+      },
+      {
+        "place": 3,
+        "name": "Газпром",
+        "pathName": "gazprom-003"
+      },
+      {
+        "place": 4,
+        "name": "Русал",
+        "pathName": "rusal-004"
+      },
+      {
+        "place": 5,
+        "name": "Лукойл",
+        "pathName": "lukoil-005"
+      }
+    ],
     "claims": [
       {
         "genId": "lukoil-claim-701",
@@ -562,6 +868,11 @@
           "contentSum": "3500",
           "textClaim": "После заправки на АЗС Лукойл автомобиль начал работать с перебоями.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Владимир",
+            "lastName": "Орлов",
+            "verified": false
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -604,6 +915,36 @@
     "resolvedClaimsCount": 52,
     "unresolvedClaimsCount": 37,
     "resolvedPercentage": 58.4,
+    "summary": "Удовлетворительно",
+    "summaryDescription": "ПАО \"Банк ВТБ\" является постоянным пользователем нашего сервиса и неплохо справляется. Чуть больше половины обращений были решены, но еще есть над чем поработать",
+    "searchKeywords": ["перевод"],
+    "category": {
+      "name": "Финансы",
+      "alias": "finance"
+    },
+    "placeInCategory": 3,
+    "companiesInCategory": [
+      {
+        "place": 1,
+        "name": "Сбербанк",
+        "pathName": "sberbank-001"
+      },
+      {
+        "place": 2,
+        "name": "Т-банк",
+        "pathName": "tbank-002"
+      },
+      {
+        "place": 3,
+        "name": "ВТБ",
+        "pathName": "vtb-003"
+      },
+      {
+        "place": 4,
+        "name": "Альфабанк",
+        "pathName": "alphabank-004"
+      }
+    ],
     "claims": [
       {
         "genId": "vtb-claim-801",
@@ -619,6 +960,11 @@
           "contentSum": "12500",
           "textClaim": "Перевод не дошел до получателя, деньги списаны.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Константин",
+            "lastName": "Федоров",
+            "verified": true
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -661,6 +1007,13 @@
     "resolvedClaimsCount": 54,
     "unresolvedClaimsCount": 58,
     "resolvedPercentage": 48.2,
+    "summary": "Удовлетворительно",
+    "summaryDescription": "ОАО \"Российские железные дороги\" является постоянным пользователем нашего сервиса и неплохо справляется. Чуть менее половины обращений были решены, но еще есть над чем поработать",
+    "searchKeywords": ["задержка"],
+    "category": {
+      "name": "Автобусные и жд перевозки",
+      "alias": "busAndRail"
+    },
     "claims": [
       {
         "genId": "rzd-claim-901",
@@ -676,6 +1029,11 @@
           "contentSum": "",
           "textClaim": "Поезд Москва-Санкт-Петербург задержался на 3 часа без объяснения причин.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Андрей",
+            "lastName": "Макаров",
+            "verified": false
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -718,6 +1076,36 @@
     "resolvedClaimsCount": 45,
     "unresolvedClaimsCount": 33,
     "resolvedPercentage": 57.7,
+    "summary": "Удовлетворительно",
+    "summaryDescription": "ПАО \"Аэрофлот - Российские авиалинии\" является постоянным пользователем нашего сервиса и неплохо справляется. Чуть более половины обращений были решены, но еще есть над чем поработать",
+    "searchKeywords": ["багаж"],
+    "category": {
+      "name": "Авиакомпании",
+      "alias": "airlines"
+    },
+    "placeInCategory": 3,
+    "companiesInCategory": [
+      {
+        "place": 1,
+        "name": "Победа",
+        "pathName": "pobeda-001"
+      },
+      {
+        "place": 2,
+        "name": "S7",
+        "pathName": "sseven-002"
+      },
+      {
+        "place": 3,
+        "name": "Аэрофлот",
+        "pathName": "aeroflot-003"
+      },
+      {
+        "place": 4,
+        "name": "Уральские авиалинии",
+        "pathName": "uralskie-avialinii-004"
+      }
+    ],
     "claims": [
       {
         "genId": "aero-claim-1001",
@@ -733,6 +1121,11 @@
           "contentSum": "",
           "textClaim": "При перелете Москва-Сочи багаж не прибыл в аэропорт назначения.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Екатерина",
+            "lastName": "Иванова",
+            "verified": false
+          },
           "actions": [
             {
               "text": "Жалоба создана",
@@ -775,6 +1168,36 @@
     "resolvedClaimsCount": 24,
     "unresolvedClaimsCount": 18,
     "resolvedPercentage": 57.1,
+    "summary": "Удовлетворительно",
+    "summaryDescription": "ОК \"РУСАЛ\" является постоянным пользователем нашего сервиса и неплохо справляется. Чуть более половины обращений были решены, но еще есть над чем поработать",
+    "searchKeywords": ["выбросы", "экология"],
+    "category": {
+      "name": "Производство материалов",
+      "alias": "industrial"
+    },
+    "placeInCategory": 4,
+    "companiesInCategory": [
+      {
+        "place": 1,
+        "name": "Новатэка",
+        "pathName": "novatech-001"
+      },
+      {
+        "place": 2,
+        "name": "Роснефти",
+        "pathName": "rosneft-002"
+      },
+      {
+        "place": 3,
+        "name": "Газпром",
+        "pathName": "gazprom-003"
+      },
+      {
+        "place": 4,
+        "name": "Русал",
+        "pathName": "rusal-004"
+      }
+    ],
     "claims": [
       {
         "genId": "rusal-claim-1101",
@@ -790,6 +1213,11 @@
           "contentSum": "",
           "textClaim": "Выбросы с завода превышают допустимые нормы, негативно влияя на экологию района.",
           "status": "RESOLVED",
+          "user": {
+            "firstName": "Николай",
+            "lastName": "Савельев",
+            "verified": true
+          },
           "actions": [
             {
               "text": "Жалоба создана",

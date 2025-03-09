@@ -5,6 +5,8 @@
     width: 100%
     background: #fff
     border-radius: 16px
+    box-shadow: rgb(235, 232, 232) 0 1px 2px 0
+    border: 1px solid rgb(242, 242, 242)
 
     .header
         display: flex
@@ -26,7 +28,6 @@
         .active-filters
             display: flex
             flex-wrap: wrap
-            margin: 10px 0
             
             .filter-tag
                 margin-right: 8px
@@ -38,7 +39,14 @@
         .keywords
             display: flex
             flex-wrap: wrap
-            margin-top: 10px
+            align-items: center
+            margin-top: 4px
+
+            .caption
+                font-size: 14px
+                font-weight: 600
+                margin-right: 8px
+                margin-bottom: 8px
             
             .keyword-tag
                 margin-right: 8px
@@ -58,48 +66,4 @@
         justify-content: center
         align-items: center
         height: 200px
-
-.claims-item
-    display: flex
-    flex-direction: column
-    padding: 15px
-    border-bottom: 1px solid #e8e8e8
-    background-color: #fff
-    // transition: box-shadow 0.3s ease
-
-    &._last
-        border-radius: 0 0 16px 16px
-    
-    &:hover
-        // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)
-    
-    .claim-header
-        display: flex
-        justify-content: space-between
-        align-items: center
-        margin-bottom: 10px
-        
-        .claim-title
-            margin: 0
-            font-size: 16px
-            font-weight: 600
-    
-    .claim-info
-        display: flex
-        justify-content: space-between
-        margin-bottom: 10px
-        color: #666
-        font-size: 14px
-        
-        .claim-date
-            color: #888
-        
-        .claim-type
-            font-weight: 500
-    
-    .claim-text
-        color: #333
-        font-size: 14px
-        line-height: 1.5
-        margin-top: 5px
             

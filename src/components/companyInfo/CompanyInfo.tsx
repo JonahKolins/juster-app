@@ -23,6 +23,26 @@ const CompanyInfo = React.memo<CompanyInfoProps>(({info}) => {
     const maxCount = info.claimsCount;
     marks[maxCount] = info.claimsCount;
 
+    // 
+    // const renderCompaniesInCategory = () => {
+    //     if (!info.companiesInCategory && !info.placeInCategory) return null;
+
+
+    //     const currentCompanyPlace = info.placeInCategory;
+    //     const list = 
+
+    //     return (
+    //         <div className={styles['list']}>
+    //             {info.companiesInCategory.map((comp) => (
+    //                 <div className={styles['category-item']}>
+    //                     <div>{comp.place}</div>
+    //                     <div>{comp.name}</div>
+    //                 </div>
+    //             ))}
+    //         </div>
+    //     )
+    // }
+
     return (
         <div className={styles['company-info-container']}>
             <div className={styles['main-info']}>
@@ -78,7 +98,7 @@ const CompanyInfo = React.memo<CompanyInfoProps>(({info}) => {
                 <div className={styles['info-title']}>Обращения</div>
                 <div className={styles['info-block']}>
                     <div className={styles['rating-container']}>
-                        <span className={styles['rating-caption']}>{`Насколько отзывчива служба поддержки клиентов в ${info.name}?`}</span>
+                        <span className={styles['rating-caption']}>{`Насколько отзывчива компания ${info.fullName}?`}</span>
                         <RatingSlider leftNum={info.resolvedClaimsCount} rightNum={info.unresolvedClaimsCount}  />
                         <table className={styles['about-table']}>
                             <tbody>
@@ -102,8 +122,11 @@ const CompanyInfo = React.memo<CompanyInfoProps>(({info}) => {
                                 </tr>
                             </tbody>
                         </table>
-                        <div className={styles['total']}>Нет так уж и плохо, но есть над чем работать</div>
-                        <div className={styles['total-description']}>Компания {info.name} является постоянным пользователем нашего приложения и неплохо справляется</div>
+                        <div className={styles['summary']}>
+                            <span className={styles['title']}>Наша оценка: </span>
+                            <span className={styles['mark']}>{info.summary}</span>
+                        </div>
+                        {!!info.summaryDescription && <div className={styles['summary-description']}>{info.summaryDescription}</div>}
                     </div>
                 </div>
                 <CompanyInfoClaims claims={info.claims} searchKeywords={info.searchKeywords} />
@@ -119,6 +142,22 @@ const CompanyInfo = React.memo<CompanyInfoProps>(({info}) => {
                         <Button className={styles['share']} color="default">Поделиться</Button>
                     </div>
                 </div>
+                {!!info.companiesInCategory && !!info.placeInCategory && (
+                    <div className={styles['info-block']}>
+                        <div className={styles['header']}>В категории</div>
+                        <div className={styles['description']}>
+                            {info.name} занимает {info.placeInCategory} место в категории <span className={styles['category-name']}>{info.category.name}</span> 
+                        </div>
+                        <div className={styles['list']}>
+                            {info.companiesInCategory.map((comp) => (
+                                <div className={styles['category-item']}>
+                                    <div>{comp.place}</div>
+                                    <div>{comp.name}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )

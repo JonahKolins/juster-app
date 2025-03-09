@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './CompanyInfoClaims.module.sass';
-import { IClaimsItem, IClaimStatus } from 'classes/claim/Claim.Types';
+import { IClaimsPublicItem, IClaimStatus } from 'classes/claim/Claim.Types';
 import { Input, Dropdown, Tag, Empty, Button } from 'antd';
 import { SearchOutlined, CloseOutlined, FilterOutlined } from '@ant-design/icons';
 import ClaimItem from './ClaimItem';
 
 
 interface CompanyInfoClaimsProps {
-    claims: IClaimsItem[];
+    claims: IClaimsPublicItem[];
     searchKeywords?: string[];
 }
 
@@ -16,11 +16,11 @@ type FilterType = 'all' | 'resolved' | 'unresolved';
 const CompanyInfoClaims = React.memo<CompanyInfoClaimsProps>(({ claims, searchKeywords = [] }) => {
     const [searchText, setSearchText] = useState('');
     const [activeFilter, setActiveFilter] = useState<FilterType>('all');
-    const [visibleClaims, setVisibleClaims] = useState<IClaimsItem[]>(claims || []);
+    const [visibleClaims, setVisibleClaims] = useState<IClaimsPublicItem[]>(claims || []);
 
     // Функция фильтрации обращений
     const filterClaims = useMemo(() => {
-        return (claimsToFilter: IClaimsItem[]): IClaimsItem[] => {
+        return (claimsToFilter: IClaimsPublicItem[]): IClaimsPublicItem[] => {
             let result = [...claimsToFilter];
             
             // Фильтрация по статусу
@@ -124,7 +124,7 @@ const CompanyInfoClaims = React.memo<CompanyInfoClaimsProps>(({ claims, searchKe
                     <div className={styles['active-filters']}>
                         <Tag 
                             closable 
-                            onClose={clearFilter}
+                            onClick={clearFilter}
                             color="purple"
                             className={styles['filter-tag']}
                         >
@@ -134,6 +134,7 @@ const CompanyInfoClaims = React.memo<CompanyInfoClaimsProps>(({ claims, searchKe
                 )}
                 
                 <div className={styles['keywords']}>
+                    <span className={styles['caption']}>Ключевые слова</span>
                     {searchKeywords.map((keyword, index) => (
                         <Tag 
                             key={index}
