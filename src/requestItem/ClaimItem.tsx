@@ -1,6 +1,6 @@
 import React, {memo, useEffect, useState} from "react";
 import {useParams} from "react-router";
-import styles from "./RequestItem.module.sass";
+import styles from "./ClaimItem.module.sass";
 import ClaimActions from "./claimActions/ClaimActions";
 import AdditionalInfo from "./additionalInfo/AdditionalInfo";
 import TextEditor from "./textEditor/TextEditor";
@@ -25,7 +25,7 @@ interface ClaimItemProps extends IClaimInfoContext {}
 const ClaimItem = memo<ClaimItemProps>(({manager}) => {
     const {id} = useParams();
     const {clientInfo} = useProfile();
-    const {claims} = useClaims();
+    // const {claims} = useClaims();
     //
     const [data, setData] = useState<IClaimsItem>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -36,12 +36,13 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
 
         const claimChangedEvent = manager.claimDataChanged.subscribe(handleClaimDataChanged);
         manager.readClaimInfo(id);
+        manager.readClaimDocs(id);
 
         return () => {
             manager.dispose();
             claimChangedEvent?.dispose();
         }
-    }, [id, manager, claims])
+    }, [id, manager])
 
     const handleClaimDataChanged = () => {
         if (!manager) return;

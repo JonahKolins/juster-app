@@ -6,7 +6,7 @@ import MyRequests from "../../pages/mySpacePages/myClaimsPage/MyClaimsPage";
 import NewRequests from "../../newRequest/NewRequest";
 import Notifications from "../../pages/notificationsPage/Notifications";
 import Categories from "../../pages/mySpacePages/categoriesPage/Categories";
-import RequestItem from "../../requestItem/RequestItem";
+import RequestItem from "../../requestItem/ClaimItem";
 import HomePage from "../../pages/homePage/HomePage";
 import UseCasesPage from "../../pages/useCasesPage/UseCasesPage";
 import CategoriesPage from "../../pages/categoriesPage/CategoriesPage";

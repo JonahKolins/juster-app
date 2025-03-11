@@ -8,9 +8,12 @@ import { Session } from "classes/session/Session";
 import { IPostAddClaimActionResponse } from "cmd/network/claims/requests/PostAddClaimAction";
 import { IChangeClaimStatusRequestParams, requestChangeClaimStatus } from "cmd/network/claims/methods/requestChangeClaimStatus";
 import { IPostChangeClaimStatusResponse } from "cmd/network/claims/requests/PostChangeClaimStatusRequest";
+import { requestGetDocs } from "cmd/network/claims/methods/requestGetDocs";
+import { IDocumentInfo, IGetDocsResponse } from "cmd/network/claims/requests/PostGetDocsRequest";
 
 export class Claim {
     private _claimData: IClaimsItem;
+    private _docs: IDocumentInfo[];
     //
     private _isLoading: boolean;
     private _error: ApiError | NetworkError;
@@ -21,6 +24,7 @@ export class Claim {
 
     constructor() {
         this._claimData = null;
+        this._docs = [];
         //
         this._isLoading = false;
         this._error = null;
@@ -74,6 +78,26 @@ export class Claim {
             })
             .finally(() => {
                 this.setLoadingState(false);
+                this.claimDataChanged.emit();
+            })
+    }
+
+    // чтение документов обращения
+    public readClaimDocs = (id: string) => {
+        const sessionId = Session.instance.sessionId;
+        if (!sessionId || !id) return;
+        //
+        requestGetDocs({claimId: id, sessionId})
+            .then((response: IGetDocsResponse) => {
+                console.log('readClaimDocs', response)
+                this._docs = response.documents;
+                this._error = null;
+            })
+            .catch((error) => {
+                this._error = error;
+                console.log('Claim, readClaimDocs -> error:', error);
+            })
+            .finally(() => {
                 this.claimDataChanged.emit();
             })
     }
