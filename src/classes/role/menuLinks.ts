@@ -34,7 +34,7 @@ export type MenuLinksPermissionsMap = {
 
 // перечисление элементов меню для каждой роли
 export const MENU_LINKS: MenuLinksPermissionsMap = {
-    [Roles.USER]: {
+    [Roles.CLIENT]: {
         links: [
             { caption: 'Главная', pathName: MySpaceMenuPathname.Home },
             { caption: 'Категории', pathName: MySpaceMenuPathname.Category },

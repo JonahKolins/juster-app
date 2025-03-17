@@ -1,7 +1,7 @@
 
 // роли в приложении 
 export enum Roles {
-    USER = 'USER',
+    CLIENT = 'CLIENT',
     COMPANY = 'COMPANY',
     LAWYER = 'LAWYER',
     ADMIN = 'ADMIN'

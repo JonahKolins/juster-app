@@ -1,24 +1,32 @@
 import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
 import { Roles } from "classes/role/roles";
+import { IResponse } from "cmd/api/types";
 
-export interface LoginResponse {
-    accessToken: string;
-    sessionId: string;
+export interface ILoginData {
+    id: string;
+    email: string;
+    name: string;
     role: Roles;
+    createdAt: Date;
+    updatedAt: Date;
     // error
     errorCode?: number;
     message?: string;
+    status?: number;
+    errors?: Record<string, string[]> | undefined;
 }
+
+export type ILoginResponse = IResponse<ILoginData>;
 
 const LOGIN_URL = '/auth/login';
 
-class PostLoginRequest extends PostRequest<LoginResponse> {
+class PostLoginRequest extends PostRequest<ILoginResponse> {
     public constructor(private email: string, private pwd: string) {
         super();
     }
 
-    protected responseHandler = new JSONResponseHandler<LoginResponse>();
+    protected responseHandler = new JSONResponseHandler<ILoginResponse>();
 
     protected url = LOGIN_URL;
 

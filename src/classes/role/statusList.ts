@@ -11,7 +11,7 @@ export type StatusPermissionsMap = {
 // перечисление статусов, которые доступны каждой роли (это статусы, которые роль может применить к жалобе)
 // то есть те, которые отображаются в дропдауне на странице жалобы
 export const STATUS_PERMISSIONS: StatusPermissionsMap = {
-    [Roles.USER]: {
+    [Roles.CLIENT]: {
         statusesList: [
             IClaimStatus.resolved,
             IClaimStatus.deleted,

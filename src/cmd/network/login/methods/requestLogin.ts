@@ -1,12 +1,9 @@
-import PostLoginRequest, {LoginResponse} from "../requests/PostLoginRequest";
-import {testUserLogin} from "../../../../app/auth/methods/testUserLogin";
+import PostLoginRequest, {ILoginResponse} from "../requests/PostLoginRequest";
 
-export const requestLogin = async (email: string, password: string): Promise<LoginResponse> => {
+export const requestLogin = async (email: string, password: string): Promise<ILoginResponse> => {
     const postLoginRequest = new PostLoginRequest(email, password);
 
-    const data: LoginResponse = await postLoginRequest.send();
+    const data: ILoginResponse = await postLoginRequest.send();
 
-    // const data =  await testUserLogin({email, password});
-
-    return data
+    return data;
 }

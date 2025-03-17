@@ -50,6 +50,7 @@ const Navbar: FC = () => {
             <div className={styles['tabs-container']}>
                 {menuLinks.map((menuItem: IMenuLink ) => (
                     <Tab
+                        key={menuItem.pathName}
                         path={menuItem.pathName}
                         name={menuItem.caption}
                         disabled={false}

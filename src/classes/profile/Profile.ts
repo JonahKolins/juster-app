@@ -1,19 +1,15 @@
-import {Instance} from "../../core/entity";
-import {Session} from "../session/Session";
-import {requestProfile} from "../../cmd/network/profile/methods/requestProfile";
-import {
-    IProfileClientInfo,
-    IProfileResponse,
-    IProfileSettings
-} from "../../cmd/network/profile/requests/PostProfileRequest";
-import {EventEmitter} from "../../core/event";
-import {ApiError, NetworkError} from "../../core/errors";
+import { Instance } from "../../core/entity";
+import { Session } from "../session/Session";
+import { EventEmitter } from "../../core/event";
+import { ApiError, NetworkError } from "../../core/errors";
 import UnauthorizedError from "cmd/api/errors/UnauthorizedError";
+import { requestProfile } from "../../cmd/network/profile/methods/requestProfile";
+import { IProfileResponse, IUserData } from "cmd/network/profile/requests/GetProfileRequest";
 
 export class Profile {
-
-    private _clientInfo: IProfileClientInfo;
-    private _profileSettings: IProfileSettings;
+    private _data: IUserData;
+    // private _clientInfo: IProfileClientInfo;
+    // private _profileSettings: IProfileSettings;
     private _isLoading: boolean;
     private _isProfileReady: boolean;
     private _error: ApiError | NetworkError;
@@ -38,7 +34,7 @@ export class Profile {
     }
 
     public get clientInfo() {
-        return this._clientInfo;
+        return this._data;
     }
 
     public get isLoading() {
@@ -55,20 +51,18 @@ export class Profile {
     }
 
     public init = () => {
-        this._clientInfo = null;
-        this._profileSettings = null;
+        this._data = null;
+        // this._clientInfo = null;
+        // this._profileSettings = null;
         this._isLoading = false;
         this._error = null;
         this._isProfileReady = false;
     }
 
     public readProfile = () => {
-        const sessionId = Session.instance.sessionId;
-        if (!sessionId) return;
-
         this._isLoading = true;
-        requestProfile(sessionId)
-            .then((response) => {
+        requestProfile()
+            .then((response: IProfileResponse) => {
                 this.applyReadProfileResponse(response);
             })
             .catch((error) => {
@@ -87,8 +81,11 @@ export class Profile {
     }
 
     private applyReadProfileResponse = (response: IProfileResponse) => {
-        this._clientInfo = response.clientInfo.user;
-        this._profileSettings = response.profileSettings;
+        const profileData = response.data;
+
+        this._data = profileData.user;
+        // this._clientInfo = response.user;
+        // this._profileSettings = response.profileSettings;
         this._isProfileReady = true;
         this._isLoading = false;
         this._error = null;

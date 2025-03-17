@@ -1,24 +1,23 @@
 import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
-import { Roles } from "classes/role/roles";
 import { IResponse } from "cmd/api/types";
 
-export interface IRefreshData {
-    message: string
+export interface ILogoutData {
+    message: string;
 }
 
-export type IRefreshResponse = IResponse<IRefreshData>;
+export type ILogoutResponse = IResponse<ILogoutData>;
 
-const INFO_URL = '/auth/refresh';
+const LOGOUT_URL = '/auth/logout';
 
-class PostRefreshRequest extends PostRequest<IRefreshResponse> {
+class PostLogoutRequest extends PostRequest<ILogoutResponse> {
     public constructor() {
         super();
     }
 
-    protected responseHandler = new JSONResponseHandler<IRefreshResponse>();
+    protected responseHandler = new JSONResponseHandler<ILogoutResponse>();
 
-    protected url = INFO_URL;
+    protected url = LOGOUT_URL;
 
     protected additionalRequestInit: Partial<RequestInit> = {
         credentials: 'include'  // чтобы браузер отправил cookies с запросом
@@ -27,4 +26,4 @@ class PostRefreshRequest extends PostRequest<IRefreshResponse> {
     protected body = {}
 }
 
-export default PostRefreshRequest;
+export default PostLogoutRequest;

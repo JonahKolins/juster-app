@@ -1,5 +1,6 @@
 import RequestSender from '../RequestSender';
 import IResponseHandler from '../handlers/IResponseHandler';
+import { HOST } from '../host';
 
 export default abstract class GetRequest<TData> {
   protected abstract url: string;
@@ -22,7 +23,7 @@ export default abstract class GetRequest<TData> {
   public async send() {
     const { url, requestInit, timeout, responseHandler } = this;
 
-    const response = await RequestSender.sendRequest(url, requestInit, timeout);
+    const response = await RequestSender.sendRequest(`${HOST}${url}`, requestInit, timeout);
 
     const data = await responseHandler.handleResponse(response);
 

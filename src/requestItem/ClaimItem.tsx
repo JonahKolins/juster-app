@@ -110,9 +110,9 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
                         manager={manager}
                         status={data.claimInfo.status as IClaimStatus}
                         author={
-                            clientInfo?.firstName || clientInfo?.lastName
-                                ? `${clientInfo?.firstName}${NBSP}${clientInfo?.lastName}`
-                                : `${clientInfo?.email}`
+                            !!clientInfo 
+                                ? clientInfo.name || clientInfo.email
+                                : ''
                         }
                         respondent={{
                             name: data.claimInfo.recipientName,

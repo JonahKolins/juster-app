@@ -1,15 +1,15 @@
 import {useEffect, useState} from "react";
-import {IProfileClientInfo} from "../../cmd/network/profile/requests/PostProfileRequest";
 import {Profile} from "../../classes/profile/Profile";
+import { IUserData } from "cmd/network/profile/requests/GetProfileRequest";
 
 interface IProfileInfo {
-    clientInfo: IProfileClientInfo;
+    clientInfo: IUserData;
     isProfileLoading: boolean;
     isProfileReady: boolean;
 }
 
 export const useProfile = (): IProfileInfo => {
-    const [clientInfo, setClientInfo] = useState<IProfileClientInfo>(Profile.instance.clientInfo);
+    const [clientInfo, setClientInfo] = useState<IUserData>(Profile.instance.clientInfo);
     const [isProfileLoading, setIsProfileLoading] = useState<boolean>(Profile.instance.isLoading);
     const [isProfileReady, setIsProfileReady] = useState<boolean>(Profile.instance.profileReady);
 

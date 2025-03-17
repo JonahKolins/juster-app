@@ -2,33 +2,38 @@ import RequestSender from '../RequestSender';
 import IResponseHandler from '../handlers/IResponseHandler';
 import { HOST } from '../host';
 
-export default abstract class PostRequest<TData> {
+export default abstract class DeleteRequest<TData> {
   protected abstract url: string;
 
-  protected abstract body: unknown;
+  protected requestInitPart: Omit<RequestInit, 'method'> = {};
+
+  protected timeout = 15000;
 
   protected abstract responseHandler: IResponseHandler<TData>;
 
+  protected body?: unknown;
+
   protected additionalHeaders: Record<string, string> = {};
-
-  protected additionalRequestInit: Partial<RequestInit> = {};
-
-  protected timeout = 15000;
 
   protected host: string;
 
   private get requestInit(): RequestInit {
-    const { body, additionalHeaders, additionalRequestInit } = this;
-
-    return {
-      method: 'POST',
+    const { requestInitPart, body, additionalHeaders } = this;
+    
+    const init: RequestInit = {
+      ...requestInitPart,
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         ...additionalHeaders,
       },
-      body: JSON.stringify(body),
-      ...additionalRequestInit
     };
+
+    if (body) {
+      init.body = JSON.stringify(body);
+    }
+
+    return init;
   }
 
   public async send() {
@@ -41,4 +46,4 @@ export default abstract class PostRequest<TData> {
 
     return data;
   }
-}
+} 

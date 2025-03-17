@@ -22,7 +22,7 @@ export type PermissionsMap = {
 
 // словарь, задающий разрешения для каждой роли. При необходимости можно расширять список действий
 const PERMISSIONS: PermissionsMap = {
-    [Roles.USER]: {
+    [Roles.CLIENT]: {
         canCreateAcountOnSite: true,
         canCreateClaim: true,
         сanReceiveClaim: false,

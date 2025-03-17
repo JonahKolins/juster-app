@@ -2,7 +2,7 @@ import RequestSender from '../RequestSender';
 import IResponseHandler from '../handlers/IResponseHandler';
 import { HOST } from '../host';
 
-export default abstract class PostRequest<TData> {
+export default abstract class PutRequest<TData> {
   protected abstract url: string;
 
   protected abstract body: unknown;
@@ -21,7 +21,7 @@ export default abstract class PostRequest<TData> {
     const { body, additionalHeaders, additionalRequestInit } = this;
 
     return {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         ...additionalHeaders,

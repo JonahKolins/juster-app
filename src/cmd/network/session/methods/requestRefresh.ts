@@ -1,12 +1,9 @@
-import PostRefreshRequest, {RefreshResponse} from "../requests/PostRefreshRequest";
-import {testRefresh} from "../../../../app/auth/methods/testRefresh";
+import PostRefreshRequest, {IRefreshResponse} from "../requests/PostRefreshRequest";
 
-export const requestRefresh = async (): Promise<RefreshResponse> => {
+export const requestRefresh = async (): Promise<IRefreshResponse> => {
     const postRefreshRequest = new PostRefreshRequest();
 
-    const data: RefreshResponse = await postRefreshRequest.send();
-
-    // const data: RefreshResponse = await testRefresh();
+    const data: IRefreshResponse = await postRefreshRequest.send();
 
     return data;
 }

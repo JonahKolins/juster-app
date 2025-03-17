@@ -1,12 +1,15 @@
-import {Instance} from "../../core/entity";
-import {requestLogin} from "../../cmd/network/login/methods/requestLogin";
-import {EventEmitter, EventHandle} from "../../core/event";
-import {ApiError, NetworkError, RuntimeError} from "../../core/errors";
-import {requestSessionInfo} from "../../cmd/network/session/methods/requestInfo";
-import {requestRefresh} from "../../cmd/network/session/methods/requestRefresh";
-import {RefreshResponse} from "../../cmd/network/session/requests/PostRefreshRequest";
+import { Instance } from "../../core/entity";
+import { EventEmitter, EventHandle } from "../../core/event";
+import { ApiError, NetworkError, RuntimeError } from "../../core/errors";
 import UnauthorizedError from "../../cmd/api/errors/UnauthorizedError";
+import { requestLogin } from "../../cmd/network/login/methods/requestLogin";
+import { requestRefresh } from "../../cmd/network/session/methods/requestRefresh";
+import { requestSession } from "cmd/network/session/methods/requestSession";
+import { requestLogout } from "cmd/network/login/methods/requestLogout";
 import { AccessControl } from "classes/role/AccessControl";
+import { IRefreshResponse } from "../../cmd/network/session/requests/PostRefreshRequest";
+import { ILoginResponse } from "cmd/network/login/requests/PostLoginRequest";
+import { ISessionResponse } from "cmd/network/session/requests/GetSessionRequest";
 
 // описание типов для события loginStateChanged
 export type LoginStateChangedMessage = void;
@@ -42,7 +45,7 @@ export enum LoginState {
 }
 
 export class Session {
-    private _sessionId: string;
+    // private _sessionId: string;
     private _loginState: LoginState;
     private _error: ApiError | NetworkError;
 
@@ -52,7 +55,7 @@ export class Session {
     public readonly sessionDataChangedEvent: SessionDataChangedEmitter;
 
     constructor() {
-        this._sessionId = localStorage.getItem("sessionId") || '';
+        // this._sessionId = localStorage.getItem("sessionId") || '';
         this._loginState = LoginState.loggedOut;
         this._error = null;
 
@@ -71,7 +74,8 @@ export class Session {
     }
 
     public get sessionId(): string {
-        return this._sessionId
+        // TODO
+        return null
     }
 
     public get loginState(): LoginState {
@@ -133,14 +137,11 @@ export class Session {
 
         return new Promise((resolve, reject) => {
             requestLogin(email, password)
-                .then((response) => {
+                .then((response: ILoginResponse) => {
                     console.log('session login response', response)
-                    if (!response) return;
-
-                    this._sessionId = response.sessionId;
-                    localStorage.setItem('sessionId', response.sessionId);
+                    const userData = response.data;
                     // устанавливаем роль
-                    AccessControl.instance.setRole(response.role);
+                    AccessControl.instance.setRole(userData.role);
                     //
                     this.setLoginState(LoginState.loggedIn);
                     this.sessionDataChangedEvent.emit();
@@ -158,23 +159,15 @@ export class Session {
 
     // восстановление сессии
     public restore = (): Promise<void> => {
-        if (!this._sessionId) {
-            this.setLoginState(LoginState.loggedOut);
-            return Promise.reject('no clientId to restore');
-        }
-
         this.setLoginState(LoginState.restoreSessionInProgress);
 
         return new Promise((resolve, reject) => {
-            requestSessionInfo(this._sessionId)
-                .then((response) => {
+            requestSession()
+                .then((response: ISessionResponse) => {
                     console.log('session restore response', response)
-                    if (!response) return;
-                    //
-                    this._sessionId = response.sessionId;
-                    localStorage.setItem('sessionId', response.sessionId);
+                    const sessionData = response.data;
                     // устанавливаем роль
-                    AccessControl.instance.setRole(response.role);
+                    AccessControl.instance.setRole(sessionData.user.role);
                     //
                     this.setLoginState(LoginState.loggedIn);
                     this.sessionDataChangedEvent.emit();
@@ -198,14 +191,9 @@ export class Session {
     // обновление токенов и sessionId
     public refresh = async (): Promise<void> => {
         try {
-            const refreshResponse: RefreshResponse = await requestRefresh();
+            const refreshResponse: IRefreshResponse = await requestRefresh();
             console.log('session refresh refreshResponse', refreshResponse)
             if (refreshResponse) {
-                // обновим sessionId
-                this._sessionId = refreshResponse.sessionId;
-                localStorage.setItem('sessionId', refreshResponse.sessionId);
-                // устанавливаем роль
-                AccessControl.instance.setRole(refreshResponse.role);
                 // установим состояние авторизованного пользователя
                 this.setLoginState(LoginState.loggedIn);
                 // может быть сохраненная ошибка -> удалим ее
@@ -221,13 +209,14 @@ export class Session {
     }
 
     public logout = () => {
-        this._sessionId = null;
+        // this._sessionId = null;
         this._error = null;
         this.setLoginState(LoginState.loggedOut);
         localStorage.removeItem('token');
         // убираем роль
         AccessControl.instance.setRole(null);
-        // тут будет код логаута
+        // 
+        requestLogout();
     }
 
     private onLogin() {

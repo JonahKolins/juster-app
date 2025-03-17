@@ -16,7 +16,7 @@ export interface CreateAccountResponse {
     error?: any;
 }
 
-const REGISTER_URL = '/auth/registration';
+const REGISTER_URL = '/auth/register';
 
 class CreateAccountRequest extends PostRequest<CreateAccountResponse> {
     public constructor(private query: CreateAccountParams) {
