@@ -5,61 +5,59 @@ import Tab from "./tab/Tab";
 import NavbarAccount from "./account/NavbarAccount";
 import { RxDashboard } from "react-icons/rx";
 import { BsBoxes } from "react-icons/bs";
-import { IoDocumentOutline } from "react-icons/io5";
-import { HiOutlineDocumentPlus } from "react-icons/hi2";
+import { IoDocumentOutline, IoAnalyticsOutline } from "react-icons/io5";
+import { HiOutlineDocumentPlus, HiOutlineInbox } from "react-icons/hi2";
 import { IoIosNotificationsOutline } from "react-icons/io"
-
-enum Pathname {
-    Home = "/mySpace/dashboard",
-    Category = '/mySpace/category',
-    MyRequests = '/mySpace/myRequests',
-    MyRequestItem = '/mySpace/myRequests/',
-    NewRequest = '/mySpace/newRequest',
-    Notifications = '/mySpace/notifications'
-}
+import { AccessControl } from "classes/role/AccessControl";
+import { IMenuLink, MySpaceMenuPathname } from "classes/role/menuLinks";
 
 const Navbar: FC = () => {
+    const menuLinks = AccessControl.instance.menuLinks;
+    //
     const location = useLocation();
-    const [currentPage, setCurrentPage] = useState<Pathname>(Pathname.Home)
+    const [currentPage, setCurrentPage] = useState<MySpaceMenuPathname>(MySpaceMenuPathname.Home);
 
     useEffect(() => {
-        setCurrentPage(location.pathname as Pathname)
+        // если загрузились на странице 
+        if (currentPage !== location.pathname) {
+            setCurrentPage(location.pathname as MySpaceMenuPathname)
+        }
     }, [location])
+
+    const handleTabClick = (path: MySpaceMenuPathname) => {
+        setCurrentPage(path);
+    }
+
+    const getMenuItemIcon = (path: MySpaceMenuPathname): React.JSX.Element => {
+        switch (path) {
+            case MySpaceMenuPathname.Home: return <RxDashboard size={16} />;
+            case MySpaceMenuPathname.Category: return <BsBoxes size={16} />;
+            case MySpaceMenuPathname.AllClaims: return <BsBoxes size={16} />;
+            case MySpaceMenuPathname.MyClaims: return <IoDocumentOutline size={16} />;
+            case MySpaceMenuPathname.NewClaim: return <HiOutlineDocumentPlus size={16} />;
+            case MySpaceMenuPathname.Notifications: return <IoIosNotificationsOutline size={19} />;
+            case MySpaceMenuPathname.Inbox: return <HiOutlineInbox size={16} />;
+            case MySpaceMenuPathname.Analytics: return <IoAnalyticsOutline size={16} />;
+            default: return <BsBoxes size={16} />;
+        }
+    }
+
+    if (!menuLinks?.length) return null;
 
     return (
         <aside className={styles['navbar']}>
             <NavbarAccount onClick={() => {}} />
             <div className={styles['tabs-container']}>
-                <Tab
-                    path='/mySpace/dashboard'
-                    name='Главная'
-                    icon={<RxDashboard size={16} />}
-                    isActive={currentPage === Pathname.Home}
-                />
-                <Tab
-                    path='/mySpace/category'
-                    name='Категории'
-                    icon={<BsBoxes size={16} />}
-                    isActive={currentPage === Pathname.Category}
-                />
-                <Tab
-                    path='/mySpace/myRequests'
-                    name='Мои&nbsp;обращения'
-                    icon={<IoDocumentOutline size={16} />}
-                    isActive={currentPage === Pathname.MyRequests || currentPage.includes(Pathname.MyRequestItem)}
-                />
-                <Tab
-                    path='/mySpace/newRequest'
-                    name='Новое&nbsp;обращение'
-                    icon={<HiOutlineDocumentPlus size={16} />}
-                    isActive={currentPage === Pathname.NewRequest}
-                />
-                <Tab
-                    path={'/mySpace/notifications'}
-                    name={'Уведомления'}
-                    icon={<IoIosNotificationsOutline size={19} />}
-                    isActive={currentPage === Pathname.Notifications}
-                />
+                {menuLinks.map((menuItem: IMenuLink ) => (
+                    <Tab
+                        path={menuItem.pathName}
+                        name={menuItem.caption}
+                        disabled={false}
+                        icon={getMenuItemIcon(menuItem.pathName)}
+                        isActive={currentPage === menuItem.pathName}
+                        onClick={() => handleTabClick(menuItem.pathName)}
+                    />
+                ))}
             </div>
         </aside>
     );

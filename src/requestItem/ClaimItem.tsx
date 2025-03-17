@@ -36,7 +36,7 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
 
         const claimChangedEvent = manager.claimDataChanged.subscribe(handleClaimDataChanged);
         manager.readClaimInfo(id);
-        manager.readClaimDocs(id);
+        // manager.readClaimDocs(id);
 
         return () => {
             manager.dispose();

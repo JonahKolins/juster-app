@@ -24,7 +24,7 @@ interface AdditionalInfoProps {
 
 const AdditionalInfo = memo<AdditionalInfoProps>(({manager, id, status, author, respondent}) => {
     const {clientInfo} = useProfile();
-    const statuses = AccessControl.instance.claimStatusesList();
+    const statuses = AccessControl.instance.claimStatusesList;
 
     const [rows, setRows] = useState<InfoRow[]>(null);
     const [currentStatus, setCurrentStatus] = useState<IClaimStatus>(status);

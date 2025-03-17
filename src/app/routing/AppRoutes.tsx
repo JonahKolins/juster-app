@@ -24,6 +24,10 @@ import ResetPasswordPage from "../../pages/resetPasswordPage/ResetPasswordPage";
 import NewMyClaimsPage from "pages/mySpacePages/myClaimsPage/NewMyClaimsPage";
 import SearchResultPage from "pages/searchResultPage/SearchResultPage";
 import CompanyPage from "pages/companyPage/CompanyPage";
+import { MySpaceMenuPathname } from "classes/role/menuLinks";
+import AnalyticsPage from "pages/mySpacePages/analytics/AnalyticsPage";
+import InboxPage from "pages/mySpacePages/inbox/InboxPage";
+import AllClaimsPage from "pages/mySpacePages/allClaims/AllClaimsPage";
 
 const AppRoutes: FC = () => {
     const currentLocation = useLocation();
@@ -55,12 +59,15 @@ const AppRoutes: FC = () => {
             <Route path='/search' element={<SearchResultPage />} />
             <Route path='/company/:id' element={<CompanyPage />} />
             <Route path='/mySpace' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MySpacePage/>} />} />
-            <Route path='/mySpace/dashboard' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<DashboardPage/>} />} />
-            <Route path='/mySpace/category' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Categories/>} />} />
-            <Route path='/mySpace/myRequests' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<NewMyClaimsPage/>} />} />
-            <Route path='/mySpace/myRequests/:id' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<RequestItem/>} />} />
-            <Route path='/mySpace/newRequest' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MySpaceNewRequestPage/>} />} />
-            <Route path='/mySpace/notifications' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Notifications/>} />} />
+            <Route path={MySpaceMenuPathname.Home} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<DashboardPage/>} />} />
+            <Route path={MySpaceMenuPathname.Category} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Categories/>} />} />
+            <Route path={MySpaceMenuPathname.MyClaims} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<NewMyClaimsPage/>} />} />
+            <Route path={MySpaceMenuPathname.MyClaimItem} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<RequestItem/>} />} />
+            <Route path={MySpaceMenuPathname.NewClaim} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MySpaceNewRequestPage/>} />} />
+            <Route path={MySpaceMenuPathname.Notifications} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Notifications/>} />} />
+            <Route path={MySpaceMenuPathname.Inbox} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<InboxPage/>} />} />
+            <Route path={MySpaceMenuPathname.AllClaims} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<AllClaimsPage/>} />} />
+            <Route path={MySpaceMenuPathname.Analytics} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<AnalyticsPage/>} />} />
             <Route path='/newRequest' element={<NewRequests/>} />
             <Route path='/account' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<AccountPage/>} />} />
             <Route path='/account/settings' element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<SettingsAccountPage/>} />} />

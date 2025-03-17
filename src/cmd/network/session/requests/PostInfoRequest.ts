@@ -1,6 +1,6 @@
 import PostRequest from "../../../api/requests/PostRequest";
 import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
-import { Roles } from "classes/role/AccessControl";
+import { Roles } from "classes/role/roles";
 
 export interface InfoResponse {
     sessionId: string;
