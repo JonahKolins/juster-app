@@ -10,6 +10,8 @@ import { AccessControl } from "classes/role/AccessControl";
 import { IRefreshResponse } from "../../cmd/network/session/requests/PostRefreshRequest";
 import { ILoginResponse } from "cmd/network/login/requests/PostLoginRequest";
 import { ISessionResponse } from "cmd/network/session/requests/GetSessionRequest";
+import { CreateAccountParams, ICreateAccountResponse } from "cmd/network/registration/requests/CreateAccountRequest";
+import { requestCreateAccount } from "cmd/network/registration/methods/createAccount";
 
 // описание типов для события loginStateChanged
 export type LoginStateChangedMessage = void;
@@ -130,6 +132,42 @@ export class Session {
         }
     }
 
+    // регистрация
+    public register = (userData: CreateAccountParams): Promise<ICreateAccountResponse> => {
+        this.setLoginState(LoginState.loginInProgress);
+        this._error = null;
+        //
+        return new Promise((resolve, reject) => {
+            requestCreateAccount(userData)
+                .then((response: ICreateAccountResponse) => {
+                    console.log('register response', response)
+                    if (response.status === 400) {
+                        this.setLoginState(LoginState.loggedOut);
+                        reject(response);
+                    }
+                    const userData = response.data?.user;
+                    if (userData) {
+                        resolve(response);
+                        // устанавливаем роль
+                        // AccessControl.instance.setRole(userData.role);
+                        //
+                        // Добавляем небольшую задержку перед установкой состояния loggedIn
+                        // setTimeout(() => {
+                        //     this.setLoginState(LoginState.loggedIn);
+                        //     this.sessionDataChangedEvent.emit();
+                        //     resolve();
+                        // }, 100);
+                    }
+                })
+                .catch((error) => {
+                    console.log('register error', error)
+                    this.setLoginError(error);
+                    this.setLoginState(LoginState.loggedOut);
+                    reject(error);
+                })
+        })
+    }
+
     // логин
     public login = (email: string, password: string): Promise<void> => {
         this.setLoginState(LoginState.loginInProgress);
@@ -139,14 +177,18 @@ export class Session {
             requestLogin(email, password)
                 .then((response: ILoginResponse) => {
                     console.log('session login response', response)
-                    const userData = response.data;
-                    // устанавливаем роль
-                    AccessControl.instance.setRole(userData.role);
-                    //
-                    this.setLoginState(LoginState.loggedIn);
-                    this.sessionDataChangedEvent.emit();
-
-                    resolve();
+                    const userData = response.data?.user;
+                    if (userData) {
+                        // устанавливаем роль
+                        AccessControl.instance.setRole(userData.role);
+                        //
+                        this.setLoginState(LoginState.loggedIn);
+                        this.sessionDataChangedEvent.emit();
+                        resolve();
+                    } else {
+                        this.setLoginState(LoginState.loggedOut);
+                        reject();
+                    }
                 })
                 .catch((error) => {
                     console.log('session login error', error)
@@ -166,13 +208,17 @@ export class Session {
                 .then((response: ISessionResponse) => {
                     console.log('session restore response', response)
                     const sessionData = response.data;
-                    // устанавливаем роль
-                    AccessControl.instance.setRole(sessionData.user.role);
-                    //
-                    this.setLoginState(LoginState.loggedIn);
-                    this.sessionDataChangedEvent.emit();
-
-                    resolve();
+                    if (sessionData) {
+                        // устанавливаем роль
+                        AccessControl.instance.setRole(sessionData.user.role);
+                        //
+                        this.setLoginState(LoginState.loggedIn);
+                        this.sessionDataChangedEvent.emit();
+                        resolve();
+                    } else {
+                        this.setLoginState(LoginState.loggedOut);
+                        reject();
+                    }
                 })
                 .catch((error) => {
                     if (error instanceof UnauthorizedError) {

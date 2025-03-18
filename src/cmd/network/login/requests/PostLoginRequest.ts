@@ -17,7 +17,11 @@ export interface ILoginData {
     errors?: Record<string, string[]> | undefined;
 }
 
-export type ILoginResponse = IResponse<ILoginData>;
+interface ILoginUser {
+    user: ILoginData;
+}
+
+export type ILoginResponse = IResponse<ILoginUser>;
 
 const LOGIN_URL = '/auth/login';
 

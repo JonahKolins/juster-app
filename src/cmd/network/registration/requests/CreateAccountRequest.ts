@@ -1,29 +1,40 @@
 import PostRequest from "../../../api/requests/PostRequest";
-import JSONResponseHandler from "../../../api/handlers/JSONResponseHandler";
+import RegistrationResponseHandler from "../../../api/handlers/RegistrationResponseHandler";
+import { IUserData } from "cmd/network/profile/requests/GetProfileRequest";
+import { IResponse } from "cmd/api/types";
 
 export interface CreateAccountParams {
-    userName?: string;
-    firstName: string;
-    lastName: string;
+    name: string;
     email: string;
     password: string;
-    confirmPassword: string,
-    hasCheckbox: boolean
+    confirmPassword: string;
+    hasCheckbox: boolean;
+    //
+    userAgent?: string;
+    ipAddress?: string;
 }
 
-export interface CreateAccountResponse {
-    email: string;
-    error?: any;
+interface ICreatedUserData {
+    user: IUserData;
 }
+
+export type ICreateAccountResponse = IResponse<ICreatedUserData>;
 
 const REGISTER_URL = '/auth/register';
 
-class CreateAccountRequest extends PostRequest<CreateAccountResponse> {
+class CreateAccountRequest extends PostRequest<ICreateAccountResponse> {
     public constructor(private query: CreateAccountParams) {
         super();
     }
-    protected responseHandler = new JSONResponseHandler<CreateAccountResponse>();
+
+    protected responseHandler = new RegistrationResponseHandler<ICreateAccountResponse>();
+
     protected url = REGISTER_URL;
+
+    protected additionalRequestInit: Partial<RequestInit> = {
+        credentials: 'include'  // чтобы браузер отправил cookies с запросом
+    }
+
     protected body = this.query;
 }
 

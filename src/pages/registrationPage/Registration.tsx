@@ -5,6 +5,9 @@ import {Link, useNavigate} from "react-router-dom";
 import {ValidateStatus} from "antd/es/form/FormItem";
 import {requestCreateAccount} from "../../cmd/network/registration/methods/createAccount";
 import {useSessionInfo} from "../../app/hooks/useSessionInfo";
+import { browserUtils } from "core/utils";
+import { ICreateAccountResponse } from "cmd/network/registration/requests/CreateAccountRequest";
+import { Session } from "classes/session/Session";
 
 export enum InputType {
     firstName,
@@ -100,10 +103,8 @@ const Registration = () => {
         }
 
         try {
-            const response = await requestCreateAccount({
-                firstName: firstName,
-                lastName: lastName,
-                userName: firstName,
+            const response = await Session.instance.register({
+                name: `${firstName} ${lastName}`,
                 email: email,
                 password: password,
                 confirmPassword: confirmPassword,
@@ -116,11 +117,10 @@ const Registration = () => {
                     content: "Аккаунт успешно создан"
                 }).then(() => navigate('/auth/login'))
             }
-        } catch (e) {
-            console.log('e', e)
+        } catch (err) {
+            console.log('Regisration, e:', err)
             setError(true);
-            setErrorMessage('Что-то пошло не так. Перезагрузите страницу и попробуйте еще раз')
-            // TODO непорядок - если ошибка 403 -> пользователь уже существует
+            setErrorMessage(err.message);
         }
     };
 
