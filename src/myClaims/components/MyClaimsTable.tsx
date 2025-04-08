@@ -5,7 +5,7 @@ import { useClaims } from 'app/hooks/useClaims';
 import type { ColumnsType } from 'antd/es/table';
 import { datetimeUtils } from 'core/utils/datetimeUtils';
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { IClaimsItem, IClaimStatus } from 'classes/claim/Claim.Types';
+import { IClaimFileInfo, IClaimsItem, IClaimStatus } from 'classes/claim/Claim.Types';
 import { useNavigate } from 'react-router';
 import { TbGrid3X3 } from "react-icons/tb";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
@@ -28,6 +28,7 @@ interface ClaimTableRowData {
     createdAt: string;
     lastUpdate?: string;
     status: string;
+    files: IClaimFileInfo[];
 }
 
 const OPEN_FULL_CLAIM = 'К обращению';
@@ -92,7 +93,7 @@ const MyClaimsTable = () => {
         console.log('claim name clicked');
         e.stopPropagation();
         e.preventDefault();
-        navigate(`/mySpace/myRequests/${record.id}`)
+        navigate(`/mySpace/claims/${record.id}`)
     }
 
     const handleDotsClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -183,6 +184,7 @@ const MyClaimsTable = () => {
                 status: item.claimInfo.status,
                 user: clientInfo?.firstName ? `${clientInfo.firstName} ${clientInfo.lastName}` : clientInfo?.email,
                 respondent: item.claimInfo.recipientName,
+                files: item.claimInfo.files,
                 lawyer: 'Юра',
                 createdAt: datetimeUtils.formatTime(item.claimInfo.createdAt, 'DD.MM.YYYY'),
                 lastUpdate: datetimeUtils.formatTime(item.claimInfo.lastUpd, 'DD.MM.YYYY'),
@@ -238,12 +240,12 @@ const MyClaimsTable = () => {
 
     const handleOpenFullClaim = () => {
         console.log('open full claim');
-        navigate(`/mySpace/myRequests/${selectedClaim.genId}`)
+        navigate(`/mySpace/claims/${selectedClaim.genId}`)
     }
 
     const handleContinueToCreateClaim = () => {
         if (!selectedClaim) return;
-        navigate(`/mySpace/newRequest?claimId=${encodeURIComponent(selectedClaim.genId)}`);
+        navigate(`/mySpace/newClaim?claimId=${encodeURIComponent(selectedClaim.genId)}`);
     }
 
     const renderCloseIcon = (): React.ReactNode => {
@@ -359,8 +361,10 @@ const MyClaimsTable = () => {
                 <div className={styles['modal-claim-attachments']}>
                     <div className={styles['modal-claim-title']}>Вложения</div>
                     <div className={styles['modal-claim-attachments-items']}>
-                        <div className={styles['modal-claim-attachment-item']}>.doc</div>
-                        <div className={styles['modal-claim-attachment-item']}>.pdf</div>
+                        {selectedClaim.claimInfo.files?.map((fileInfo) => (
+                            // TODO тут не хватает файлов потому что в запросе claims у обращения нет поля files
+                            <div className={styles['modal-claim-attachment-item']}>{fileInfo.fileName}</div>
+                        ))}
                     </div>
                 </div>
             </div>

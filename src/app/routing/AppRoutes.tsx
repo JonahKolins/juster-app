@@ -6,7 +6,7 @@ import MyRequests from "../../pages/mySpacePages/myClaimsPage/MyClaimsPage";
 import NewRequests from "../../newRequest/NewRequest";
 import Notifications from "../../pages/notificationsPage/Notifications";
 import Categories from "../../pages/mySpacePages/categoriesPage/Categories";
-import RequestItem from "../../requestItem/ClaimItem";
+import ClaimItem from "../../requestItem/ClaimItem";
 import HomePage from "../../pages/homePage/HomePage";
 import UseCasesPage from "../../pages/useCasesPage/UseCasesPage";
 import CategoriesPage from "../../pages/categoriesPage/CategoriesPage";
@@ -62,7 +62,7 @@ const AppRoutes: FC = () => {
             <Route path={MySpaceMenuPathname.Home} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<DashboardPage/>} />} />
             <Route path={MySpaceMenuPathname.Category} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Categories/>} />} />
             <Route path={MySpaceMenuPathname.MyClaims} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<NewMyClaimsPage/>} />} />
-            <Route path={MySpaceMenuPathname.MyClaimItem} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<RequestItem/>} />} />
+            <Route path={MySpaceMenuPathname.MyClaimItem} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<ClaimItem/>} />} />
             <Route path={MySpaceMenuPathname.NewClaim} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MySpaceNewRequestPage/>} />} />
             <Route path={MySpaceMenuPathname.Notifications} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<Notifications/>} />} />
             <Route path={MySpaceMenuPathname.Inbox} element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<InboxPage/>} />} />

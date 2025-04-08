@@ -8,8 +8,9 @@ import { Session } from "classes/session/Session";
 import { IPostAddClaimActionResponse } from "cmd/network/claims/requests/PostAddClaimAction";
 import { IChangeClaimStatusRequestParams, requestChangeClaimStatus } from "cmd/network/claims/methods/requestChangeClaimStatus";
 import { IPostChangeClaimStatusResponse } from "cmd/network/claims/requests/PostChangeClaimStatusRequest";
-import { requestGetDocs } from "cmd/network/claims/methods/requestGetDocs";
-import { IDocumentInfo, IGetDocsResponse } from "cmd/network/claims/requests/PostGetDocsRequest";
+import { IGetDocParams, requestGetDocs } from "cmd/network/claims/methods/requestGetDocs";
+import { IDocumentInfo, IGetDocsResponse } from "cmd/network/claims/requests/GetDocsRequest";
+import { requestClaimInfo } from "cmd/network/claims/methods/requestClaimInfo";
 
 export class Claim {
     private _claimData: IClaimsItem;
@@ -57,6 +58,10 @@ export class Claim {
         return this._error
     }
 
+    public get documents(): IDocumentInfo[] {
+        return this._docs;
+    }
+
     private setLoadingState = (value: boolean) => {
         this._isLoading = value;
         this.claimDataChanged.emit();
@@ -82,15 +87,24 @@ export class Claim {
             })
     }
 
-    // чтение документов обращения
+    // чтение списка документов обращения (без содержимого)
     public readClaimDocs = (id: string) => {
         const sessionId = Session.instance.sessionId;
         if (!sessionId || !id) return;
         //
-        requestGetDocs({claimId: id, sessionId})
+        const params: IGetDocParams = {
+            sessionId,
+            claimId: id
+        };
+        
+        requestGetDocs(params)
             .then((response: IGetDocsResponse) => {
-                console.log('readClaimDocs', response)
-                this._docs = response.documents;
+                console.log('readClaimDocs', response);
+                if (response.document) {
+                    this._docs = [response.document];
+                } else {
+                    this._docs = [];
+                }
                 this._error = null;
             })
             .catch((error) => {
@@ -99,7 +113,25 @@ export class Claim {
             })
             .finally(() => {
                 this.claimDataChanged.emit();
-            })
+            });
+    }
+    
+    // получение конкретного документа по его ID
+    public getDocument = (fileId: string): Promise<IGetDocsResponse> => {
+        const sessionId = Session.instance.sessionId;
+        const claimId = this._claimData?.genId;
+        
+        if (!sessionId || !claimId || !fileId) {
+            return Promise.reject(new Error('Отсутствует sessionId, claimId или fileId'));
+        }
+        
+        const params: IGetDocParams = {
+            sessionId,
+            claimId,
+            fileId
+        };
+        
+        return requestGetDocs(params);
     }
 
     public addAction = (actionInfo: IClaimActionRequestInfo) => {
@@ -119,7 +151,7 @@ export class Claim {
                 // this._claimData = response;
                 //
                 this._error = null;
-                BaseClaims.instance.readClaims();
+                this.readClaimInfo(claimId);
             })
             .catch((error) => {
                 this._error = error;
@@ -161,26 +193,13 @@ export class Claim {
             })
     }    
 
-    // TODO сделать отдельный запрос 
     private readClaimInfoRequest = (id: string): Promise<IClaimsItem> => {
-        return new Promise((resolve, reject) => {
-            const data = BaseClaims.instance.getClaimById(id);
-
-            if (!data) {
-                BaseClaims.instance.readClaims();
-
-                // TODO убрать этот костыль когда будет отдельный запрос
-                window.setTimeout(() => {
-                    const secondData = BaseClaims.instance.getClaimById(id);
-                    resolve(secondData);
-                }, 1000);
-            } else {
-                resolve(data);
-            }
-        })
-    }
-
-    private addNewActionRequest = (params: ICreateClaimActionRequestParams) => {
-        return testCreateClaimAction(params)
+        const sessionId = Session.instance.sessionId;
+        
+        if (!sessionId || !id) {
+            return Promise.reject(new Error('Отсутствует sessionId или id обращения'));
+        }
+        
+        return requestClaimInfo({ sessionId, claimId: id });
     }
 }

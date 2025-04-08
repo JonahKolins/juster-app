@@ -59,7 +59,7 @@ const MyClaimsPage = () => {
     }
 
     const handleRequestClick = (id: string) => {
-        navigate(`/mySpace/myRequests/${id}`)
+        navigate(`/mySpace/claims/${id}`)
     }
 
     const getStatusName = (status: IClaimStatus): string => {

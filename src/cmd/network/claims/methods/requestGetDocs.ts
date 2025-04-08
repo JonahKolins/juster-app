@@ -1,11 +1,18 @@
-import PostGetDocsRequest, { IGetDocsRequestParams, IGetDocsResponse } from "../requests/PostGetDocsRequest";
+import GetDocsRequest, { IGetDocsResponse } from "../requests/GetDocsRequest";
 
-export const requestGetDocs = async (params: IGetDocsRequestParams) : Promise<IGetDocsResponse> => {
+export interface IGetDocParams {
+    sessionId: string;
+    claimId: string;
+    fileId?: string;
+}
+
+export const requestGetDocs = async (params: IGetDocParams): Promise<IGetDocsResponse> => {
     console.log('requestGetDocs, params', params);
     
-    const postGetDocsRequest = new PostGetDocsRequest(params);
+    const { sessionId, claimId, fileId } = params;
+    const getDocsRequest = new GetDocsRequest(sessionId, claimId, fileId);
 
-    const data: IGetDocsResponse = await postGetDocsRequest.send();
+    const data: IGetDocsResponse = await getDocsRequest.send();
 
     return data;
 }

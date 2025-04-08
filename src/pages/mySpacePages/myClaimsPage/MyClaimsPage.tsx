@@ -75,7 +75,7 @@ const MyClaimsPage = () => {
     }
 
     const handleRequestClick = (id: string) => {
-        navigate(`/mySpace/myRequests/${id}`)
+        navigate(`/mySpace/claims/${id}`)
     }
 
     const getStatusName = (status: IClaimStatus): string => {
@@ -180,7 +180,7 @@ const MyClaimsPage = () => {
                             <div className={styles['list-item-actions']}>
                                 <div className={styles['comments']}>
                                     <RiMessage3Line className={styles['icon']} />
-                                    <span className={styles['number']}>{claimsItem.claimInfo.comments?.length ? claimsItem.claimInfo.comments.length : 0}</span>
+                                    <span className={styles['number']}>{claimsItem.claimInfo.actions?.length ? claimsItem.claimInfo.actions.length : 0}</span>
                                 </div>
                             </div>
                         </div>

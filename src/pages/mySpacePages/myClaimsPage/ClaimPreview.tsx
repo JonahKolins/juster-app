@@ -104,7 +104,7 @@ const ClaimPreview = memo<ClaimPreviewProps>(({claim, showExample}) => {
                 <div className={styles['buttons']}>
                     <Button
                         className={styles['button']}
-                        onClick={() => navigate(`/mySpace/myRequests/${claim.genId}`)}
+                        onClick={() => navigate(`/mySpace/claims/${claim.genId}`)}
                         children={
                             <div className={styles['comments']}>
                                 <RiMessage3Line className={styles['icon']} />
@@ -114,7 +114,7 @@ const ClaimPreview = memo<ClaimPreviewProps>(({claim, showExample}) => {
                     />
                     <Button
                         className={styles['button']}
-                        onClick={() => navigate(`/mySpace/myRequests/${claim.genId}`)}
+                        onClick={() => navigate(`/mySpace/claims/${claim.genId}`)}
                         children={'Перейти к обращению'}
                     />
                 </div>
