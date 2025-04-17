@@ -80,12 +80,12 @@ const NewRequestFinalPart = memo<NewRequestFinalPartProps>(({onPrevPageClick}) =
 
     const handleModalOk = () => {
         setSuccessDialogOpened(false);
-        navigate(createdId ? `/mySpace/myRequests/${createdId}` : '/mySpace/myRequests');
+        navigate(createdId ? `/mySpace/claims/${createdId}` : '/mySpace/claims');
     }
 
     const handleModalCancel = () => {
         setSuccessDialogOpened(false);
-        navigate('/mySpace/myRequests');
+        navigate('/mySpace/claims');
     }
 
     return (

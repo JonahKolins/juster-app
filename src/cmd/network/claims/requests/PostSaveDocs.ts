@@ -12,7 +12,7 @@ export interface ISaveDocsResponse {
     error?: any;
 }
 
-const SAVE_DOCS_URL = '/saveclaimsdoc';
+const SAVE_DOCS_URL = '/claim/files/save';
 
 class PostSaveDocsRequest extends PostFormDataRequest<ISaveDocsResponse> {
     protected formData: FormData;

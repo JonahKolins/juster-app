@@ -1,7 +1,7 @@
 import IResponseHandler from "./IResponseHandler";
 
 export class BlobResponseHandler<TData> implements IResponseHandler<TData> {
-    public async handleResponse(response: Response) {
+    public async handleResponse(response: Response): Promise<TData> {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -16,18 +16,23 @@ export class BlobResponseHandler<TData> implements IResponseHandler<TData> {
         // для бинарных данных создаем специальный ответ
         const blob = await response.blob();
         const fileName = this.getFileNameFromHeaders(response.headers) || 'document';
+        const fileType = contentType || blob.type;
         
+        // Создаем объект URL для доступа к содержимому файла
+        const contentUrl = URL.createObjectURL(blob);
+        
+        // Создаем объект, соответствующий ожидаемой структуре TData
         return {
             status: 'success',
-            documents: [{
-                id: '1',
+            document: {
+                id: this.extractFileIdFromUrl(response.url),
                 name: fileName,
-                type: blob.type,
+                type: fileType,
                 size: blob.size,
                 uploadDate: Date.now(),
-                contentUrl: URL.createObjectURL(blob)
-            }]
-        } as TData;
+                contentUrl: contentUrl
+            }
+        } as unknown as TData;
     }
 
     private getFileNameFromHeaders(headers: Headers): string | null {
@@ -39,5 +44,14 @@ export class BlobResponseHandler<TData> implements IResponseHandler<TData> {
             return matches[1].replace(/['"]/g, '');
         }
         return null;
+    }
+    
+    private extractFileIdFromUrl(url: string): string {
+        // Извлекаем fileId из URL вида /claim/files/{sessionId}/{claimId}/{fileId}
+        const parts = url.split('/');
+        if (parts.length > 0) {
+            return parts[parts.length - 1];
+        }
+        return 'unknown';
     }
 }

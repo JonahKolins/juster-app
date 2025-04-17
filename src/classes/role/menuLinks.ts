@@ -7,7 +7,7 @@ export enum MySpaceMenuPathname {
     // для юзера
     Category = '/mySpace/category',
     MyClaims = '/mySpace/claims',
-    MyClaimItem = '/mySpace/laims/:id',
+    MyClaimItem = '/mySpace/claims/:id',
     NewClaim = '/mySpace/newClaim',
     // для копании
     Inbox = '/mySpace/inbox',

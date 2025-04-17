@@ -147,7 +147,7 @@ const ClaimActions = memo<ClaimActionsProps>(({ manager, id, actions }) => {
                     </div>
                     <div className={styles['message-main-container']}>
                         <div className={styles['message-user-data']}>
-                            <div className={styles['name']}>{message.user.firstName}</div>
+                            <div className={styles['name']}>{message.user.firstName ? message.user.firstName : message.user.email || ''}</div>
                             {/* {message.user.title?.value && <div className={styles['name']}>{message.user.title.value}</div>} */}
                             <span className={styles['string-dot']}></span>
                             <div className={styles['time']}>

@@ -48,8 +48,16 @@ export interface IClaimsItem {
         textClaim: string;
         status: IClaimStatus;
         actions: IAction[];
+        files: IClaimFileInfo[];
     };
 }
+
+export interface IClaimFileInfo {
+    id: number;
+    createdAt: string;
+    lastUpd: string;
+    fileName: string;
+} 
 
 export interface IMinRespondentData {
     inn: string;
@@ -63,6 +71,7 @@ export interface IAction {
     type: ClaimType;
     actionType: ActionType;
     user: {
+        email?: string;
         firstName: string;
         lastName: string;
     };

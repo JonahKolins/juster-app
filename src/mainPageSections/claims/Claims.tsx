@@ -25,7 +25,7 @@ const Claims: FC = () => {
     const { claims, isClaimsLoading, isClaimsReady } = useClaims();
 
     const onAllAppealsClick = () => {
-        navigate('/mySpace/myRequests')
+        navigate('/mySpace/claims')
     }
 
     const tableRows = useMemo<ClaimRowData[]>(() => {
@@ -118,7 +118,7 @@ const Claims: FC = () => {
     }
 
     const handleGoToClaim = (id: string) => {
-        navigate(`/mySpace/myRequests/${id}`)
+        navigate(`/mySpace/claims/${id}`)
     }
 
     const renderDescription = (claimRowData: ClaimRowData): React.JSX.Element => {

@@ -24,6 +24,7 @@ interface ClaimItemProps extends IClaimInfoContext {}
 
 const ClaimItem = memo<ClaimItemProps>(({manager}) => {
     const {id} = useParams();
+    console.log('ClaimItem - id parameter:', id);
     const {clientInfo} = useProfile();
     // const {claims} = useClaims();
     //
@@ -91,12 +92,11 @@ const ClaimItem = memo<ClaimItemProps>(({manager}) => {
                             />
                             <div className={styles.attachments}>Вложения</div>
                             <div className={styles.attachment_items}>
-                                <div className={styles.attach_item}>
-                                    .doc
-                                </div>
-                                <div className={styles.attach_item}>
-                                    .pdf
-                                </div>
+                                {data.claimInfo.files?.map((fileInfo) => (
+                                    <div className={styles.attach_item}>
+                                        {fileInfo.fileName}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                         <div className={styles.actions}>

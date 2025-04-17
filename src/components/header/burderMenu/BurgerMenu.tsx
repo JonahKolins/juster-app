@@ -19,8 +19,8 @@ enum Pathname {
     Home = '/',
     Dashboard = "/mySpace/dashboard",
     Category = '/mySpace/category',
-    MyRequests = '/mySpace/myRequests',
-    NewRequest = '/mySpace/newRequest',
+    MyRequests = '/mySpace/cliams',
+    NewRequest = '/mySpace/newClaim',
     Notifications = '/mySpace/notifications',
     Support = '/support',
     UseCases = '/use-cases',
@@ -85,7 +85,7 @@ const BurgerMenu = memo<BurgerMenuProps>(({open, onClose}) => {
                                disabled={!clientInfo}
                            />
                            <Tab
-                               path='/mySpace/myRequests'
+                               path='/mySpace/claims'
                                name='Мои&nbsp;обращения'
                                icon={<IoDocumentOutline size={16} />}
                                isActive={currentPage === Pathname.MyRequests}
@@ -93,7 +93,7 @@ const BurgerMenu = memo<BurgerMenuProps>(({open, onClose}) => {
                                disabled={!clientInfo}
                            />
                            <Tab
-                               path='/mySpace/newRequest'
+                               path='/mySpace/newClaim'
                                name='Новое&nbsp;обращение'
                                icon={<HiOutlineDocumentPlus size={16} />}
                                isActive={currentPage === Pathname.NewRequest}

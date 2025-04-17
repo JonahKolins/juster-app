@@ -23,8 +23,8 @@ interface RoutesObject {
 
 const navigationLinks: RoutesObject[] = [
     {name: 'главная', path: '/'},
-    {name: 'мои обращения', path: '/mySpace/myRequests'},
-    {name: 'новое обращение', path: '/mySpace/newRequest'},
+    {name: 'мои обращения', path: '/mySpace/claims'},
+    {name: 'новое обращение', path: '/mySpace/newCliam'},
     {name: 'уведомления', path: '/mySpace/notifications'},
     {name: 'подержка', path: '/support'},
     {name: 'помощь', path: '/support'},
